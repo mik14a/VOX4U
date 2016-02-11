@@ -19,27 +19,27 @@ public class VOX4U : ModuleRules
         );
 
         PublicDependencyModuleNames.AddRange(
-            new string[]
-            {
+            new string[] {
                 "Core",
                 "UnrealEd",
-                "RawMesh",
             }
         );
 
         PrivateDependencyModuleNames.AddRange(
-            new string[]
-            {
+            new string[] {
                 "CoreUObject",
                 "Engine",
                 "Slate",
                 "SlateCore",
+                "RawMesh",
+                "MainFrame",
+                "PropertyEditor",
+                "InputCore",
             }
         );
 
         DynamicallyLoadedModuleNames.AddRange(
-            new string[]
-            {
+            new string[] {
             }
         );
     }
