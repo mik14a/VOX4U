@@ -1,0 +1,24 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "0.1",
+    "FriendlyName": "VOX4U",
+    "Description": "MagicaVoxel VOX Format import plugin",
+    "Category": "Editor",
+    "CreatedBy": "mik14a / Admix Network",
+    "CreatedByURL": "https://github.com/mik14a",
+    "DocsURL": "https://github.com/mik14a/VOX4U/blob/master/README.md",
+    "MarketplaceURL": "",
+    "SupportURL": "https://github.com/mik14a/VOX4U",
+    "EnabledByDefault": true,
+    "CanContainContent": false,
+    "IsBetaVersion": true,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "VOX4U",
+            "Type": "Editor",
+            "LoadingPhase": "Default"
+        }
+    ]
+}
