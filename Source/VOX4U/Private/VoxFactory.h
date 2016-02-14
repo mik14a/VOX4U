@@ -6,7 +6,10 @@
 #include "Engine.h"
 #include "VoxFactory.generated.h"
 
+class UVoxel;
+class UStaticMesh;
 class UVoxImportOption;
+struct FVox;
 
 /**
  *
@@ -27,6 +30,12 @@ public:
 	virtual UClass* ResolveSupportedClass() override;
 
 	virtual UObject* FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn) override;
+
+private:
+
+	UStaticMesh* CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+
+	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 protected:
 

@@ -5,13 +5,14 @@
 #include "Editor.h"
 #include "Engine.h"
 #include "Engine/StaticMesh.h"
+#include "Interfaces/IMainFrameModule.h"
 #include "MainFrame.h"
 #include "RawMesh.h"
 #include "SlateCore.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
 #include "VoxOptionWidget.h"
-#include "Interfaces/IMainFrameModule.h"
+#include "Voxel.h"
 
 UVoxFactory::UVoxFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -31,16 +32,25 @@ void UVoxFactory::PostInitProperties()
 
 bool UVoxFactory::DoesSupportClass(UClass * Class)
 {
-	return Class == UStaticMesh::StaticClass();
+	return Class == UStaticMesh::StaticClass()
+		|| Class == UVoxel::StaticClass();
 }
 
 UClass* UVoxFactory::ResolveSupportedClass()
 {
-	return UStaticMesh::StaticClass();
+	UClass* Class = nullptr;
+	if (ImportOption->VoxImportType == EVoxImportType::StaticMesh) {
+		Class = UStaticMesh::StaticClass();
+	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
+		Class = UVoxel::StaticClass();
+	}
+	return Class;
 }
 
 UObject* UVoxFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
 {
+	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
+
 	TSharedPtr<SWindow> ParentWindow;
 
 	if (FModuleManager::Get().IsModuleLoaded("MainFrame")) {
@@ -57,27 +67,44 @@ UObject* UVoxFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FN
 	FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
 	ImportOption->SaveConfig();
 
-	UStaticMesh* Result = nullptr;
-
-	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
-
 	FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
+	FVox Vox(Reader, ImportOption);
 
-	FVox Vox;
-	Vox.Import(Reader, ImportOption);
-
-	FRawMesh RawMesh;
-	if (Vox.CreateRawMesh(RawMesh, ImportOption)) {
-
-		Result = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
-		for (int32 i = 0; i < RawMesh.FaceMaterialIndices.Num(); ++i) {
-			Result->Materials.Add(UMaterial::GetDefaultMaterial(MD_Surface));
-		}
-		FStaticMeshSourceModel* StaticMeshSourceModel = new(Result->SourceModels) FStaticMeshSourceModel();
-		StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
+	UObject* Result = nullptr;
+	switch (ImportOption->VoxImportType) {
+	case EVoxImportType::StaticMesh:
+		Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
+		break;
+	case EVoxImportType::Voxel:
+		Result = CreateVoxel(InParent, InName, Flags, &Vox);
+		break;
+	default:
+		break;
 	}
 
 	FEditorDelegates::OnAssetPostImport.Broadcast(this, Result);
 
 	return Result;
+}
+
+UStaticMesh* UVoxFactory::CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+{
+	UStaticMesh* StaticMesh = nullptr;
+	FRawMesh RawMesh;
+	if (Vox->CreateRawMesh(RawMesh, ImportOption)) {
+		StaticMesh = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
+		for (int32 i = 0; i < RawMesh.FaceMaterialIndices.Num(); ++i) {
+			StaticMesh->Materials.Add(UMaterial::GetDefaultMaterial(MD_Surface));
+		}
+		FStaticMeshSourceModel* StaticMeshSourceModel = new(StaticMesh->SourceModels) FStaticMeshSourceModel();
+		StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
+	}
+	return StaticMesh;
+}
+
+UVoxel* UVoxFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+{
+	UVoxel* Voxel = nullptr;
+	Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
+	return Voxel;
 }
