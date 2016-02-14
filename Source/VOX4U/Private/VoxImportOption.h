@@ -5,6 +5,14 @@
 #include "Engine.h"
 #include "VoxImportOption.generated.h"
 
+/** Import mesh type */
+UENUM()
+enum class EVoxImportType
+{
+	StaticMesh UMETA(DisplayName = "Static Mesh"),
+	Voxel UMETA(DisplayName = "Voxel")
+};
+
 /**
  *
  */
@@ -15,13 +23,16 @@ class UVoxImportOption : public UObject
 
 public:
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|SkeletalMesh|Animation", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = ImportType, meta = (ImportCategory = "ImportType"))
+	TEnumAsByte<EVoxImportType> VoxImportType;
+
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
 	uint32 bImportXForward : 1;
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|SkeletalMesh|Animation", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
 	uint32 bImportXYCenter : 1;
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|SkeletalMesh|Animation", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
 	float ImportUniformScale;
 
 public:
