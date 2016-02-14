@@ -106,5 +106,9 @@ UVoxel* UVoxFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags F
 {
 	UVoxel* Voxel = nullptr;
 	Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
+	Voxel->Size = Vox->Size;
+	for (FCell cell : Vox->Voxel) {
+		Voxel->Voxel.FindOrAdd(cell.ToIntVector()) = cell.I;
+	}
 	return Voxel;
 }

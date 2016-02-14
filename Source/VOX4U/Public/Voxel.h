@@ -4,10 +4,29 @@
 
 #include "Engine.h"
 #include "UObject.h"
+#include "Object.h"
+#include "UnrealTemplate.h"
 #include "Voxel.generated.h"
 
 UCLASS()
 class UVoxel : public UObject
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Voxel)
+	FIntVector Size;
+
+	UPROPERTY(EditDefaultsOnly, Category = Voxel)
+	uint32 bXYCenter : 1;
+
+	// UPROPERTY()
+	// UHT Error: USTRUCTs are not currently supported as key types.
+	TMap<FIntVector, uint8> Voxel;
+
+public:
+
+	virtual void Serialize(FArchive& Ar) override;
+
 };
