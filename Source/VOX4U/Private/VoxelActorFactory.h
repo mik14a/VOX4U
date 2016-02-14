@@ -12,5 +12,12 @@
 UCLASS()
 class UVoxelActorFactory : public UActorFactory
 {
-	GENERATED_BODY()
+	GENERATED_UCLASS_BODY()
+
+	virtual void PostSpawnActor(UObject* Asset, AActor* NewActor) override;
+
+	virtual void PostCreateBlueprint(UObject* Asset, AActor* CDO) override;
+
+	virtual bool CanCreateActorFrom(const FAssetData& AssetData, FText& OutErrorMsg) override;
+
 };
