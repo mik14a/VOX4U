@@ -168,7 +168,7 @@ static const FVector2D TexCoord[] = {
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
  */
-bool FVox::CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption)
+bool FVox::CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption) const
 {
 	float Scale = ImportOption->ImportUniformScale;
 	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X / 2, (float)Size.Y / 2, 0.f) : FVector::ZeroVector;

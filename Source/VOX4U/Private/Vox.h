@@ -14,7 +14,12 @@ struct FCell
 	GENERATED_BODY()
 
 	uint8 X, Y, Z, I;
-	FString ToString() {
+
+	FIntVector ToIntVector() const {
+		return FIntVector(X, Y, Z);
+	}
+
+	FString ToString() const {
 		return FString::Printf(TEXT("X=%d Y=%d Z=%d I=%d"), X, Y, Z, I);
 	}
 };
@@ -48,6 +53,6 @@ public:
 	bool Import(FArchive& Ar, const UVoxImportOption* ImportOption);
 
 	/** Create FRawMesh */
-	bool CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption);
+	bool CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption) const;
 
 };
