@@ -1,7 +1,7 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UPrivatePCH.h"
-#include "VoxFactory.h"
+#include "VoxelFactory.h"
 #include "Editor.h"
 #include "Engine.h"
 #include "Engine/StaticMesh.h"
@@ -14,7 +14,7 @@
 #include "VoxOptionWidget.h"
 #include "Voxel.h"
 
-UVoxFactory::UVoxFactory(const FObjectInitializer& ObjectInitializer)
+UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	Formats.Add(TEXT("vox;MagicaVoxel"));
@@ -24,19 +24,19 @@ UVoxFactory::UVoxFactory(const FObjectInitializer& ObjectInitializer)
 	bEditorImport = true;
 }
 
-void UVoxFactory::PostInitProperties()
+void UVoxelFactory::PostInitProperties()
 {
 	Super::PostInitProperties();
 	ImportOption = NewObject<UVoxImportOption>(this, NAME_None, RF_NoFlags);
 }
 
-bool UVoxFactory::DoesSupportClass(UClass * Class)
+bool UVoxelFactory::DoesSupportClass(UClass * Class)
 {
 	return Class == UStaticMesh::StaticClass()
 		|| Class == UVoxel::StaticClass();
 }
 
-UClass* UVoxFactory::ResolveSupportedClass()
+UClass* UVoxelFactory::ResolveSupportedClass()
 {
 	UClass* Class = nullptr;
 	if (ImportOption->VoxImportType == EVoxImportType::StaticMesh) {
@@ -47,7 +47,7 @@ UClass* UVoxFactory::ResolveSupportedClass()
 	return Class;
 }
 
-UObject* UVoxFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
+UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
 {
 	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 
@@ -87,7 +87,7 @@ UObject* UVoxFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FN
 	return Result;
 }
 
-UStaticMesh* UVoxFactory::CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	UStaticMesh* StaticMesh = nullptr;
 	FRawMesh RawMesh;
@@ -102,7 +102,7 @@ UStaticMesh* UVoxFactory::CreateStaticMesh(UObject* InParent, FName InName, EObj
 	return StaticMesh;
 }
 
-UVoxel* UVoxFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	UVoxel* Voxel = nullptr;
 	Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);

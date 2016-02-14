@@ -4,7 +4,7 @@
 
 #include "Factories/Factory.h"
 #include "Engine.h"
-#include "VoxFactory.generated.h"
+#include "VoxelFactory.generated.h"
 
 class UVoxel;
 class UStaticMesh;
@@ -15,13 +15,13 @@ struct FVox;
  *
  */
 UCLASS()
-class UVoxFactory : public UFactory
+class UVoxelFactory : public UFactory
 {
 	GENERATED_BODY()
 
 public:
 
-	UVoxFactory(const FObjectInitializer& ObjectInitializer);
+	UVoxelFactory(const FObjectInitializer& ObjectInitializer);
 
 	void PostInitProperties() override;
 
