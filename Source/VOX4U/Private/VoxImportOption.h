@@ -13,6 +13,8 @@ class UVoxImportOption : public UObject
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|SkeletalMesh|Animation", ImportCategory = "Transform"))
 	uint32 bImportXForward : 1;
 

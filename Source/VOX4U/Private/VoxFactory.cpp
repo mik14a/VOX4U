@@ -43,8 +43,7 @@ UObject* UVoxFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FN
 {
 	TSharedPtr<SWindow> ParentWindow;
 
-	if (FModuleManager::Get().IsModuleLoaded("MainFrame"))
-	{
+	if (FModuleManager::Get().IsModuleLoaded("MainFrame")) {
 		IMainFrameModule& MainFrame = FModuleManager::LoadModuleChecked<IMainFrameModule>("MainFrame");
 		ParentWindow = MainFrame.GetParentWindow();
 	}
@@ -65,10 +64,10 @@ UObject* UVoxFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FN
 	FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
 
 	FVox Vox;
-	Vox.Import(Reader);
+	Vox.Import(Reader, ImportOption);
 
 	FRawMesh RawMesh;
-	if (Vox.CreateRawMesh(RawMesh)) {
+	if (Vox.CreateRawMesh(RawMesh, ImportOption)) {
 
 		Result = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
 		for (int32 i = 0; i < RawMesh.FaceMaterialIndices.Num(); ++i) {

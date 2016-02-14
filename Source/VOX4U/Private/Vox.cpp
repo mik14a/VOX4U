@@ -3,6 +3,7 @@
 #include "VOX4UPrivatePCH.h"
 #include "Vox.h"
 #include "RawMesh.h"
+#include "VoxImportOption.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 
@@ -18,9 +19,9 @@ DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
  * Create vox data from archive
  * @param FArchive& Ar	Read vox data from the archive
  */
-FVox::FVox(FArchive& Ar)
+FVox::FVox(FArchive& Ar, const UVoxImportOption* ImportOption)
 {
-	Import(Ar);
+	Import(Ar, ImportOption);
 }
 
 /**
@@ -28,7 +29,7 @@ FVox::FVox(FArchive& Ar)
  * @param FArchive& Ar	Read vox data from the archive
  * @return bool	is valid or supported vox data
  */
-bool FVox::Import(FArchive & Ar)
+bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 {
 	Ar.Serialize(MagicNumber, 4);
 
@@ -58,6 +59,11 @@ bool FVox::Import(FArchive & Ar)
 			UE_LOG(LogVox, Verbose, TEXT("MAIN: "));
 		} else if (0 == FCStringAnsi::Strncmp("SIZE", ChunkId, 4)) {
 			Ar << Size.X << Size.Y << Size.Z;
+			if (ImportOption->bImportXForward) {
+				int32 temp = Size.X;
+				Size.X = Size.Y;
+				Size.Y = temp;
+			}
 			UE_LOG(LogVox, Verbose, TEXT("SIZE: %s"), *Size.ToString());
 		} else if (0 == FCStringAnsi::Strncmp("XYZI", ChunkId, 4)) {
 			uint32 NumVoxels;
@@ -66,6 +72,13 @@ bool FVox::Import(FArchive & Ar)
 			FCell Cell;
 			for (uint32 i = 0; i < NumVoxels; ++i) {
 				Ar << Cell.X << Cell.Y << Cell.Z << Cell.I;
+				if (ImportOption->bImportXForward) {
+					uint8 temp = Cell.X;
+					Cell.X = Size.X - Cell.Y - 1;
+					Cell.Y = Size.Y - temp - 1;
+				} else {
+					Cell.X = Size.X - Cell.X - 1;
+				}
 				UE_LOG(LogVox, Verbose, TEXT("      Voxel %s"), *Cell.ToString());
 				Voxel.Add(Cell);
 			}
@@ -155,16 +168,18 @@ static const FVector2D TexCoord[] = {
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
  */
-bool FVox::CreateRawMesh(FRawMesh& RawMesh)
+bool FVox::CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption)
 {
-	for (FCell cell : Voxel) {
+	float Scale = ImportOption->ImportUniformScale;
+	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X / 2, (float)Size.Y / 2, 0.f) : FVector::ZeroVector;
 
+	for (FCell cell : Voxel) {
 		FVector Vector(cell.X, cell.Y, cell.Z);
 		uint32 Position = RawMesh.VertexPositions.Num();
 
 		TArray<FVector> Positions;
 		for (int32 i = 0; i < 8; ++i) {
-			Positions.Add(Vector + Vertex[i]);
+			Positions.Add((Vector + Vertex[i] - Offset) * Scale);
 		}
 		RawMesh.VertexPositions.Append(Positions);
 

@@ -6,6 +6,7 @@
 #include "Vox.generated.h"
 
 struct FRawMesh;
+class UVoxImportOption;
 
 USTRUCT()
 struct FCell
@@ -41,12 +42,12 @@ public:
 	FVox();
 
 	/** Create vox data from archive */
-	FVox(FArchive& Ar);
+	FVox(FArchive& Ar, const UVoxImportOption* ImportOption);
 
 	/** Import vox data from archive */
-	bool Import(FArchive& Ar);
+	bool Import(FArchive& Ar, const UVoxImportOption* ImportOption);
 
 	/** Create FRawMesh */
-	bool CreateRawMesh(FRawMesh& RawMesh);
+	bool CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption);
 
 };
