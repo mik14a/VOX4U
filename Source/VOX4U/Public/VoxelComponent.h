@@ -3,18 +3,32 @@
 #pragma once
 
 #include "Engine.h"
-#include "Components/MeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "VoxelComponent.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UVoxelComponent : public UMeshComponent
+class UVoxelComponent : public UInstancedStaticMeshComponent
 {
 	GENERATED_BODY()
 
 public:
 
+	//virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif // WITH_EDITOR
+
+	void SetVoxel(class UVoxel* InVoxel) {
+		Voxel = InVoxel;
+	}
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VoxelComponent)
+	class UVoxel* Voxel;
 
 };

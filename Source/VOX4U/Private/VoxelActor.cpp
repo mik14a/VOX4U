@@ -2,10 +2,15 @@
 
 #include "VOX4UPrivatePCH.h"
 #include "VoxelActor.h"
+#include "VoxelComponent.h"
 
-
-// Sets default values
 AVoxelActor::AVoxelActor()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	VoxelComponent = CreateDefaultSubobject<UVoxelComponent>("VoxelComponent");
+	VoxelComponent->AttachTo(RootComponent);
+}
+
+class UVoxelComponent* AVoxelActor::GetVoxelComponent() const
+{
+	return VoxelComponent;
 }
