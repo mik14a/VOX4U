@@ -25,6 +25,9 @@ public:
 	// UHT Error: USTRUCTs are not currently supported as key types.
 	TMap<FIntVector, uint8> Voxel;
 
+	UPROPERTY(EditDefaultsOnly, Category = Voxel)
+	class UMaterialInterface* Material;
+
 public:
 
 	virtual void Serialize(FArchive& Ar) override;

@@ -32,7 +32,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
 	uint32 bImportXYCenter : 1;
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh", ImportCategory = "Transform"))
+	class UMaterialInterface* Material;
+
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh", ImportCategory = "Transform"))
 	FMeshBuildSettings BuildSettings;
 
 	UPROPERTY(EditAnywhere, Category = Mesh, meta = (ImportType = "StaticMesh", ImportCategory = "Mesh"))
