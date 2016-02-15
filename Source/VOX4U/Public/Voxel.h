@@ -30,6 +30,8 @@ public:
 
 public:
 
+	UVoxel();
+
 	virtual void Serialize(FArchive& Ar) override;
 
 };

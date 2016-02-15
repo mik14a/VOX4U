@@ -3,6 +3,12 @@
 #include "VOX4UPrivatePCH.h"
 #include "Voxel.h"
 
+UVoxel::UVoxel()
+	: bXYCenter(true)
+	, Material(nullptr)
+{
+}
+
 void UVoxel::Serialize(FArchive& Ar)
 {
 	Super::Serialize(Ar);

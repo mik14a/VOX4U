@@ -109,5 +109,6 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 	for (FCell cell : Vox->Voxel) {
 		Voxel->Voxel.FindOrAdd(cell.ToIntVector()) = cell.I;
 	}
+	Voxel->bXYCenter = ImportOption->bImportXYCenter;
 	return Voxel;
 }
