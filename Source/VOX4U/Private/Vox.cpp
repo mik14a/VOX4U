@@ -79,6 +79,7 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 				} else {
 					Cell.X = Size.X - Cell.X - 1;
 				}
+				Cell.I = Cell.I - 1;
 				UE_LOG(LogVox, Verbose, TEXT("      Voxel %s"), *Cell.ToString());
 				Voxel.Add(Cell);
 			}
