@@ -120,7 +120,17 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
  *   | y (back)
  *   |/
  *   +---x (left)
- *
+ */
+static const FCell Vectors[6] = {
+	FCell( 0, 0, 1),	// Up
+	FCell( 0, 0,-1),	// Down
+	FCell( 1, 0, 0),	// Forward
+	FCell(-1, 0, 0),	// Backward
+	FCell( 0, 1, 0),	// Right
+	FCell( 0,-1, 0)		// Left
+};
+
+/**
  *   4---5
  *  /|  /|
  * 7---6 |
@@ -128,39 +138,33 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
  * |/  |/
  * 3---2
  */
-static const FVector Vertex[] = {
+static const FVector Vertexes[8] = {
 	FVector(0, 0, 0),
-	FVector(0, 1, 0),
-	FVector(1, 1, 0),
 	FVector(1, 0, 0),
+	FVector(1, 1, 0),
+	FVector(0, 1, 0),
 	FVector(0, 0, 1),
-	FVector(0, 1, 1),
-	FVector(1, 1, 1),
 	FVector(1, 0, 1),
+	FVector(1, 1, 1),
+	FVector(0, 1, 1),
 };
-static const uint32 Index[] = {
-	// 1,0,3,2
-	1,0,3,
-	3,2,1,
-	// 4,5,6,7
-	4,5,6,
-	6,7,4,
-	// 7,6,2,3
-	7,6,2,
-	2,3,7,
-	// 6,5,1,2
-	6,5,1,
-	1,2,6,
-	// 5,4,0,1
-	5,4,0,
-	0,1,5,
-	// 4,7,3,0
-	4,7,3,
-	3,0,4,
-};
-static const FVector2D TexCoord[] = {
-	FVector2D(0, 0), FVector2D(0, 1), FVector2D(1, 1),
-	FVector2D(1, 1), FVector2D(1, 0), FVector2D(0, 0),
+
+/**
+ *         7 - 4
+ *         | U |
+ * 4 - 7 - 6 - 5 - 4
+ * | B | R | F | L |
+ * 0 - 3 - 2 - 1 - 0
+ *         | D |
+ *         3 - 0
+ */
+static const uint32 Faces[6][4] = {
+	{ 5, 4, 7, 6 },	// Up 		FCell( 0, 0, 1)
+	{ 0, 1, 2, 3 },	// Down 	FCell( 0, 0,-1)
+	{ 5, 6, 2, 1 },	// Forward 	FCell( 1, 0, 0)
+	{ 7, 4, 0, 3 },	// Backward FCell(-1, 0, 0)
+	{ 6, 7, 3, 2 },	// Right 	FCell( 0, 1, 0)
+	{ 4, 5, 1, 0 }	// Left 	FCell( 0,-1, 0)
 };
 
 /**
@@ -170,51 +174,59 @@ static const FVector2D TexCoord[] = {
  */
 bool FVox::CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption) const
 {
-	float Scale = ImportOption->ImportUniformScale;
-	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X / 2, (float)Size.Y / 2, 0.f) : FVector::ZeroVector;
+	for (FCell Cell : Voxel) {
+		FVector Origin(Cell.X, Cell.Y, Cell.Z);
+		for (int FaceIndex = 0; FaceIndex < 6; ++FaceIndex) {
+			FCell n = Cell + Vectors[FaceIndex];
+			int32 CellIndex = Voxel.IndexOfByPredicate([&](const FCell& c) {
+				return c.X == n.X && c.Y == n.Y && c.Z == n.Z;
+			});
+			if (INDEX_NONE != CellIndex) continue;
 
-	for (FCell cell : Voxel) {
-		FVector Vector(cell.X, cell.Y, cell.Z);
-		uint32 Position = RawMesh.VertexPositions.Num();
+			TArray<uint32> VertexPositionIndex;
+			for (int VertexIndex = 0; VertexIndex < 4; ++VertexIndex) {
+				FVector v = Origin + Vertexes[Faces[FaceIndex][VertexIndex]];
+				int32 vpi;
+				if (!ImportOption->bMergeVertexes
+					|| INDEX_NONE == (vpi = RawMesh.VertexPositions.IndexOfByKey(v))) {
+					vpi = RawMesh.VertexPositions.Add(v);
+				}
+				VertexPositionIndex.Add(vpi);
+			}
 
-		TArray<FVector> Positions;
-		for (int32 i = 0; i < 8; ++i) {
-			Positions.Add((Vector + Vertex[i] - Offset) * Scale);
+			RawMesh.WedgeIndices.Add(VertexPositionIndex[0]);
+			RawMesh.WedgeIndices.Add(VertexPositionIndex[1]);
+			RawMesh.WedgeIndices.Add(VertexPositionIndex[2]);
+			RawMesh.WedgeTexCoords[0].Add(FVector2D((double)Cell.I / 256.0, 0));
+			RawMesh.WedgeTexCoords[0].Add(FVector2D((double)Cell.I / 256.0, 0));
+			RawMesh.WedgeTexCoords[0].Add(FVector2D((double)Cell.I / 256.0, 0));
+			RawMesh.FaceMaterialIndices.Add(0);
+			RawMesh.FaceSmoothingMasks.Add(0);
+
+			RawMesh.WedgeIndices.Add(VertexPositionIndex[2]);
+			RawMesh.WedgeIndices.Add(VertexPositionIndex[3]);
+			RawMesh.WedgeIndices.Add(VertexPositionIndex[0]);
+			RawMesh.WedgeTexCoords[0].Add(FVector2D((double)Cell.I / 256.0, 0));
+			RawMesh.WedgeTexCoords[0].Add(FVector2D((double)Cell.I / 256.0, 0));
+			RawMesh.WedgeTexCoords[0].Add(FVector2D((double)Cell.I / 256.0, 0));
+			RawMesh.FaceMaterialIndices.Add(0);
+			RawMesh.FaceSmoothingMasks.Add(0);
 		}
-		RawMesh.VertexPositions.Append(Positions);
-
-		TArray<uint32> Indices;
-		for (int32 i = 0; i < 36; ++i) {
-			Indices.Add(Position + Index[i]);
-		}
-		RawMesh.WedgeIndices.Append(Indices);
-
-		TArray<FVector2D> TexCoords;
-		for (int32 i = 0; i < 36; ++i) {
-			TexCoords.Add(TexCoord[i % 6]);
-		}
-		RawMesh.WedgeTexCoords[0].Append(TexCoords);
 	}
 
-	TMap<uint8, uint32> Materials;
-	for (int32 i = 0; i < Voxel.Num(); ++i) {
-		int32 n = Materials.Num();
-		if (!Materials.Find(Voxel[i].I)) {
-			Materials.Add(Voxel[i].I, n);
-		}
-	}
-	for (int32 i = 0; i < Voxel.Num(); ++i) {
-		int32 n = *Materials.Find(Voxel[i].I);
-		for (int32 f = 0; f < 12; ++f) {
-			RawMesh.FaceMaterialIndices.Add(n);
-		}
+	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f) : FVector::ZeroVector;
+	for (int32 i = 0; i < RawMesh.VertexPositions.Num(); ++i) {
+		FVector VertexPosition = RawMesh.VertexPositions[i];
+		RawMesh.VertexPositions[i] = VertexPosition - Offset;
 	}
 
-	RawMesh.FaceSmoothingMasks.AddZeroed(RawMesh.WedgeIndices.Num() / 3);
 	RawMesh.WedgeTangentX.AddZeroed(RawMesh.WedgeIndices.Num());
 	RawMesh.WedgeTangentY.AddZeroed(RawMesh.WedgeIndices.Num());
 	RawMesh.WedgeTangentZ.AddZeroed(RawMesh.WedgeIndices.Num());
 	RawMesh.WedgeColors.AddZeroed(RawMesh.WedgeIndices.Num());
+
+	RawMesh.CompactMaterialIndices();
+	check(RawMesh.IsValidOrFixable());
 
 	return true;
 }

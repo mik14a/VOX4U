@@ -97,6 +97,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 			StaticMesh->Materials.Add(UMaterial::GetDefaultMaterial(MD_Surface));
 		}
 		FStaticMeshSourceModel* StaticMeshSourceModel = new(StaticMesh->SourceModels) FStaticMeshSourceModel();
+		StaticMeshSourceModel->BuildSettings = ImportOption->BuildSettings;
 		StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
 	}
 	return StaticMesh;

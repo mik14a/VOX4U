@@ -6,6 +6,6 @@
 UVoxImportOption::UVoxImportOption()
 	: bImportXForward(true)
 	, bImportXYCenter(true)
-	, ImportUniformScale(1.f)
+	, bMergeVertexes(true)
 {
 }

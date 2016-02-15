@@ -33,7 +33,10 @@ public:
 	uint32 bImportXYCenter : 1;
 
 	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
-	float ImportUniformScale;
+	FMeshBuildSettings BuildSettings;
+
+	UPROPERTY(EditAnywhere, Category = Mesh, meta = (ImportType = "StaticMesh", ImportCategory = "Mesh"))
+	uint32 bMergeVertexes : 1;
 
 public:
 

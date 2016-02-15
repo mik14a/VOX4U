@@ -13,7 +13,22 @@ struct FCell
 {
 	GENERATED_BODY()
 
-	uint8 X, Y, Z, I;
+	int8 X, Y, Z, I;
+
+	FCell() { }
+
+	FCell(int8 InX, int8 InY, int8 InZ) : X(InX), Y(InY), Z(InZ), I(0) { }
+
+	FCell& operator+=(const FCell& Other) {
+		X += Other.X;
+		Y += Other.Y;
+		Z += Other.Z;
+		return *this;
+	}
+
+	FCell operator+(const FCell& Other) const {
+		return FCell(*this) += Other;
+	}
 
 	FIntVector ToIntVector() const {
 		return FIntVector(X, Y, Z);
