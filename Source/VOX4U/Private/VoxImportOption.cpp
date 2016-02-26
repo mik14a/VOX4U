@@ -11,5 +11,6 @@ UVoxImportOption::UVoxImportOption()
 	, Material(nullptr)
 	, Mesh(nullptr)
 {
+	BuildSettings.bUseMikkTSpace = false;
 	BuildSettings.BuildScale3D = FVector(10.f);
 }

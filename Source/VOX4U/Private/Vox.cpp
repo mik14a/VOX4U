@@ -221,11 +221,6 @@ bool FVox::CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption
 		RawMesh.VertexPositions[i] = VertexPosition - Offset;
 	}
 
-	RawMesh.WedgeTangentX.AddZeroed(RawMesh.WedgeIndices.Num());
-	RawMesh.WedgeTangentY.AddZeroed(RawMesh.WedgeIndices.Num());
-	RawMesh.WedgeTangentZ.AddZeroed(RawMesh.WedgeIndices.Num());
-	RawMesh.WedgeColors.AddZeroed(RawMesh.WedgeIndices.Num());
-
 	RawMesh.CompactMaterialIndices();
 	check(RawMesh.IsValidOrFixable());
 
