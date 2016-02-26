@@ -26,7 +26,7 @@ public:
 	TMap<FIntVector, uint8> Voxel;
 
 	UPROPERTY(EditDefaultsOnly, Category = Voxel)
-	class UMaterialInterface* Material;
+	class UStaticMesh* Mesh;
 
 public:
 

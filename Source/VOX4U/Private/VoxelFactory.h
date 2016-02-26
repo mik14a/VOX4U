@@ -6,9 +6,10 @@
 #include "Engine.h"
 #include "VoxelFactory.generated.h"
 
-class UVoxel;
+class USkeletalMesh;
 class UStaticMesh;
 class UVoxImportOption;
+class UVoxel;
 struct FVox;
 
 /**
@@ -34,6 +35,8 @@ public:
 private:
 
 	UStaticMesh* CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+
+	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 

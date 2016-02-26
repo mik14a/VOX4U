@@ -24,7 +24,7 @@ void UVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 	if (UVoxel* Voxel = Cast<UVoxel>(Asset)) {
 		VoxelComponent->UnregisterComponent();
 		VoxelComponent->SetVoxel(Voxel);
-		VoxelComponent->SetMaterial(0, Voxel->Material);
+		VoxelComponent->SetStaticMesh(Voxel->Mesh);
 		VoxelComponent->RegisterComponent();
 	}
 }
@@ -36,7 +36,7 @@ void UVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)
 		check(VoxelComponent);
 		if (UVoxel* Voxel = Cast<UVoxel>(Asset)) {
 			VoxelComponent->SetVoxel(Voxel);
-			VoxelComponent->SetMaterial(0, Voxel->Material);
+			VoxelComponent->SetStaticMesh(Voxel->Mesh);
 		}
 	}
 }

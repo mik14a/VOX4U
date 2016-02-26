@@ -4,8 +4,12 @@
 #include "VoxImportOption.h"
 
 UVoxImportOption::UVoxImportOption()
-	: bImportXForward(true)
+	: VoxImportType(EVoxImportType::StaticMesh)
+	, bImportXForward(true)
 	, bImportXYCenter(true)
 	, bMergeVertexes(true)
+	, Material(nullptr)
+	, Mesh(nullptr)
 {
+	BuildSettings.BuildScale3D = FVector(10.f);
 }

@@ -4,6 +4,7 @@
 #include "VoxelFactory.h"
 #include "Editor.h"
 #include "Engine.h"
+#include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
 #include "Interfaces/IMainFrameModule.h"
 #include "MainFrame.h"
@@ -33,6 +34,7 @@ void UVoxelFactory::PostInitProperties()
 bool UVoxelFactory::DoesSupportClass(UClass * Class)
 {
 	return Class == UStaticMesh::StaticClass()
+		|| Class == USkeletalMesh::StaticClass()
 		|| Class == UVoxel::StaticClass();
 }
 
@@ -41,6 +43,8 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 	UClass* Class = nullptr;
 	if (ImportOption->VoxImportType == EVoxImportType::StaticMesh) {
 		Class = UStaticMesh::StaticClass();
+	} else if (ImportOption->VoxImportType == EVoxImportType::SkeletalMesh) {
+		Class = USkeletalMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
 		Class = UVoxel::StaticClass();
 	}
@@ -75,6 +79,9 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 	case EVoxImportType::StaticMesh:
 		Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
 		break;
+	case EVoxImportType::SkeletalMesh:
+		Result = CreateSkeletalMesh(InParent, InName, Flags, &Vox);
+		break;
 	case EVoxImportType::Voxel:
 		Result = CreateVoxel(InParent, InName, Flags, &Vox);
 		break;
@@ -97,8 +104,17 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 		FStaticMeshSourceModel* StaticMeshSourceModel = new(StaticMesh->SourceModels) FStaticMeshSourceModel();
 		StaticMeshSourceModel->BuildSettings = ImportOption->BuildSettings;
 		StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
+		TArray<FText> Errors;
+		StaticMesh->Build(false, &Errors);
 	}
 	return StaticMesh;
+}
+
+USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+{
+	USkeletalMesh* SkeletalMesh = nullptr;
+	SkeletalMesh = NewObject<USkeletalMesh>(InParent, InName, Flags | RF_Public);
+	return SkeletalMesh;
 }
 
 UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const

@@ -4,8 +4,9 @@
 #include "Voxel.h"
 
 UVoxel::UVoxel()
-	: bXYCenter(true)
-	, Material(nullptr)
+	: Size(ForceInit)
+	, bXYCenter(true)
+	, Mesh(nullptr)
 {
 }
 

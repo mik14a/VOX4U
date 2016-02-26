@@ -10,36 +10,40 @@ UENUM()
 enum class EVoxImportType
 {
 	StaticMesh UMETA(DisplayName = "Static Mesh"),
+	SkeletalMesh UMETA(DisplayName = "Skeletal Mesh"),
 	Voxel UMETA(DisplayName = "Voxel")
 };
 
 /**
  *
  */
-UCLASS(config = EditorPerProjectUserSettings, AutoExpandCategories = (FTransform), HideCategories = Object)
+UCLASS(config = EditorPerProjectUserSettings, HideCategories = Object)
 class UVoxImportOption : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
-	UPROPERTY(EditAnywhere, Category = ImportType, meta = (ImportCategory = "ImportType"))
+	UPROPERTY(EditAnywhere, Category = ImportType)
 	TEnumAsByte<EVoxImportType> VoxImportType;
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = Generic)
 	uint32 bImportXForward : 1;
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh|Voxel", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = Generic)
 	uint32 bImportXYCenter : 1;
 
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh", ImportCategory = "Transform"))
-	class UMaterialInterface* Material;
-
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (ImportType = "StaticMesh", ImportCategory = "Transform"))
+	UPROPERTY(EditAnywhere, Category = StaticMesh)
 	FMeshBuildSettings BuildSettings;
 
-	UPROPERTY(EditAnywhere, Category = Mesh, meta = (ImportType = "StaticMesh", ImportCategory = "Mesh"))
+	UPROPERTY(EditAnywhere, Category = "StaticMesh|Voxel")
 	uint32 bMergeVertexes : 1;
+
+	UPROPERTY(EditAnywhere, Category = StaticMesh)
+	class UMaterialInterface* Material;
+
+	UPROPERTY(EditAnywhere, Category = Voxel)
+	class UStaticMesh* Mesh;
 
 public:
 
