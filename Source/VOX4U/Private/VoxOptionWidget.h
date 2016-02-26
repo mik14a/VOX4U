@@ -32,6 +32,14 @@ public:
 
 	FReply OnCancel();
 
+	bool ShouldImportAll() const {
+		return bShouldImportAll;
+	}
+
+	bool ShouldImport() const {
+		return bShouldImport;
+	}
+
 private:
 
 	TWeakPtr<SWindow> Window;

@@ -44,5 +44,5 @@ protected:
 
 	UPROPERTY()
 	UVoxImportOption* ImportOption;
-
+	bool bShowOption;
 };

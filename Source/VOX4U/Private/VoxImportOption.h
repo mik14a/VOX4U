@@ -49,4 +49,6 @@ public:
 
 	UVoxImportOption();
 
+	bool GetImportOption(bool& bImportAll);
+
 };

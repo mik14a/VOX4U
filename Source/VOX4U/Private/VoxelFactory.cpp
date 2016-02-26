@@ -6,17 +6,15 @@
 #include "Engine.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
-#include "Interfaces/IMainFrameModule.h"
-#include "MainFrame.h"
 #include "RawMesh.h"
-#include "SlateCore.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
-#include "VoxOptionWidget.h"
 #include "Voxel.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+	, ImportOption(nullptr)
+	, bShowOption(true)
 {
 	Formats.Add(TEXT("vox;MagicaVoxel"));
 
@@ -53,44 +51,29 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 
 UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
 {
+	UObject* Result = nullptr;
 	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 
-	TSharedPtr<SWindow> ParentWindow;
-
-	if (FModuleManager::Get().IsModuleLoaded("MainFrame")) {
-		IMainFrameModule& MainFrame = FModuleManager::LoadModuleChecked<IMainFrameModule>("MainFrame");
-		ParentWindow = MainFrame.GetParentWindow();
+	bool ImportAll = false;
+	if (!bShowOption || ImportOption->GetImportOption(ImportAll)) {
+		bShowOption = !ImportAll;
+		FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
+		FVox Vox(Reader, ImportOption);
+		switch (ImportOption->VoxImportType) {
+		case EVoxImportType::StaticMesh:
+			Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
+			break;
+		case EVoxImportType::SkeletalMesh:
+			Result = CreateSkeletalMesh(InParent, InName, Flags, &Vox);
+			break;
+		case EVoxImportType::Voxel:
+			Result = CreateVoxel(InParent, InName, Flags, &Vox);
+			break;
+		default:
+			break;
+		}
 	}
-
-	TSharedRef<SWindow> Window = SNew(SWindow)
-		.Title(NSLOCTEXT("VOX4U", "VoxImportOpionsTitle", "VOX Import Options"))
-		.SizingRule(ESizingRule::Autosized);
-
-	TSharedPtr<SVoxOptionWidget> VoxOptionWidget;
-	Window->SetContent(SAssignNew(VoxOptionWidget, SVoxOptionWidget).Window(Window).ImportOption(ImportOption));
-	FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
-	ImportOption->SaveConfig();
-
-	FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
-	FVox Vox(Reader, ImportOption);
-
-	UObject* Result = nullptr;
-	switch (ImportOption->VoxImportType) {
-	case EVoxImportType::StaticMesh:
-		Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
-		break;
-	case EVoxImportType::SkeletalMesh:
-		Result = CreateSkeletalMesh(InParent, InName, Flags, &Vox);
-		break;
-	case EVoxImportType::Voxel:
-		Result = CreateVoxel(InParent, InName, Flags, &Vox);
-		break;
-	default:
-		break;
-	}
-
 	FEditorDelegates::OnAssetPostImport.Broadcast(this, Result);
-
 	return Result;
 }
 
