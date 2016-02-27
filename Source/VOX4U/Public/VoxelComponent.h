@@ -16,15 +16,26 @@ class UVoxelComponent : public UInstancedStaticMeshComponent
 
 public:
 
-	//virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
+	virtual void BeginPlay() override;
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif // WITH_EDITOR
 
 	void SetVoxel(class UVoxel* InVoxel) {
+		if (Voxel == InVoxel) return;
 		Voxel = InVoxel;
+		ClearInstances();
+		if (Voxel) {
+			AddVoxelWorldSpace();
+		}
 	}
+
+private:
+
+	void AddVoxelWorldSpace();
+
+	bool IsUnbeheldVolume(const FIntVector& Cell) const;
 
 protected:
 
