@@ -12,6 +12,11 @@ void UVoxelComponent::BeginPlay()
 
 }
 
+FPrimitiveSceneProxy* UVoxelComponent::CreateSceneProxy()
+{
+	return Super::CreateSceneProxy();
+}
+
 void UVoxelComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	static const FName NAME_Voxel = FName(TEXT("Voxel"));

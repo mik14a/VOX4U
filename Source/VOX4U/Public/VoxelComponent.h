@@ -18,6 +18,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
+
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif // WITH_EDITOR
