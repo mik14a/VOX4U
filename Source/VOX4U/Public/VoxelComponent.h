@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Engine.h"
-#include "Components/InstancedStaticMeshComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "VoxelComponent.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UVoxelComponent : public UInstancedStaticMeshComponent
+class UVoxelComponent : public UMeshComponent
 {
 	GENERATED_BODY()
 
@@ -18,26 +18,24 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
-
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif // WITH_EDITOR
 
+	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
+
+	virtual int32 GetNumMaterials() const override;
+
+	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
+
 	void SetVoxel(class UVoxel* InVoxel) {
 		if (Voxel == InVoxel) return;
 		Voxel = InVoxel;
-		ClearInstances();
-		if (Voxel) {
-			AddVoxelWorldSpace();
-		}
 	}
 
-private:
-
-	void AddVoxelWorldSpace();
-
-	bool IsUnbeheldVolume(const FIntVector& Cell) const;
+	UVoxel* GetVoxel() const {
+		return Voxel;
+	}
 
 protected:
 

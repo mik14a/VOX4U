@@ -6,7 +6,7 @@
 UVoxel::UVoxel()
 	: Size(ForceInit)
 	, bXYCenter(true)
-	, Mesh(nullptr)
+	, Material(nullptr)
 {
 }
 

@@ -3,10 +3,9 @@
 #pragma once
 
 #include "Engine.h"
-#include "UObject.h"
-#include "Object.h"
-#include "UnrealTemplate.h"
 #include "Voxel.generated.h"
+
+class UMaterialInterface;
 
 UCLASS()
 class UVoxel : public UObject
@@ -26,7 +25,7 @@ public:
 	TMap<FIntVector, uint8> Voxel;
 
 	UPROPERTY(EditDefaultsOnly, Category = Voxel)
-	class UStaticMesh* Mesh;
+	UMaterialInterface* Material;
 
 public:
 

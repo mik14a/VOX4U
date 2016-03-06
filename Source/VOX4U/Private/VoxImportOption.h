@@ -39,11 +39,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "StaticMesh|Voxel")
 	uint32 bMergeVertexes : 1;
 
-	UPROPERTY(EditAnywhere, Category = StaticMesh)
+	UPROPERTY(EditAnywhere, Category = "StaticMesh|Voxel")
 	class UMaterialInterface* Material;
-
-	UPROPERTY(EditAnywhere, Category = Voxel)
-	class UStaticMesh* Mesh;
 
 public:
 

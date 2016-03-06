@@ -35,6 +35,9 @@ public class VOX4U : ModuleRules
                 "MainFrame",
                 "PropertyEditor",
                 "InputCore",
+                "RHI",
+                "RenderCore",
+                "ShaderCore",
             }
         );
 
