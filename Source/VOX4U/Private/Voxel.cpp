@@ -5,28 +5,32 @@
 
 UVoxel::UVoxel()
 	: Size(ForceInit)
+	, CellBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f)
 	, bXYCenter(true)
-	, Mesh(nullptr)
+	, Mesh()
+	, Voxel()
 {
 }
 
-void UVoxel::Serialize(FArchive& Ar)
+#if WITH_EDITOR
+
+void UVoxel::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
-	Super::Serialize(Ar);
-	if (Ar.IsSaving()) {
-		int32 NumVoxels = Voxel.Num();
-		Ar << NumVoxels;
-		for (auto& voxel : Voxel) {
-			Ar << voxel.Key.X << voxel.Key.Y << voxel.Key.Z << voxel.Value;
-		}
-	} else if (Ar.IsLoading()) {
-		int32 NumVoxels;
-		Ar << NumVoxels;
-		for (int32 i = 0; i < NumVoxels; ++i) {
-			FIntVector voxel;
-			uint8 index;
-			Ar << voxel.X << voxel.Y << voxel.Z << index;
-			Voxel.FindOrAdd(voxel) = index;
+	static const FName NAME_Mesh = FName(TEXT("Mesh"));
+	if (PropertyChangedEvent.Property) {
+		if (PropertyChangedEvent.Property->GetFName() == NAME_Mesh) {
+			CalcCellBounds();
 		}
 	}
 }
+
+void UVoxel::CalcCellBounds()
+{
+	FBoxSphereBounds Bounds(ForceInit);
+	for (const auto* Mesh : this->Mesh.FilterByPredicate([](UStaticMesh* m) { return !!m; })) {
+		Bounds = Bounds + Mesh->GetBounds();
+	}
+	CellBounds = Bounds;
+}
+
+#endif // WITH_EDITOR

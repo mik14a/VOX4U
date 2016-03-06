@@ -3,14 +3,16 @@
 #include "VOX4UPrivatePCH.h"
 #include "VoxelActor.h"
 #include "VoxelComponent.h"
+#include "Voxel.h"
 
-AVoxelActor::AVoxelActor()
+AVoxelActor::AVoxelActor(const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get()*/)
+	: Super(ObjectInitializer)
 {
 	VoxelComponent = CreateDefaultSubobject<UVoxelComponent>("VoxelComponent");
 	VoxelComponent->AttachTo(RootComponent);
 }
 
-class UVoxelComponent* AVoxelActor::GetVoxelComponent() const
+UVoxelComponent* AVoxelActor::GetVoxelComponent() const
 {
 	return VoxelComponent;
 }

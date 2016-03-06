@@ -6,8 +6,14 @@
 #include "UObject.h"
 #include "Object.h"
 #include "UnrealTemplate.h"
+#include "IntVoxel.h"
 #include "Voxel.generated.h"
 
+class UStaticMesh;
+
+/**
+ * VOXEL Asset
+ */
 UCLASS()
 class UVoxel : public UObject
 {
@@ -18,20 +24,28 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Voxel)
 	FIntVector Size;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Voxel)
+	FBoxSphereBounds CellBounds;
+
 	UPROPERTY(EditDefaultsOnly, Category = Voxel)
 	uint32 bXYCenter : 1;
 
-	// UPROPERTY()
-	// UHT Error: USTRUCTs are not currently supported as key types.
-	TMap<FIntVector, uint8> Voxel;
+	UPROPERTY(EditDefaultsOnly, EditFixedSize, Category = Voxel)
+	TArray<UStaticMesh*> Mesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = Voxel)
-	class UStaticMesh* Mesh;
+	TArray<FIntVoxel> Voxel;
 
 public:
 
 	UVoxel();
 
-	virtual void Serialize(FArchive& Ar) override;
+#if WITH_EDITOR
+
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+
+	void CalcCellBounds();
+
+#endif // WITH_EDITOR
 
 };
