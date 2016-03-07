@@ -59,6 +59,9 @@ public:
 	void ClearVoxel();
 
 	UFUNCTION(BlueprintCallable, Category = Voxel)
+	bool IsUnbeheldVolume(const FIntVector& InVector) const;
+
+	UFUNCTION(BlueprintCallable, Category = Voxel)
 	bool GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace = false) const;
 
 	const TArray<UInstancedVoxelComponent*>& GetVoxelComponents() const;
@@ -66,8 +69,6 @@ public:
 private:
 
 	void InitVoxel();
-
-	bool IsUnbeheldVolume(const FIntVector& Cell) const;
 
 protected:
 

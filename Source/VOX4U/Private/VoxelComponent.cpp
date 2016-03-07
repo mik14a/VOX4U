@@ -87,6 +87,24 @@ void UVoxelComponent::ClearVoxel()
 	}
 }
 
+bool UVoxelComponent::IsUnbeheldVolume(const FIntVector& InVector) const
+{
+	static const TArray<FIntVector> Direction = TArrayBuilder<FIntVector>()
+		.Add(FIntVector(+0, +0, +1))	// Up
+		.Add(FIntVector(+0, +0, -1))	// Down
+		.Add(FIntVector(+1, +0, +0))	// Forward
+		.Add(FIntVector(-1, +0, +0))	// Backward
+		.Add(FIntVector(+0, +1, +0))	// Right
+		.Add(FIntVector(+0, -1, +0));	// Left
+	int count = 0;
+	for (int i = 0; i < Direction.Num(); ++i) {
+		if (INDEX_NONE != Voxel->Voxel.IndexOfByKey(InVector + Direction[i])) {
+			++count;
+		}
+	}
+	return Direction.Num() == count;
+}
+
 bool UVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace /*= false*/) const
 {
 	if (!Cell.IsValidIndex(VoxelIndex)) return false;
@@ -98,25 +116,6 @@ bool UVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTr
 	}
 	return true;
 }
-
-bool UVoxelComponent::IsUnbeheldVolume(const FIntVector& Cell) const
-{
-	static const TArray<FIntVector> Direction = TArrayBuilder<FIntVector>()
-		.Add(FIntVector(+0, +0, +1))	// Up
-		.Add(FIntVector(+0, +0, -1))	// Down
-		.Add(FIntVector(+1, +0, +0))	// Forward
-		.Add(FIntVector(-1, +0, +0))	// Backward
-		.Add(FIntVector(+0, +1, +0))	// Right
-		.Add(FIntVector(+0, -1, +0));	// Left
-	int count = 0;
-	for (int i = 0; i < Direction.Num(); ++i) {
-		if (INDEX_NONE != Voxel->Voxel.IndexOfByKey(Cell + Direction[i])) {
-			++count;
-		}
-	}
-	return Direction.Num() == count;
-}
-
 
 const TArray<UInstancedVoxelComponent*>& UVoxelComponent::GetVoxelComponents() const
 {
