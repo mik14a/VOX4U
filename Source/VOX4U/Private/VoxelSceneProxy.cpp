@@ -10,7 +10,7 @@ void FVoxelVertexBuffer::InitRHI()
 {
 	FRHIResourceCreateInfo CreateInfo;
 	void* VertexBufferData = nullptr;
-	VertexBufferRHI = RHIC8reateAndLockVertexBuffer(Vertices.Num() * sizeof(FDynamicMeshVertex), BUF_Static, CreateInfo, VertexBufferData);
+	VertexBufferRHI = RHICreateAndLockVertexBuffer(Vertices.Num() * sizeof(FDynamicMeshVertex), BUF_Static, CreateInfo, VertexBufferData);
 	FMemory::Memcpy(VertexBufferData, Vertices.GetData(), Vertices.Num() * sizeof(FDynamicMeshVertex));
 	RHIUnlockVertexBuffer(VertexBufferRHI);
 }
