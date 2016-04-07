@@ -7,8 +7,6 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 
-//#pragma optimize("", off)
-
 
 /**
  * Create empty vox data.
@@ -261,4 +259,3 @@ bool FVox::CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption
 	return true;
 }
 
-//#pragma optimize("", on)
