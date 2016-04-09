@@ -105,9 +105,18 @@ UMeshedVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjec
 	UMeshedVoxel* Voxel = nullptr;
 	Voxel = NewObject<UMeshedVoxel>(InParent, InName, Flags | RF_Public);
 	Voxel->Size = Vox->Size;
+	TArray<uint8> Palette;
 	for (FCell cell : Vox->Voxel) {
-		Voxel->Voxel.FindOrAdd(cell.ToIntVector()) = cell.I;
+		Palette.AddUnique(cell.I);
+	}
+	for (uint8 I : Palette) {
+		Voxel->Mesh.Add(ImportOption->Mesh);
+	}
+	for (FCell cell : Vox->Voxel) {
+		Voxel->Voxel.Add(FIntVoxel(cell.X, cell.Y, cell.Z, Palette.IndexOfByKey(cell.I)));
+		check(INDEX_NONE != Palette.IndexOfByKey(cell.I));
 	}
 	Voxel->bXYCenter = ImportOption->bImportXYCenter;
+	Voxel->CalcCellBounds();
 	return Voxel;
 }

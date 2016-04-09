@@ -13,7 +13,9 @@ struct FCell
 {
 	GENERATED_BODY()
 
-	int8 X, Y, Z, I;
+	int8 X, Y, Z;
+
+	uint8 I;
 
 	FCell() { }
 
