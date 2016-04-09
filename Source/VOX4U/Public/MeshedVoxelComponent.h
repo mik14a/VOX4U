@@ -28,18 +28,18 @@ public:
 
 	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
 
-	void SetVoxel(class UVoxel* InVoxel) {
+	void SetVoxel(class UMeshedVoxel* InVoxel) {
 		if (Voxel == InVoxel) return;
 		Voxel = InVoxel;
 	}
 
-	UVoxel* GetVoxel() const {
+	UMeshedVoxel* GetVoxel() const {
 		return Voxel;
 	}
 
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VoxelComponent)
-	class UVoxel* Voxel;
+	class UMeshedVoxel* Voxel;
 
 };

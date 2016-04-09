@@ -2,7 +2,7 @@
 
 #include "VOX4UPrivatePCH.h"
 #include "MeshedVoxelComponent.h"
-#include "Voxel.h"
+#include "MeshedVoxel.h"
 #include "ArrayBuilder.h"
 #include "StaticMeshResources.h"
 #include "MeshedVoxelSceneProxy.h"

@@ -4,7 +4,7 @@
 #include "MeshedVoxelSceneProxy.h"
 #include "MeshedVoxelComponent.h"
 #include "DynamicMeshBuilder.h"
-#include "Voxel.h"
+#include "MeshedVoxel.h"
 
 void FMeshedVoxelVertexBuffer::InitRHI()
 {

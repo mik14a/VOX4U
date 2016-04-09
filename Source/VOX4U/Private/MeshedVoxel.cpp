@@ -1,16 +1,16 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UPrivatePCH.h"
-#include "Voxel.h"
+#include "MeshedVoxel.h"
 
-UVoxel::UVoxel()
+UMeshedVoxel::UMeshedVoxel()
 	: Size(ForceInit)
 	, bXYCenter(true)
 	, Material(nullptr)
 {
 }
 
-void UVoxel::Serialize(FArchive& Ar)
+void UMeshedVoxel::Serialize(FArchive& Ar)
 {
 	Super::Serialize(Ar);
 	if (Ar.IsSaving()) {

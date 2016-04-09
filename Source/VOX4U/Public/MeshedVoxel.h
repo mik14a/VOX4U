@@ -3,12 +3,12 @@
 #pragma once
 
 #include "Engine.h"
-#include "Voxel.generated.h"
+#include "MeshedVoxel.generated.h"
 
 class UMaterialInterface;
 
 UCLASS()
-class UVoxel : public UObject
+class UMeshedVoxel : public UObject
 {
 	GENERATED_BODY()
 
@@ -29,7 +29,7 @@ public:
 
 public:
 
-	UVoxel();
+	UMeshedVoxel();
 
 	virtual void Serialize(FArchive& Ar) override;
 

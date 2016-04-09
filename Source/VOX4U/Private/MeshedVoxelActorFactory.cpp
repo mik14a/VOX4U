@@ -2,7 +2,7 @@
 
 #include "VOX4UPrivatePCH.h"
 #include "MeshedVoxelActorFactory.h"
-#include "Voxel.h"
+#include "MeshedVoxel.h"
 #include "MeshedVoxelActor.h"
 #include "MeshedVoxelComponent.h"
 
@@ -17,24 +17,24 @@ void UMeshedVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 {
 	Super::PostSpawnActor(Asset, NewActor);
 
-	AMeshedVoxelActor* VoxelActor = CastChecked<AMeshedVoxelActor>(NewActor);
-	UMeshedVoxelComponent* VoxelComponent = VoxelActor->GetMeshedVoxelComponent();
-	check(VoxelComponent);
+	AMeshedVoxelActor* MeshedVoxelActor = CastChecked<AMeshedVoxelActor>(NewActor);
+	UMeshedVoxelComponent* MeshedVoxelComponent = MeshedVoxelActor->GetMeshedVoxelComponent();
+	check(MeshedVoxelComponent);
 
-	if (UVoxel* Voxel = Cast<UVoxel>(Asset)) {
-		VoxelComponent->UnregisterComponent();
-		VoxelComponent->SetVoxel(Voxel);
-		VoxelComponent->RegisterComponent();
+	if (UMeshedVoxel* MeshedVoxel = Cast<UMeshedVoxel>(Asset)) {
+		MeshedVoxelComponent->UnregisterComponent();
+		MeshedVoxelComponent->SetVoxel(MeshedVoxel);
+		MeshedVoxelComponent->RegisterComponent();
 	}
 }
 
 void UMeshedVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)
 {
-	if (AMeshedVoxelActor* VoxelActor = Cast<AMeshedVoxelActor>(CDO)) {
-		UMeshedVoxelComponent* VoxelComponent = VoxelActor->GetMeshedVoxelComponent();
-		check(VoxelComponent);
-		if (UVoxel* Voxel = Cast<UVoxel>(Asset)) {
-			VoxelComponent->SetVoxel(Voxel);
+	if (AMeshedVoxelActor* MeshedVoxelActor = Cast<AMeshedVoxelActor>(CDO)) {
+		UMeshedVoxelComponent* MeshedVoxelComponent = MeshedVoxelActor->GetMeshedVoxelComponent();
+		check(MeshedVoxelComponent);
+		if (UMeshedVoxel* MeshedVoxel = Cast<UMeshedVoxel>(Asset)) {
+			MeshedVoxelComponent->SetVoxel(MeshedVoxel);
 		}
 	}
 }
@@ -43,7 +43,7 @@ bool UMeshedVoxelActorFactory::CanCreateActorFrom(const FAssetData& AssetData, F
 {
 	if (AssetData.IsValid()) {
 		UClass* AssetClass = AssetData.GetClass();
-		if (AssetClass && AssetClass->IsChildOf(UVoxel::StaticClass())) {
+		if (AssetClass && AssetClass->IsChildOf(UMeshedVoxel::StaticClass())) {
 			return true;
 		} else {
 			OutErrorMsg = NSLOCTEXT("VOX4U", "CanCreateActorFrom_NoVoxel", "No Voxel data specified.");

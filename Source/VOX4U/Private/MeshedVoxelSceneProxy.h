@@ -8,7 +8,7 @@
 #include "VertexFactory.h"
 #include "DynamicMeshBuilder.h"
 
-class UVoxel;
+class UMeshedVoxel;
 class UMeshedVoxelComponent;
 
 class FMeshedVoxelVertexBuffer : public FVertexBuffer
@@ -55,7 +55,7 @@ public:
 
 private:
 
-	UVoxel* Voxel;
+	UMeshedVoxel* Voxel;
 	UMaterialInterface* Material;
 	FMeshedVoxelVertexBuffer VertexBuffer;
 	FMeshedVoxelIndexBuffer IndexBuffer;

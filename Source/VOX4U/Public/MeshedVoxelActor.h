@@ -13,7 +13,7 @@ class AMeshedVoxelActor : public AActor
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = VoxelActor)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MeshedVoxelActor)
 	class UMeshedVoxelComponent* MeshedVoxelComponent;
 
 public:
