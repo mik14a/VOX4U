@@ -8,35 +8,53 @@
 struct FRawMesh;
 class UVoxImportOption;
 
+/**
+ * Cell struct for VOXEL chunk
+ */
 USTRUCT()
 struct FCell
 {
 	GENERATED_BODY()
 
-	int8 X, Y, Z;
+	/** X */
+	int8 X;
 
+	/** Y */
+	int8 Y;
+
+	/** Z */
+	int8 Z;
+
+	/** Color index */
 	uint8 I;
 
+	/** Default constructor */
 	FCell() { }
 
-	FCell(int8 InX, int8 InY, int8 InZ) : X(InX), Y(InY), Z(InZ), I(0) { }
+	/**
+	 * Construct with X, Y, Z, ColorIndex.
+	 */
+	FCell(int8 InX, int8 InY, int8 InZ, uint8 InI = 0) : X(InX), Y(InY), Z(InZ), I(InI) { }
 
-	FCell& operator+=(const FCell& Other) {
+	/** Add position to cell */
+	FCell& operator+=(const FIntVector& Other) {
 		X += Other.X;
 		Y += Other.Y;
 		Z += Other.Z;
 		return *this;
 	}
 
-	FCell operator+(const FCell& Other) const {
+	/** Add position to cell */
+	FCell operator+(const FIntVector& Other) const {
 		return FCell(*this) += Other;
 	}
 
+	/** Convert to FIntVector */
 	FIntVector ToIntVector() const {
 		return FIntVector(X, Y, Z);
 	}
 
-	FString ToString() const {
+	FORCEINLINE FString ToString() const {
 		return FString::Printf(TEXT("X=%d Y=%d Z=%d I=%d"), X, Y, Z, I);
 	}
 };
@@ -51,11 +69,16 @@ struct FVox
 {
 	GENERATED_BODY()
 
+	/** Magic number ( 'V' 'O' 'X' 'space' ) and terminate */
 	ANSICHAR MagicNumber[5];
+	/** version number ( current version is 150 ) */
 	uint32 VersionNumber;
 
+	/** Size */
 	FIntVector Size;
+	/** Voxel */
 	TArray<FCell> Voxel;
+	/** Palette */
 	TArray<FColor> Palette;
 
 public:
