@@ -181,7 +181,7 @@ void FVoxelSceneProxy::GetDynamicMeshElements(const TArray<const FSceneView*>& V
 	}
 }
 
-FPrimitiveViewRelevance FVoxelSceneProxy::GetViewRelevance(const FSceneView* View)
+FPrimitiveViewRelevance FVoxelSceneProxy::GetViewRelevance(const FSceneView* View) const
 {
 	FPrimitiveViewRelevance Result;
 	Result.bDrawRelevance = IsShown(View);
