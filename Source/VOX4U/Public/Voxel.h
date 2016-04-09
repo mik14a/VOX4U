@@ -15,7 +15,7 @@ class UStaticMesh;
  * VOXEL Asset
  */
 UCLASS()
-class UVoxel : public UObject
+class VOX4U_API UVoxel : public UObject
 {
 	GENERATED_BODY()
 

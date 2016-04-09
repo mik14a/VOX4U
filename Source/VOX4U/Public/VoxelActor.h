@@ -10,7 +10,7 @@
 class UVoxelComponent;
 
 UCLASS()
-class AVoxelActor : public AActor
+class VOX4U_API AVoxelActor : public AActor
 {
 	GENERATED_BODY()
 

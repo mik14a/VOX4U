@@ -1,6 +1,6 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UPrivatePCH.h"
+#include "VOX4UEditorPrivatePCH.h"
 #include "MeshedVoxelActorFactory.h"
 #include "MeshedVoxel.h"
 #include "MeshedVoxelActor.h"

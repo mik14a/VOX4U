@@ -1,6 +1,6 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UPrivatePCH.h"
+#include "VOX4UEditorPrivatePCH.h"
 #include "VoxelFactory.h"
 #include "Editor.h"
 #include "Engine.h"
@@ -129,5 +129,10 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 UMeshedVoxel* UVoxelFactory::CreateMeshedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	UMeshedVoxel* MeshedVoxel = NewObject<UMeshedVoxel>(InParent, InName, Flags | RF_Public);
+	MeshedVoxel->Size = Vox->Size;
+	for (FCell cell : Vox->Voxel) {
+		MeshedVoxel->Voxel.Add(FIntVoxel(cell.X, cell.Y, cell.Z, cell.I));
+	}
+	MeshedVoxel->bXYCenter = ImportOption->bImportXYCenter;
 	return MeshedVoxel;
 }

@@ -1,38 +1,47 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
-public class VOX4U : ModuleRules
+public class VOX4UEditor : ModuleRules
 {
-    public VOX4U(TargetInfo Target) {
+    public VOX4UEditor(TargetInfo Target) {
 
         PublicIncludePaths.AddRange(
             new string[] {
-                "VOX4U/Public"
+                "VOX4UEditor/Public"
             }
         );
+
 
         PrivateIncludePaths.AddRange(
             new string[] {
-                "VOX4U/Private",
+                "VOX4UEditor/Private",
             }
         );
+
 
         PublicDependencyModuleNames.AddRange(
             new string[] {
+                "CoreUObject",
+                "Engine",
                 "Core",
-                "RHI",
-                "RenderCore",
-                "ShaderCore",
+                "InputCore",
+                "Slate",
+                "SlateCore",
+                "UnrealEd",
+                "RawMesh",
+                "MainFrame",
+                "PropertyEditor",
             }
         );
 
+
         PrivateDependencyModuleNames.AddRange(
             new string[] {
-                "CoreUObject",
-                "Engine",
+                "VOX4U",
             }
         );
+
 
         DynamicallyLoadedModuleNames.AddRange(
             new string[] {

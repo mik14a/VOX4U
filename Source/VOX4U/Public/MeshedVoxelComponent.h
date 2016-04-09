@@ -10,7 +10,7 @@
  *
  */
 UCLASS()
-class UMeshedVoxelComponent : public UMeshComponent
+class VOX4U_API UMeshedVoxelComponent : public UMeshComponent
 {
 	GENERATED_BODY()
 

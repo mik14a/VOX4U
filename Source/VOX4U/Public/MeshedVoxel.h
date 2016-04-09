@@ -8,7 +8,7 @@
 class UMaterialInterface;
 
 UCLASS()
-class UMeshedVoxel : public UObject
+class VOX4U_API UMeshedVoxel : public UObject
 {
 	GENERATED_BODY()
 
