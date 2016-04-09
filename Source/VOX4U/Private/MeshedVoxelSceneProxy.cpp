@@ -1,12 +1,12 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UPrivatePCH.h"
-#include "VoxelSceneProxy.h"
-#include "VoxelComponent.h"
+#include "MeshedVoxelSceneProxy.h"
+#include "MeshedVoxelComponent.h"
 #include "DynamicMeshBuilder.h"
 #include "Voxel.h"
 
-void FVoxelVertexBuffer::InitRHI()
+void FMeshedVoxelVertexBuffer::InitRHI()
 {
 	FRHIResourceCreateInfo CreateInfo;
 	void* VertexBufferData = nullptr;
@@ -15,7 +15,7 @@ void FVoxelVertexBuffer::InitRHI()
 	RHIUnlockVertexBuffer(VertexBufferRHI);
 }
 
-void FVoxelIndexBuffer::InitRHI()
+void FMeshedVoxelIndexBuffer::InitRHI()
 {
 	FRHIResourceCreateInfo CreateInfo;
 	void* Buffer = nullptr;
@@ -24,22 +24,22 @@ void FVoxelIndexBuffer::InitRHI()
 	RHIUnlockIndexBuffer(IndexBufferRHI);
 }
 
-void FVoxelVertexFactory::Init(const FVoxelVertexBuffer* VertexBuffer)
+void FMeshedVoxelVertexFactory::Init(const FMeshedVoxelVertexBuffer* VertexBuffer)
 {
 	if (IsInRenderingThread()) {
 		Init_RenderThread(VertexBuffer);
 	} else {
 		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(
 			InitVoxelVertexFactory,
-			FVoxelVertexFactory*, VertexFactory, this,
-			const FVoxelVertexBuffer*, VertexBuffer, VertexBuffer, {
+			FMeshedVoxelVertexFactory*, VertexFactory, this,
+			const FMeshedVoxelVertexBuffer*, VertexBuffer, VertexBuffer, {
 				VertexFactory->Init_RenderThread(VertexBuffer);
 			}
 		);
 	}
 }
 
-void FVoxelVertexFactory::Init_RenderThread(const FVoxelVertexBuffer* VertexBuffer)
+void FMeshedVoxelVertexFactory::Init_RenderThread(const FMeshedVoxelVertexBuffer* VertexBuffer)
 {
 	check(IsInRenderingThread());
 	DataType Data;
@@ -51,7 +51,7 @@ void FVoxelVertexFactory::Init_RenderThread(const FVoxelVertexBuffer* VertexBuff
 	SetData(Data);
 }
 
-FVoxelSceneProxy::FVoxelSceneProxy(UVoxelComponent* Component)
+FMeshedVoxelSceneProxy::FMeshedVoxelSceneProxy(UMeshedVoxelComponent* Component)
 	: FPrimitiveSceneProxy(Component)
 	, MaterialRelevance(Component->GetMaterialRelevance(GetScene().GetFeatureLevel()))
 {
@@ -139,14 +139,14 @@ FVoxelSceneProxy::FVoxelSceneProxy(UVoxelComponent* Component)
 	}
 }
 
-FVoxelSceneProxy::~FVoxelSceneProxy()
+FMeshedVoxelSceneProxy::~FMeshedVoxelSceneProxy()
 {
 	VertexBuffer.ReleaseResource();
 	IndexBuffer.ReleaseResource();
 	VertexFactory.ReleaseResource();
 }
 
-void FVoxelSceneProxy::GetDynamicMeshElements(const TArray<const FSceneView*>& Views, const FSceneViewFamily& ViewFamily, uint32 VisibilityMap, FMeshElementCollector& Collector) const
+void FMeshedVoxelSceneProxy::GetDynamicMeshElements(const TArray<const FSceneView*>& Views, const FSceneViewFamily& ViewFamily, uint32 VisibilityMap, FMeshElementCollector& Collector) const
 {
 	QUICK_SCOPE_CYCLE_COUNTER(STAT_VoxelSceneProxy_GetDynamicMeshElements);
 
@@ -181,7 +181,7 @@ void FVoxelSceneProxy::GetDynamicMeshElements(const TArray<const FSceneView*>& V
 	}
 }
 
-FPrimitiveViewRelevance FVoxelSceneProxy::GetViewRelevance(const FSceneView* View) const
+FPrimitiveViewRelevance FMeshedVoxelSceneProxy::GetViewRelevance(const FSceneView* View) const
 {
 	FPrimitiveViewRelevance Result;
 	Result.bDrawRelevance = IsShown(View);

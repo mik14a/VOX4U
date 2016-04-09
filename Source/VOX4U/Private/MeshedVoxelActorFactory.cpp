@@ -1,24 +1,24 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UPrivatePCH.h"
-#include "VoxelActorFactory.h"
+#include "MeshedVoxelActorFactory.h"
 #include "Voxel.h"
-#include "VoxelActor.h"
-#include "VoxelComponent.h"
+#include "MeshedVoxelActor.h"
+#include "MeshedVoxelComponent.h"
 
-UVoxelActorFactory::UVoxelActorFactory(const FObjectInitializer& ObjectInitializer)
+UMeshedVoxelActorFactory::UMeshedVoxelActorFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	DisplayName = NSLOCTEXT("VOX4U", "UVoxelActorFactory", "Voxel Actor");
-	NewActorClass = AVoxelActor::StaticClass();
+	NewActorClass = AMeshedVoxelActor::StaticClass();
 }
 
-void UVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
+void UMeshedVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 {
 	Super::PostSpawnActor(Asset, NewActor);
 
-	AVoxelActor* VoxelActor = CastChecked<AVoxelActor>(NewActor);
-	UVoxelComponent* VoxelComponent = VoxelActor->GetVoxelComponent();
+	AMeshedVoxelActor* VoxelActor = CastChecked<AMeshedVoxelActor>(NewActor);
+	UMeshedVoxelComponent* VoxelComponent = VoxelActor->GetMeshedVoxelComponent();
 	check(VoxelComponent);
 
 	if (UVoxel* Voxel = Cast<UVoxel>(Asset)) {
@@ -28,10 +28,10 @@ void UVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 	}
 }
 
-void UVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)
+void UMeshedVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)
 {
-	if (AVoxelActor* VoxelActor = Cast<AVoxelActor>(CDO)) {
-		UVoxelComponent* VoxelComponent = VoxelActor->GetVoxelComponent();
+	if (AMeshedVoxelActor* VoxelActor = Cast<AMeshedVoxelActor>(CDO)) {
+		UMeshedVoxelComponent* VoxelComponent = VoxelActor->GetMeshedVoxelComponent();
 		check(VoxelComponent);
 		if (UVoxel* Voxel = Cast<UVoxel>(Asset)) {
 			VoxelComponent->SetVoxel(Voxel);
@@ -39,7 +39,7 @@ void UVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)
 	}
 }
 
-bool UVoxelActorFactory::CanCreateActorFrom(const FAssetData& AssetData, FText& OutErrorMsg)
+bool UMeshedVoxelActorFactory::CanCreateActorFrom(const FAssetData& AssetData, FText& OutErrorMsg)
 {
 	if (AssetData.IsValid()) {
 		UClass* AssetClass = AssetData.GetClass();

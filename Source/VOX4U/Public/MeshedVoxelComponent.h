@@ -4,13 +4,13 @@
 
 #include "Engine.h"
 #include "Components/PrimitiveComponent.h"
-#include "VoxelComponent.generated.h"
+#include "MeshedVoxelComponent.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UVoxelComponent : public UMeshComponent
+class UMeshedVoxelComponent : public UMeshComponent
 {
 	GENERATED_BODY()
 

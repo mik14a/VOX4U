@@ -9,39 +9,39 @@
 #include "DynamicMeshBuilder.h"
 
 class UVoxel;
-class UVoxelComponent;
+class UMeshedVoxelComponent;
 
-class FVoxelVertexBuffer : public FVertexBuffer
+class FMeshedVoxelVertexBuffer : public FVertexBuffer
 {
 public:
 	TArray<FDynamicMeshVertex> Vertices;
 	virtual void InitRHI() override;
 };
 
-class FVoxelIndexBuffer : public FIndexBuffer
+class FMeshedVoxelIndexBuffer : public FIndexBuffer
 {
 public:
 	TArray<int32> Indices;
 	virtual void InitRHI() override;
 };
 
-class FVoxelVertexFactory : public FLocalVertexFactory
+class FMeshedVoxelVertexFactory : public FLocalVertexFactory
 {
 public:
-	FVoxelVertexFactory() {}
-	void Init(const FVoxelVertexBuffer* VertexBuffer);
-	void Init_RenderThread(const FVoxelVertexBuffer* VertexBuffer);
+	FMeshedVoxelVertexFactory() {}
+	void Init(const FMeshedVoxelVertexBuffer* VertexBuffer);
+	void Init_RenderThread(const FMeshedVoxelVertexBuffer* VertexBuffer);
 };
 
 /**
  *
  */
-class FVoxelSceneProxy : public FPrimitiveSceneProxy
+class FMeshedVoxelSceneProxy : public FPrimitiveSceneProxy
 {
 public:
-	FVoxelSceneProxy(UVoxelComponent* Component);
+	FMeshedVoxelSceneProxy(UMeshedVoxelComponent* Component);
 
-	virtual ~FVoxelSceneProxy();
+	virtual ~FMeshedVoxelSceneProxy();
 
 	virtual void GetDynamicMeshElements(const TArray<const FSceneView*>& Views, const FSceneViewFamily& ViewFamily, uint32 VisibilityMap, FMeshElementCollector& Collector) const override;
 
@@ -57,8 +57,8 @@ private:
 
 	UVoxel* Voxel;
 	UMaterialInterface* Material;
-	FVoxelVertexBuffer VertexBuffer;
-	FVoxelIndexBuffer IndexBuffer;
-	FVoxelVertexFactory VertexFactory;
+	FMeshedVoxelVertexBuffer VertexBuffer;
+	FMeshedVoxelIndexBuffer IndexBuffer;
+	FMeshedVoxelVertexFactory VertexFactory;
 	FMaterialRelevance MaterialRelevance;
 };

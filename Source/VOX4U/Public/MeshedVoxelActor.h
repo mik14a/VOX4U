@@ -4,24 +4,24 @@
 
 #include "Engine.h"
 #include "GameFramework/Actor.h"
-#include "VoxelActor.generated.h"
+#include "MeshedVoxelActor.generated.h"
 
 UCLASS()
-class AVoxelActor : public AActor
+class AMeshedVoxelActor : public AActor
 {
 	GENERATED_BODY()
 
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = VoxelActor)
-	class UVoxelComponent* VoxelComponent;
+	class UMeshedVoxelComponent* MeshedVoxelComponent;
 
 public:
 
-	AVoxelActor();
+	AMeshedVoxelActor();
 
 public:
 
-	class UVoxelComponent* GetVoxelComponent() const;
+	class UMeshedVoxelComponent* GetMeshedVoxelComponent() const;
 
 };
