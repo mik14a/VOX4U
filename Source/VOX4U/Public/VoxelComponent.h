@@ -10,7 +10,7 @@
 class UVoxel;
 
 UCLASS()
-class UInstancedVoxelComponent : public UInstancedStaticMeshComponent
+class VOX4U_API UInstancedVoxelComponent : public UInstancedStaticMeshComponent
 {
 	GENERATED_BODY()
 };
@@ -19,7 +19,7 @@ class UInstancedVoxelComponent : public UInstancedStaticMeshComponent
  *
  */
 UCLASS()
-class UVoxelComponent : public UPrimitiveComponent
+class VOX4U_API UVoxelComponent : public UPrimitiveComponent
 {
 	GENERATED_BODY()
 

@@ -11,12 +11,17 @@
     "MarketplaceURL": "",
     "SupportURL": "https://github.com/mik14a/VOX4U",
     "EnabledByDefault": true,
-    "CanContainContent": false,
+    "CanContainContent": true,
     "IsBetaVersion": true,
     "Installed": false,
     "Modules": [
         {
             "Name": "VOX4U",
+            "Type": "Runtime",
+            "LoadingPhase": "PreDefault"
+        },
+        {
+            "Name": "VOX4UEditor",
             "Type": "Editor",
             "LoadingPhase": "Default"
         }

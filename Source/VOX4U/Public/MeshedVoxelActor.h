@@ -7,7 +7,7 @@
 #include "MeshedVoxelActor.generated.h"
 
 UCLASS()
-class AMeshedVoxelActor : public AActor
+class VOX4U_API AMeshedVoxelActor : public AActor
 {
 	GENERATED_BODY()
 
