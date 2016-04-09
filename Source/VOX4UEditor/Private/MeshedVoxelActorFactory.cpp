@@ -18,7 +18,7 @@ void UMeshedVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 	Super::PostSpawnActor(Asset, NewActor);
 
 	AMeshedVoxelActor* MeshedVoxelActor = CastChecked<AMeshedVoxelActor>(NewActor);
-	UMeshedVoxelComponent* MeshedVoxelComponent = MeshedVoxelActor->GetMeshedVoxelComponent();
+	UMeshedVoxelComponent* MeshedVoxelComponent = MeshedVoxelActor->GetVoxelComponent();
 	check(MeshedVoxelComponent);
 
 	if (UMeshedVoxel* MeshedVoxel = Cast<UMeshedVoxel>(Asset)) {
@@ -31,7 +31,7 @@ void UMeshedVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 void UMeshedVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)
 {
 	if (AMeshedVoxelActor* MeshedVoxelActor = Cast<AMeshedVoxelActor>(CDO)) {
-		UMeshedVoxelComponent* MeshedVoxelComponent = MeshedVoxelActor->GetMeshedVoxelComponent();
+		UMeshedVoxelComponent* MeshedVoxelComponent = MeshedVoxelActor->GetVoxelComponent();
 		check(MeshedVoxelComponent);
 		if (UMeshedVoxel* MeshedVoxel = Cast<UMeshedVoxel>(Asset)) {
 			MeshedVoxelComponent->SetVoxel(MeshedVoxel);

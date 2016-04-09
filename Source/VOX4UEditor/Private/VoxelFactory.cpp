@@ -9,7 +9,7 @@
 #include "RawMesh.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
-#include "Voxel.h"
+#include "InstancedVoxel.h"
 #include "MeshedVoxel.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
@@ -34,7 +34,7 @@ bool UVoxelFactory::DoesSupportClass(UClass * Class)
 {
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
-		|| Class == UVoxel::StaticClass()
+		|| Class == UInstancedVoxel::StaticClass()
 		|| Class == UMeshedVoxel::StaticClass();
 }
 
@@ -46,7 +46,7 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 	} else if (ImportOption->VoxImportType == EVoxImportType::SkeletalMesh) {
 		Class = USkeletalMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
-		Class = UVoxel::StaticClass();
+		Class = UInstancedVoxel::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::MeshedVoxel) {
 		Class = UMeshedVoxel::StaticClass();
 	}
@@ -106,9 +106,9 @@ USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName
 	return SkeletalMesh;
 }
 
-UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UInstancedVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	UVoxel* Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
+	UInstancedVoxel* Voxel = NewObject<UInstancedVoxel>(InParent, InName, Flags | RF_Public);
 	Voxel->Size = Vox->Size;
 	TArray<uint8> Palette;
 	for (FCell cell : Vox->Voxel) {

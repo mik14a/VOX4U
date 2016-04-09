@@ -6,11 +6,11 @@
 
 AMeshedVoxelActor::AMeshedVoxelActor()
 {
-	MeshedVoxelComponent = CreateDefaultSubobject<UMeshedVoxelComponent>("VoxelComponent");
-	MeshedVoxelComponent->AttachTo(RootComponent);
+	VoxelComponent = CreateDefaultSubobject<UMeshedVoxelComponent>("VoxelComponent");
+	VoxelComponent->AttachTo(RootComponent);
 }
 
-class UMeshedVoxelComponent* AMeshedVoxelActor::GetMeshedVoxelComponent() const
+class UMeshedVoxelComponent* AMeshedVoxelActor::GetVoxelComponent() const
 {
-	return MeshedVoxelComponent;
+	return VoxelComponent;
 }

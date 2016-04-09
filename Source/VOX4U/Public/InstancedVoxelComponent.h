@@ -5,21 +5,15 @@
 #include "Engine.h"
 #include "IntVoxel.h"
 #include "Components/InstancedStaticMeshComponent.h"
-#include "VoxelComponent.generated.h"
+#include "InstancedVoxelComponent.generated.h"
 
-class UVoxel;
-
-UCLASS()
-class VOX4U_API UInstancedVoxelComponent : public UInstancedStaticMeshComponent
-{
-	GENERATED_BODY()
-};
+class UInstancedVoxel;
 
 /**
  *
  */
 UCLASS()
-class VOX4U_API UVoxelComponent : public UPrimitiveComponent
+class VOX4U_API UInstancedVoxelComponent : public UPrimitiveComponent
 {
 	GENERATED_BODY()
 
@@ -38,11 +32,11 @@ protected:
 	TArray<FIntVoxel> Cell;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VoxelComponent)
-	UVoxel* Voxel;
+	UInstancedVoxel* Voxel;
 
 public:
 
-	UVoxelComponent();
+	UInstancedVoxelComponent();
 
 #if WITH_EDITOR
 
@@ -50,7 +44,7 @@ public:
 
 #endif // WITH_EDITOR
 
-	void SetVoxel(class UVoxel* InVoxel, bool bForce = false);
+	void SetVoxel(class UInstancedVoxel* InVoxel, bool bForce = false);
 
 	UFUNCTION(BlueprintCallable, Category = Voxel)
 	void AddVoxel();
@@ -64,7 +58,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Voxel)
 	bool GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace = false) const;
 
-	const TArray<UInstancedVoxelComponent*>& GetVoxelComponents() const;
+	const TArray<UInstancedStaticMeshComponent*>& GetInstancedStaticMeshComponent() const;
 
 private:
 
@@ -73,6 +67,6 @@ private:
 protected:
 
 	UPROPERTY()
-	TArray<UInstancedVoxelComponent*> VoxelComponents;
+	TArray<UInstancedStaticMeshComponent*> InstancedStaticMeshComponents;
 
 };

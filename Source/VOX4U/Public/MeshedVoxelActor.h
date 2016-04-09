@@ -14,7 +14,7 @@ class VOX4U_API AMeshedVoxelActor : public AActor
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MeshedVoxelActor)
-	class UMeshedVoxelComponent* MeshedVoxelComponent;
+	class UMeshedVoxelComponent* VoxelComponent;
 
 public:
 
@@ -22,6 +22,6 @@ public:
 
 public:
 
-	class UMeshedVoxelComponent* GetMeshedVoxelComponent() const;
+	class UMeshedVoxelComponent* GetVoxelComponent() const;
 
 };
