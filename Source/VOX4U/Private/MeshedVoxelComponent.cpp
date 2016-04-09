@@ -36,5 +36,9 @@ int32 UMeshedVoxelComponent::GetNumMaterials() const
 
 FBoxSphereBounds UMeshedVoxelComponent::CalcBounds(const FTransform& LocalToWorld) const
 {
-	return FBoxSphereBounds(ForceInit);
+	FVector Extent = FVector(Voxel->Size) * 0.5f;
+	FVector Origin = Voxel->bXYCenter ? FVector::ZeroVector : Extent;
+	float SphereRadius = Extent.Size();
+	FBoxSphereBounds BoxSphereBounds = FBoxSphereBounds(Origin, Extent, SphereRadius);
+	return BoxSphereBounds.TransformBy(LocalToWorld);
 }
