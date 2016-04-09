@@ -10,6 +10,7 @@
 #include "Vox.h"
 #include "VoxImportOption.h"
 #include "Voxel.h"
+#include "MeshedVoxel.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -33,7 +34,8 @@ bool UVoxelFactory::DoesSupportClass(UClass * Class)
 {
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
-		|| Class == UVoxel::StaticClass();
+		|| Class == UVoxel::StaticClass()
+		|| Class == UMeshedVoxel::StaticClass();
 }
 
 UClass* UVoxelFactory::ResolveSupportedClass()
@@ -45,6 +47,8 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 		Class = USkeletalMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
 		Class = UVoxel::StaticClass();
+	} else if (ImportOption->VoxImportType == EVoxImportType::MeshedVoxel) {
+		Class = UMeshedVoxel::StaticClass();
 	}
 	return Class;
 }
@@ -68,6 +72,9 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 			break;
 		case EVoxImportType::Voxel:
 			Result = CreateVoxel(InParent, InName, Flags, &Vox);
+			break;
+		case EVoxImportType::MeshedVoxel:
+			Result = CreateMeshedVoxel(InParent, InName, Flags, &Vox);
 			break;
 		default:
 			break;
@@ -95,15 +102,13 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 
 USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	USkeletalMesh* SkeletalMesh = nullptr;
-	SkeletalMesh = NewObject<USkeletalMesh>(InParent, InName, Flags | RF_Public);
+	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(InParent, InName, Flags | RF_Public);
 	return SkeletalMesh;
 }
 
 UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	UVoxel* Voxel = nullptr;
-	Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
+	UVoxel* Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
 	Voxel->Size = Vox->Size;
 	TArray<uint8> Palette;
 	for (FCell cell : Vox->Voxel) {
@@ -119,4 +124,10 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 	Voxel->bXYCenter = ImportOption->bImportXYCenter;
 	Voxel->CalcCellBounds();
 	return Voxel;
+}
+
+UMeshedVoxel* UVoxelFactory::CreateMeshedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+{
+	UMeshedVoxel* MeshedVoxel = NewObject<UMeshedVoxel>(InParent, InName, Flags | RF_Public);
+	return MeshedVoxel;
 }

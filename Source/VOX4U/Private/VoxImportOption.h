@@ -11,7 +11,8 @@ enum class EVoxImportType
 {
 	StaticMesh UMETA(DisplayName = "Static Mesh"),
 	SkeletalMesh UMETA(DisplayName = "Skeletal Mesh"),
-	Voxel UMETA(DisplayName = "Voxel")
+	Voxel UMETA(DisplayName = "Voxel"),
+	MeshedVoxel UMETA(DisplayName = "Meshed Voxel")
 };
 
 /**
