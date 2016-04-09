@@ -45,7 +45,7 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 		Class = UStaticMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::SkeletalMesh) {
 		Class = USkeletalMesh::StaticClass();
-	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
+	} else if (ImportOption->VoxImportType == EVoxImportType::InstancedVoxel) {
 		Class = UInstancedVoxel::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::MeshedVoxel) {
 		Class = UMeshedVoxel::StaticClass();
@@ -70,7 +70,7 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 		case EVoxImportType::SkeletalMesh:
 			Result = CreateSkeletalMesh(InParent, InName, Flags, &Vox);
 			break;
-		case EVoxImportType::Voxel:
+		case EVoxImportType::InstancedVoxel:
 			Result = CreateVoxel(InParent, InName, Flags, &Vox);
 			break;
 		case EVoxImportType::MeshedVoxel:
