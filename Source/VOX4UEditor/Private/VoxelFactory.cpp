@@ -11,6 +11,7 @@
 #include "VoxImportOption.h"
 #include "InstancedVoxel.h"
 #include "MeshedVoxel.h"
+#include "Materials/MaterialExpressionTextureSample.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -90,7 +91,22 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	FRawMesh RawMesh;
 	if (Vox->CreateRawMesh(RawMesh, ImportOption)) {
 		StaticMesh = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
-		StaticMesh->Materials.Add(ImportOption->Material ? ImportOption->Material : UMaterial::GetDefaultMaterial(MD_Surface));
+		StaticMesh->Materials.Add(ImportOption->Material ? ImportOption->Material : [&] {
+			UMaterialInterface* MaterialInterface = nullptr;
+			UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);
+			if (Vox->CreateTexture(Texture, ImportOption)) {
+				UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
+				Material->TwoSided = false;
+				Material->SetShadingModel(MSM_DefaultLit);
+				UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);
+				Material->Expressions.Add(Expression);
+				Material->BaseColor.Expression = Expression;
+				Expression->Texture = Texture;
+				Material->PostEditChange();
+				MaterialInterface = Material;
+			}
+			return MaterialInterface ? MaterialInterface : UMaterial::GetDefaultMaterial(MD_Surface);
+		}());
 		FStaticMeshSourceModel* StaticMeshSourceModel = new(StaticMesh->SourceModels) FStaticMeshSourceModel();
 		StaticMeshSourceModel->BuildSettings = ImportOption->BuildSettings;
 		StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);

@@ -92,7 +92,9 @@ public:
 	/** Import vox data from archive */
 	bool Import(FArchive& Ar, const UVoxImportOption* ImportOption);
 
-	/** Create FRawMesh */
-	bool CreateRawMesh(FRawMesh& RawMesh, const UVoxImportOption* ImportOption) const;
+	/** Create FRawMesh from Voxel */
+	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
 
+	/** Create UTexture2D from Palette */
+	bool CreateTexture(UTexture2D*& OutTexture, UVoxImportOption* ImportOption) const;
 };
