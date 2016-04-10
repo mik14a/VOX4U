@@ -9,6 +9,7 @@
 class USkeletalMesh;
 class UStaticMesh;
 class UVoxImportOption;
+class UVoxel;
 class UInstancedVoxel;
 class UMeshedVoxel;
 struct FVox;
@@ -39,7 +40,9 @@ private:
 
 	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
-	UInstancedVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+
+	UInstancedVoxel* CreateInstancedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UMeshedVoxel* CreateMeshedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 

@@ -260,7 +260,7 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
 	return true;
 }
 
-bool FVox::CreateTexture(UTexture2D*& OutTexture, UVoxImportOption* ImportOption) const
+bool FVox::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const
 {
 	check(OutTexture);
 	OutTexture->LODGroup = TextureGroup::TEXTUREGROUP_World;

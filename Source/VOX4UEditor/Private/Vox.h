@@ -96,5 +96,5 @@ public:
 	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
 
 	/** Create UTexture2D from Palette */
-	bool CreateTexture(UTexture2D*& OutTexture, UVoxImportOption* ImportOption) const;
+	bool CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const;
 };
