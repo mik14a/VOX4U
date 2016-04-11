@@ -1,12 +1,10 @@
 # VOX4U
-MagicaVoxel VOX Format import plugin for UE4
-
 [MagicaVoxel](https://voxel.codeplex.com) の VOX データを
 [Unreal Engine 4](https://www.unrealengine.com/) にインポートするためのプラグインです．
 
 ## 動作環境
 
-Unreal Engine 4.10.4
+Unreal Engine 4.10.4以降
 
 ## 使い方
 
@@ -14,7 +12,8 @@ VOX ファイルを UE4 にドラッグ＆ドロップするか，インポー�
 
 現在次の形式のインポートに対応しています．
 * StaticMesh
-* Voxel
+* MeshedVoxel(実験)
+* InstancedVoxel
 
 ### インポートオプション
 
@@ -36,14 +35,20 @@ VOX ファイルを UE4 にドラッグ＆ドロップするか，インポー�
   * マテリアルを指定します．
   MagicaVoxel に同梱されている pal フォルダにある png ファイルををインポートしたデータを使用する事を想定しています．
 
-### Voxel
+### MeshedVoxel
+* ImportXForward
+  * インポート時 UE4 でのフォワードに整えます．
+* ImportXYCenter
+  * XY平面上での中心にデータをインポートします．
+
+### InstancedVoxel
 * ImportXForward
   * インポート時 UE4 でのフォワードに整えます．
 * ImportXYCenter
   * XY平面上での中心にデータをインポートします．
 * Mesh
   * ボクセルを構成するメッシュを指定します．
-  1uu のスタティックメッシュの使用を前提にしています．
+  指定されたメッシュが1ボクセルになるようにインスタンス表示されます．
 
 ## インストール
 
