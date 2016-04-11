@@ -194,6 +194,17 @@ static const uint32 Faces[6][4] = {
 };
 
 /**
+ * 2 <- 1
+ * | \  ^
+ * .  \ |
+ * 3 -> 0
+ */
+static const uint32 Polygons[2][3] = {
+	{ 0, 1, 2 },
+	{ 2, 3, 0 },
+};
+
+/**
  * CreateRawMesh
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
@@ -221,30 +232,19 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
 			}
 
 			uint8 ColorIndex = Cell.I - 1;
-
-			OutRawMesh.WedgeIndices.Add(VertexPositionIndex[0]);
-			OutRawMesh.WedgeIndices.Add(VertexPositionIndex[1]);
-			OutRawMesh.WedgeIndices.Add(VertexPositionIndex[2]);
-			OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
-			OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
-			OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
-			OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-			OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-			OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-			OutRawMesh.FaceMaterialIndices.Add(0);
-			OutRawMesh.FaceSmoothingMasks.Add(0);
-
-			OutRawMesh.WedgeIndices.Add(VertexPositionIndex[2]);
-			OutRawMesh.WedgeIndices.Add(VertexPositionIndex[3]);
-			OutRawMesh.WedgeIndices.Add(VertexPositionIndex[0]);
-			OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
-			OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
-			OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
-			OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-			OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-			OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-			OutRawMesh.FaceMaterialIndices.Add(0);
-			OutRawMesh.FaceSmoothingMasks.Add(0);
+			for (int PolygonIndex = 0; PolygonIndex < 2; ++PolygonIndex) {
+				OutRawMesh.WedgeIndices.Add(VertexPositionIndex[Polygons[PolygonIndex][0]]);
+				OutRawMesh.WedgeIndices.Add(VertexPositionIndex[Polygons[PolygonIndex][1]]);
+				OutRawMesh.WedgeIndices.Add(VertexPositionIndex[Polygons[PolygonIndex][2]]);
+				OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
+				OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
+				OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
+				OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+				OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+				OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+				OutRawMesh.FaceMaterialIndices.Add(0);
+				OutRawMesh.FaceSmoothingMasks.Add(0);
+			}
 		}
 	}
 
@@ -259,6 +259,53 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
 
 	return true;
 }
+
+/**
+* CreateRawMesh
+* @param FRawMesh& RawMesh	Out RawMesh
+* @return Result
+*/
+bool FVox::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const
+{
+	for (FCell Cell : Voxel) {
+		FRawMesh OutRawMesh;
+
+		FVector Origin(Cell.X, Cell.Y, Cell.Z);
+		for (int VertexIndex = 0; VertexIndex < 8; ++VertexIndex) {
+			OutRawMesh.VertexPositions.Add(Origin + Vertexes[VertexIndex]);
+		}
+		for (int FaceIndex = 0; FaceIndex < 6; ++FaceIndex) {
+			uint8 ColorIndex = Cell.I - 1;
+			for (int PolygonIndex = 0; PolygonIndex < 2; ++PolygonIndex) {
+				OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][0]]);
+				OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][1]]);
+				OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][2]]);
+				OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
+				OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
+				OutRawMesh.WedgeColors.Add(Palette[ColorIndex]);
+				OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+				OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+				OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+				OutRawMesh.FaceMaterialIndices.Add(0);
+				OutRawMesh.FaceSmoothingMasks.Add(0);
+			}
+		}
+		OutRawMeshes.Add(OutRawMesh);
+	}
+
+	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f) : FVector::ZeroVector;
+	for (FRawMesh& OutRawMesh : OutRawMeshes) {
+		for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
+			FVector VertexPosition = OutRawMesh.VertexPositions[i];
+			OutRawMesh.VertexPositions[i] = VertexPosition - Offset;
+		}
+		OutRawMesh.CompactMaterialIndices();
+		check(OutRawMesh.IsValidOrFixable());
+	}
+
+	return true;
+}
+
 
 bool FVox::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const
 {

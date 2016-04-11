@@ -2,17 +2,19 @@
 
 #include "VOX4UEditorPrivatePCH.h"
 #include "VoxelFactory.h"
+#include "ApexDestructibleAssetImport.h"
 #include "Editor.h"
 #include "Engine.h"
+#include "Engine/DestructibleMesh.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
+#include "Materials/MaterialExpressionTextureSample.h"
 #include "RawMesh.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
 #include "Voxel.h"
 #include "InstancedVoxel.h"
 #include "MeshedVoxel.h"
-#include "Materials/MaterialExpressionTextureSample.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -36,7 +38,7 @@ bool UVoxelFactory::DoesSupportClass(UClass * Class)
 {
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
-		|| Class == UVoxel::StaticClass()
+		|| Class == UDestructibleMesh::StaticClass()
 		|| Class == UInstancedVoxel::StaticClass()
 		|| Class == UMeshedVoxel::StaticClass();
 }
@@ -48,8 +50,8 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 		Class = UStaticMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::SkeletalMesh) {
 		Class = USkeletalMesh::StaticClass();
-	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
-		Class = UVoxel::StaticClass();
+	} else if (ImportOption->VoxImportType == EVoxImportType::DestructibleMesh) {
+		Class = UDestructibleMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::InstancedVoxel) {
 		Class = UInstancedVoxel::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::MeshedVoxel) {
@@ -75,8 +77,8 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 		case EVoxImportType::SkeletalMesh:
 			Result = CreateSkeletalMesh(InParent, InName, Flags, &Vox);
 			break;
-		case EVoxImportType::Voxel:
-			Result = CreateVoxel(InParent, InName, Flags, &Vox);
+		case EVoxImportType::DestructibleMesh:
+			Result = CreateDestructibleMesh(InParent, InName, Flags, &Vox);
 			break;
 		case EVoxImportType::InstancedVoxel:
 			Result = CreateInstancedVoxel(InParent, InName, Flags, &Vox);
@@ -94,32 +96,12 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 
 UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	UStaticMesh* StaticMesh = nullptr;
+	UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
 	FRawMesh RawMesh;
-	if (Vox->CreateRawMesh(RawMesh, ImportOption)) {
-		StaticMesh = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
-		StaticMesh->Materials.Add(ImportOption->Material ? ImportOption->Material : [&] {
-			UMaterialInterface* MaterialInterface = nullptr;
-			UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);
-			if (Vox->CreateTexture(Texture, ImportOption)) {
-				UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
-				Material->TwoSided = false;
-				Material->SetShadingModel(MSM_DefaultLit);
-				UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);
-				Material->Expressions.Add(Expression);
-				Material->BaseColor.Expression = Expression;
-				Expression->Texture = Texture;
-				Material->PostEditChange();
-				MaterialInterface = Material;
-			}
-			return MaterialInterface ? MaterialInterface : UMaterial::GetDefaultMaterial(MD_Surface);
-		}());
-		FStaticMeshSourceModel* StaticMeshSourceModel = new(StaticMesh->SourceModels) FStaticMeshSourceModel();
-		StaticMeshSourceModel->BuildSettings = ImportOption->BuildSettings;
-		StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
-		TArray<FText> Errors;
-		StaticMesh->Build(false, &Errors);
-	}
+	Vox->CreateRawMesh(RawMesh, ImportOption);
+	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
+	StaticMesh->Materials.Add(Material);
+	BuildStaticMesh(StaticMesh, RawMesh);
 	return StaticMesh;
 }
 
@@ -129,10 +111,32 @@ USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName
 	return SkeletalMesh;
 }
 
-UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	UVoxel* Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
-	return Voxel;
+	UDestructibleMesh* DestructibleMesh = NewObject<UDestructibleMesh>(InParent, InName, Flags | RF_Public);
+
+	FRawMesh RawMesh;
+	Vox->CreateRawMesh(RawMesh, ImportOption);
+	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
+	UStaticMesh* RootMesh = NewObject<UStaticMesh>();
+	RootMesh->Materials.Add(Material);
+	BuildStaticMesh(RootMesh, RawMesh);
+	DestructibleMesh->SourceStaticMesh = RootMesh;
+
+	TArray<FRawMesh> RawMeshes;
+	Vox->CreateRawMeshes(RawMeshes, ImportOption);
+	TArray<UStaticMesh*> FractureMeshes;
+	for (FRawMesh& RawMesh : RawMeshes) {
+		UStaticMesh* FructureMesh = NewObject<UStaticMesh>();
+		FructureMesh->Materials.Add(Material);
+		BuildStaticMesh(FructureMesh, RawMesh);
+		FractureMeshes.Add(FructureMesh);
+	}
+	DestructibleMesh->SetupChunksFromStaticMeshes(FractureMeshes);
+	BuildDestructibleMeshFromFractureSettings(*DestructibleMesh, nullptr);
+	DestructibleMesh->SourceStaticMesh = nullptr;
+
+	return DestructibleMesh;
 }
 
 UInstancedVoxel* UVoxelFactory::CreateInstancedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
@@ -164,4 +168,36 @@ UMeshedVoxel* UVoxelFactory::CreateMeshedVoxel(UObject* InParent, FName InName, 
 	}
 	MeshedVoxel->bXYCenter = ImportOption->bImportXYCenter;
 	return MeshedVoxel;
+}
+
+UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const
+{
+	check(OutStaticMesh);
+	FStaticMeshSourceModel* StaticMeshSourceModel = new(OutStaticMesh->SourceModels) FStaticMeshSourceModel();
+	StaticMeshSourceModel->BuildSettings = ImportOption->BuildSettings;
+	StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
+	TArray<FText> Errors;
+	OutStaticMesh->Build(false, &Errors);
+	return OutStaticMesh;
+}
+
+UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const
+{
+	UMaterialInterface* Material = ImportOption->Material ? ImportOption->Material : [&] {
+		UMaterialInterface* MaterialInterface = nullptr;
+		UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);
+		if (Vox->CreateTexture(Texture, ImportOption)) {
+			UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
+			Material->TwoSided = false;
+			Material->SetShadingModel(MSM_DefaultLit);
+			UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);
+			Material->Expressions.Add(Expression);
+			Material->BaseColor.Expression = Expression;
+			Expression->Texture = Texture;
+			Material->PostEditChange();
+			MaterialInterface = Material;
+		}
+		return MaterialInterface ? MaterialInterface : UMaterial::GetDefaultMaterial(MD_Surface);
+	}();
+	return Material;
 }

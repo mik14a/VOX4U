@@ -4,6 +4,7 @@
 
 #include "Factories/Factory.h"
 #include "Engine.h"
+#include "RawMesh.h"
 #include "VoxelFactory.generated.h"
 
 class USkeletalMesh;
@@ -12,6 +13,7 @@ class UVoxImportOption;
 class UVoxel;
 class UInstancedVoxel;
 class UMeshedVoxel;
+class UMaterialInterface;
 struct FVox;
 
 /**
@@ -40,11 +42,15 @@ private:
 
 	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
-	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+	UDestructibleMesh* CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UInstancedVoxel* CreateInstancedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UMeshedVoxel* CreateMeshedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+
+	UStaticMesh* BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const;
+
+	UMaterialInterface* CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const;
 
 protected:
 
