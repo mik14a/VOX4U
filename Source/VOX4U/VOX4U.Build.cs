@@ -24,6 +24,8 @@ public class VOX4U : ModuleRules
                 "RHI",
                 "RenderCore",
                 "ShaderCore",
+                "PhysX",
+                "APEX",
             }
         );
 

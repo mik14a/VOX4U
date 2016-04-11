@@ -11,6 +11,7 @@ enum class EVoxImportType
 {
 	StaticMesh UMETA(DisplayName = "Static Mesh"),
 	SkeletalMesh UMETA(DisplayName = "Skeletal Mesh"),
+	DestructibleMesh UMETA(DisplayName = "Destructible Mesh"),
 	InstancedVoxel UMETA(DisplayName = "Instanced Voxel"),
 	MeshedVoxel UMETA(DisplayName = "Meshed Voxel")
 };
@@ -37,13 +38,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = StaticMesh)
 	FMeshBuildSettings BuildSettings;
 
-	UPROPERTY(EditAnywhere, Category = "StaticMesh|InstancedVoxel|MeshedVoxel")
+	UPROPERTY(EditAnywhere, Category = "StaticMesh|DestructibleMesh|MeshedVoxel")
 	uint32 bMergeVertexes : 1;
 
-	UPROPERTY(EditAnywhere, Category = "StaticMesh|MeshedVoxel")
+	UPROPERTY(EditAnywhere, Category = "StaticMesh|DestructibleMesh|MeshedVoxel")
 	class UMaterialInterface* Material;
 
-	UPROPERTY(EditAnywhere, Category = InstancedVoxel)
+	UPROPERTY(EditAnywhere, Category = "InstancedVoxel")
 	class UStaticMesh* Mesh;
 
 public:
