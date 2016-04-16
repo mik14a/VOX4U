@@ -19,7 +19,7 @@ UVoxImportOption::UVoxImportOption()
 	BuildSettings.BuildScale3D = FVector(10.f);
 }
 
-bool UVoxImportOption::GetImportOption(bool& bImportAll)
+bool UVoxImportOption::GetImportOption(bool& bOutImportAll)
 {
 	TSharedPtr<SWindow> ParentWindow;
 
@@ -37,7 +37,7 @@ bool UVoxImportOption::GetImportOption(bool& bImportAll)
 	FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
 	SaveConfig();
 
-	bImportAll = VoxOptionWidget->ShouldImportAll();
+	bOutImportAll = VoxOptionWidget->ShouldImportAll();
 
 	return VoxOptionWidget->ShouldImport();
 }

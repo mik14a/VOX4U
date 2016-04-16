@@ -65,9 +65,9 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 	UObject* Result = nullptr;
 	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 
-	bool ImportAll = false;
-	if (!bShowOption || ImportOption->GetImportOption(ImportAll)) {
-		bShowOption = !ImportAll;
+	bool bImportAll = true;
+	if (!bShowOption || ImportOption->GetImportOption(bImportAll)) {
+		bShowOption = !bImportAll;
 		FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
 		FVox Vox(Reader, ImportOption);
 		switch (ImportOption->VoxImportType) {
