@@ -12,7 +12,6 @@ class UStaticMesh;
 class UVoxImportOption;
 class UVoxel;
 class UInstancedVoxel;
-class UMeshedVoxel;
 class UMaterialInterface;
 struct FVox;
 
@@ -45,8 +44,6 @@ private:
 	UDestructibleMesh* CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UInstancedVoxel* CreateInstancedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
-
-	UMeshedVoxel* CreateMeshedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UStaticMesh* BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const;
 

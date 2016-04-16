@@ -12,9 +12,7 @@
 #include "RawMesh.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
-#include "Voxel.h"
 #include "InstancedVoxel.h"
-#include "MeshedVoxel.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -39,8 +37,7 @@ bool UVoxelFactory::DoesSupportClass(UClass * Class)
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
 		|| Class == UDestructibleMesh::StaticClass()
-		|| Class == UInstancedVoxel::StaticClass()
-		|| Class == UMeshedVoxel::StaticClass();
+		|| Class == UInstancedVoxel::StaticClass();
 }
 
 UClass* UVoxelFactory::ResolveSupportedClass()
@@ -54,8 +51,6 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 		Class = UDestructibleMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::InstancedVoxel) {
 		Class = UInstancedVoxel::StaticClass();
-	} else if (ImportOption->VoxImportType == EVoxImportType::MeshedVoxel) {
-		Class = UMeshedVoxel::StaticClass();
 	}
 	return Class;
 }
@@ -82,9 +77,6 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 			break;
 		case EVoxImportType::InstancedVoxel:
 			Result = CreateInstancedVoxel(InParent, InName, Flags, &Vox);
-			break;
-		case EVoxImportType::MeshedVoxel:
-			Result = CreateMeshedVoxel(InParent, InName, Flags, &Vox);
 			break;
 		default:
 			break;
@@ -157,17 +149,6 @@ UInstancedVoxel* UVoxelFactory::CreateInstancedVoxel(UObject* InParent, FName In
 	Voxel->bXYCenter = ImportOption->bImportXYCenter;
 	Voxel->CalcCellBounds();
 	return Voxel;
-}
-
-UMeshedVoxel* UVoxelFactory::CreateMeshedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
-{
-	UMeshedVoxel* MeshedVoxel = NewObject<UMeshedVoxel>(InParent, InName, Flags | RF_Public);
-	MeshedVoxel->Size = Vox->Size;
-	for (FCell cell : Vox->Voxel) {
-		MeshedVoxel->Voxel.Add(FIntVoxel(cell.X, cell.Y, cell.Z, cell.I));
-	}
-	MeshedVoxel->bXYCenter = ImportOption->bImportXYCenter;
-	return MeshedVoxel;
 }
 
 UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const
