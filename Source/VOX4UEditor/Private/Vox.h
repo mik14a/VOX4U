@@ -7,6 +7,7 @@
 
 struct FRawMesh;
 class UVoxImportOption;
+class UTexture2D;
 
 /**
  * Cell struct for VOXEL chunk

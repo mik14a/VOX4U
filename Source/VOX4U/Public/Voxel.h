@@ -7,7 +7,7 @@
 #include "Object.h"
 #include "UnrealTemplate.h"
 #include "IntVoxel.h"
-#include "InstancedVoxel.generated.h"
+#include "Voxel.generated.h"
 
 class UStaticMesh;
 
@@ -15,7 +15,7 @@ class UStaticMesh;
  * VOXEL Asset
  */
 UCLASS()
-class VOX4U_API UInstancedVoxel : public UObject
+class VOX4U_API UVoxel : public UObject
 {
 	GENERATED_BODY()
 
@@ -38,7 +38,7 @@ public:
 
 public:
 
-	UInstancedVoxel();
+	UVoxel();
 
 #if WITH_EDITOR
 

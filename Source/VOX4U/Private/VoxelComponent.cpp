@@ -1,11 +1,11 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UPrivatePCH.h"
-#include "InstancedVoxelComponent.h"
-#include "InstancedVoxel.h"
+#include "VoxelComponent.h"
+#include "Voxel.h"
 #include "GameFramework/Actor.h"
 
-UInstancedVoxelComponent::UInstancedVoxelComponent()
+UVoxelComponent::UVoxelComponent()
 	: CellBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f)
 	, bHideUnbeheld(true)
 	, Mesh()
@@ -16,7 +16,7 @@ UInstancedVoxelComponent::UInstancedVoxelComponent()
 }
 
 #if WITH_EDITOR
-void UInstancedVoxelComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+void UVoxelComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	static const FName NAME_HideUnbeheld = FName(TEXT("bHideUnbeheld"));
 	static const FName NAME_Mesh = FName(TEXT("Mesh"));
@@ -41,7 +41,7 @@ void UInstancedVoxelComponent::PostEditChangeProperty(FPropertyChangedEvent& Pro
 }
 #endif // WITH_EDITOR
 
-void UInstancedVoxelComponent::SetVoxel(class UInstancedVoxel* InVoxel, bool bForce /*= false*/)
+void UVoxelComponent::SetVoxel(class UVoxel* InVoxel, bool bForce /*= false*/)
 {
 	if (Voxel != InVoxel || bForce) {
 		Voxel = InVoxel;
@@ -49,7 +49,7 @@ void UInstancedVoxelComponent::SetVoxel(class UInstancedVoxel* InVoxel, bool bFo
 	}
 }
 
-void UInstancedVoxelComponent::InitVoxel()
+void UVoxelComponent::InitVoxel()
 {
 	CellBounds = FBoxSphereBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f);
 	Mesh.Empty();
@@ -69,7 +69,7 @@ void UInstancedVoxelComponent::InitVoxel()
 	}
 }
 
-void UInstancedVoxelComponent::AddVoxel()
+void UVoxelComponent::AddVoxel()
 {
 	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
 	for (auto& voxel : Voxel->Voxel) {
@@ -80,14 +80,14 @@ void UInstancedVoxelComponent::AddVoxel()
 	}
 }
 
-void UInstancedVoxelComponent::ClearVoxel()
+void UVoxelComponent::ClearVoxel()
 {
 	for (int32 i = 0; i < Mesh.Num(); ++i) {
 		InstancedStaticMeshComponents[i]->ClearInstances();
 	}
 }
 
-bool UInstancedVoxelComponent::IsUnbeheldVolume(const FIntVector& InVector) const
+bool UVoxelComponent::IsUnbeheldVolume(const FIntVector& InVector) const
 {
 	static const TArray<FIntVector> Direction = TArrayBuilder<FIntVector>()
 		.Add(FIntVector(+0, +0, +1))	// Up
@@ -105,7 +105,7 @@ bool UInstancedVoxelComponent::IsUnbeheldVolume(const FIntVector& InVector) cons
 	return Direction.Num() == count;
 }
 
-bool UInstancedVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace /*= false*/) const
+bool UVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace /*= false*/) const
 {
 	if (!Cell.IsValidIndex(VoxelIndex)) return false;
 	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
@@ -117,7 +117,7 @@ bool UInstancedVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& O
 	return true;
 }
 
-const TArray<UInstancedStaticMeshComponent*>& UInstancedVoxelComponent::GetInstancedStaticMeshComponent() const
+const TArray<UInstancedStaticMeshComponent*>& UVoxelComponent::GetInstancedStaticMeshComponent() const
 {
 	return InstancedStaticMeshComponents;
 }

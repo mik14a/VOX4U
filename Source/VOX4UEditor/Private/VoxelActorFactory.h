@@ -4,13 +4,13 @@
 
 #include "Engine.h"
 #include "ActorFactories/ActorFactory.h"
-#include "InstancedVoxelActorFactory.generated.h"
+#include "VoxelActorFactory.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UInstancedVoxelActorFactory : public UActorFactory
+class UVoxelActorFactory : public UActorFactory
 {
 	GENERATED_UCLASS_BODY()
 

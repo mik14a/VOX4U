@@ -4,16 +4,16 @@
 
 #include "Engine.h"
 #include "IntVoxel.h"
-#include "Components/InstancedStaticMeshComponent.h"
-#include "InstancedVoxelComponent.generated.h"
+#include "VoxelComponent.generated.h"
 
-class UInstancedVoxel;
+class UVoxel;
+class UInstancedStaticMeshComponent;
 
 /**
  *
  */
 UCLASS()
-class VOX4U_API UInstancedVoxelComponent : public UPrimitiveComponent
+class VOX4U_API UVoxelComponent : public UPrimitiveComponent
 {
 	GENERATED_BODY()
 
@@ -32,11 +32,11 @@ protected:
 	TArray<FIntVoxel> Cell;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VoxelComponent)
-	UInstancedVoxel* Voxel;
+	UVoxel* Voxel;
 
 public:
 
-	UInstancedVoxelComponent();
+	UVoxelComponent();
 
 #if WITH_EDITOR
 
@@ -44,7 +44,7 @@ public:
 
 #endif // WITH_EDITOR
 
-	void SetVoxel(class UInstancedVoxel* InVoxel, bool bForce = false);
+	void SetVoxel(class UVoxel* InVoxel, bool bForce = false);
 
 	UFUNCTION(BlueprintCallable, Category = Voxel)
 	void AddVoxel();

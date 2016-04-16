@@ -12,7 +12,7 @@
 #include "RawMesh.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
-#include "InstancedVoxel.h"
+#include "Voxel.h"
 
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -37,7 +37,7 @@ bool UVoxelFactory::DoesSupportClass(UClass * Class)
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
 		|| Class == UDestructibleMesh::StaticClass()
-		|| Class == UInstancedVoxel::StaticClass();
+		|| Class == UVoxel::StaticClass();
 }
 
 UClass* UVoxelFactory::ResolveSupportedClass()
@@ -49,8 +49,8 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 		Class = USkeletalMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::DestructibleMesh) {
 		Class = UDestructibleMesh::StaticClass();
-	} else if (ImportOption->VoxImportType == EVoxImportType::InstancedVoxel) {
-		Class = UInstancedVoxel::StaticClass();
+	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
+		Class = UVoxel::StaticClass();
 	}
 	return Class;
 }
@@ -75,8 +75,8 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 		case EVoxImportType::DestructibleMesh:
 			Result = CreateDestructibleMesh(InParent, InName, Flags, &Vox);
 			break;
-		case EVoxImportType::InstancedVoxel:
-			Result = CreateInstancedVoxel(InParent, InName, Flags, &Vox);
+		case EVoxImportType::Voxel:
+			Result = CreateVoxel(InParent, InName, Flags, &Vox);
 			break;
 		default:
 			break;
@@ -131,9 +131,9 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	return DestructibleMesh;
 }
 
-UInstancedVoxel* UVoxelFactory::CreateInstancedVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	UInstancedVoxel* Voxel = NewObject<UInstancedVoxel>(InParent, InName, Flags | RF_Public);
+	UVoxel* Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
 	Voxel->Size = Vox->Size;
 	TArray<uint8> Palette;
 	for (FCell cell : Vox->Voxel) {

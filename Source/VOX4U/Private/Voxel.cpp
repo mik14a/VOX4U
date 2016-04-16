@@ -1,9 +1,9 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UPrivatePCH.h"
-#include "InstancedVoxel.h"
+#include "Voxel.h"
 
-UInstancedVoxel::UInstancedVoxel()
+UVoxel::UVoxel()
 	: Size(ForceInit)
 	, CellBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f)
 	, bXYCenter(true)
@@ -14,7 +14,7 @@ UInstancedVoxel::UInstancedVoxel()
 
 #if WITH_EDITOR
 
-void UInstancedVoxel::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+void UVoxel::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
 	static const FName NAME_Mesh = FName(TEXT("Mesh"));
 	if (PropertyChangedEvent.Property) {
@@ -24,7 +24,7 @@ void UInstancedVoxel::PostEditChangeProperty(struct FPropertyChangedEvent& Prope
 	}
 }
 
-void UInstancedVoxel::CalcCellBounds()
+void UVoxel::CalcCellBounds()
 {
 	FBoxSphereBounds Bounds(ForceInit);
 	for (const auto* Mesh : this->Mesh.FilterByPredicate([](UStaticMesh* m) { return !!m; })) {

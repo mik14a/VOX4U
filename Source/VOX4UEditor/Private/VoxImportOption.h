@@ -12,7 +12,7 @@ enum class EVoxImportType
 	StaticMesh UMETA(DisplayName = "Static Mesh"),
 	SkeletalMesh UMETA(DisplayName = "Skeletal Mesh"),
 	DestructibleMesh UMETA(DisplayName = "Destructible Mesh"),
-	InstancedVoxel UMETA(DisplayName = "Instanced Voxel"),
+	Voxel UMETA(DisplayName = "Voxel"),
 };
 
 /**
@@ -43,7 +43,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "StaticMesh|DestructibleMesh")
 	class UMaterialInterface* Material;
 
-	UPROPERTY(EditAnywhere, Category = "InstancedVoxel")
+	UPROPERTY(EditAnywhere, Category = "Voxel")
 	class UStaticMesh* Mesh;
 
 public:
