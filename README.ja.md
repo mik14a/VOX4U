@@ -12,8 +12,8 @@ VOX ファイルを UE4 にドラッグ＆ドロップするか，インポー�
 
 現在次の形式のインポートに対応しています．
 * StaticMesh
-* MeshedVoxel(実験)
-* InstancedVoxel
+* DestructibleMesh
+* Voxel
 
 ### インポートオプション
 
@@ -27,36 +27,33 @@ VOX ファイルを UE4 にドラッグ＆ドロップするか，インポー�
 * ImportXYCenter
   * XY 平面上での中心にデータをインポートします．
 * BuildSettings
-  * メッシュをビルドする設定です．この設定は，後で StaticMesh アセットの詳細から変更可能です．
-  デフォルトではスケールが10倍，UseMikkTSpace が false になっています．
+  * メッシュをビルドする設定です．デフォルトではスケールが10倍，UseMikkTSpace が false になっています．
 * MergeVertexes
   * 共有頂点データを作成します．
 * Material
-  * マテリアルを指定します．
-  MagicaVoxel に同梱されている pal フォルダにある png ファイルををインポートしたデータを使用する事を想定しています．
+  * マテリアルを指定します．MagicaVoxel からエクスポートしたパレットを使用します．設定されていなければ自動で作成されます．
 
-### MeshedVoxel
+### DestructibleMesh
 * ImportXForward
-  * インポート時 UE4 でのフォワードに整えます．
+  * インポート時 MagicaVoxel の Y 軸を UE4 での X 軸に変更します．
 * ImportXYCenter
-  * XY平面上での中心にデータをインポートします．
+  * XY 平面上での中心にデータをインポートします．
+* BuildSettings
+  * メッシュをビルドする設定です．デフォルトではスケールが10倍，UseMikkTSpace が false になっています．
+* Material
+  * マテリアルを指定します．MagicaVoxel からエクスポートしたパレットを使用します．設定されていなければ自動で作成されます．
 
-### InstancedVoxel
+### Voxel
 * ImportXForward
-  * インポート時 UE4 でのフォワードに整えます．
+  * インポート時 MagicaVoxel の Y 軸を UE4 での X 軸に変更します．
 * ImportXYCenter
-  * XY平面上での中心にデータをインポートします．
+  * XY 平面上での中心にデータをインポートします．
 * Mesh
   * ボクセルを構成するメッシュを指定します．
-  指定されたメッシュが1ボクセルになるようにインスタンス表示されます．
 
 ## インストール
 
-{ProjectName}/Plugins/VOX4U にソースをチェックアウトしてビルド，
-もしくはバイナリリリースからダウンロードしたファイルを置いてください．
-
-{ProjectName}/Plugins/VOX4U/Content に 1uu サイズのキューブがあります．
-Voxel 形式のアセットを使用した場合は Mesh に指定すれば，形状の確認を行えます．
+{ProjectName}/Plugins/VOX4U にソースをチェックアウトしてビルド，もしくはバイナリリリースからダウンロードしたファイルを置いてください．
 
 ## ライセンス
 
