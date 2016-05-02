@@ -205,6 +205,17 @@ static const uint32 Polygons[2][3] = {
 };
 
 /**
+ * 2 <- 1
+ * | \  ^
+ * .  \ |
+ * 3 -> 0
+ */
+static FVector2D TextureCoord[2][3] = {
+	{ FVector2D(1.f, 1.f), FVector2D(1.f, 0.f), FVector2D(0.f, 0.f) },
+	{ FVector2D(0.f, 0.f), FVector2D(0.f, 1.f), FVector2D(1.f, 1.f) },
+};
+
+/**
  * CreateRawMesh
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
@@ -318,4 +329,24 @@ bool FVox::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* Import
 	OutTexture->UpdateResource();
 	OutTexture->PostEditChange();
 	return true;
+}
+
+bool FVox::CreateMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption)
+{
+	for (int VertexIndex = 0; VertexIndex < 8; ++VertexIndex) {
+		OutRawMesh.VertexPositions.Add(Vertexes[VertexIndex] - FVector(0.5f, 0.5f, 0.5f));
+	}
+	for (int FaceIndex = 0; FaceIndex < 6; ++FaceIndex) {
+		for (int PolygonIndex = 0; PolygonIndex < 2; ++PolygonIndex) {
+			OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][0]]);
+			OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][1]]);
+			OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][2]]);
+			OutRawMesh.WedgeTexCoords[0].Add(TextureCoord[PolygonIndex][0]);
+			OutRawMesh.WedgeTexCoords[0].Add(TextureCoord[PolygonIndex][1]);
+			OutRawMesh.WedgeTexCoords[0].Add(TextureCoord[PolygonIndex][2]);
+			OutRawMesh.FaceMaterialIndices.Add(0);
+			OutRawMesh.FaceSmoothingMasks.Add(0);
+		}
+	}
+	return OutRawMesh.IsValidOrFixable();
 }

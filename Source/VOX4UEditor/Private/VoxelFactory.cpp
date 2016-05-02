@@ -8,7 +8,11 @@
 #include "Engine/DestructibleMesh.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
+#include "Materials/MaterialExpressionConstant4Vector.h"
 #include "Materials/MaterialExpressionTextureSample.h"
+#include "Materials/MaterialExpressionVectorParameter.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicsEngine/BoxElem.h"
 #include "RawMesh.h"
 #include "Vox.h"
 #include "VoxImportOption.h"
@@ -139,8 +143,35 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 	for (FCell cell : Vox->Voxel) {
 		Palette.AddUnique(cell.I);
 	}
-	for (uint8 I : Palette) {
-		Voxel->Mesh.Add(ImportOption->Mesh);
+
+	UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
+	Material->TwoSided = false;
+	Material->SetShadingModel(MSM_DefaultLit);
+	UMaterialExpressionVectorParameter* Expression = NewObject<UMaterialExpressionVectorParameter>(Material);
+	Expression->ParameterName = TEXT("Color");
+	Expression->DefaultValue = FLinearColor::Gray;
+	Expression->MaterialExpressionEditorX = -250;
+	Material->Expressions.Add(Expression);
+	Material->BaseColor.Expression = Expression;
+	Material->PostEditChange();
+
+	for (uint8 color : Palette) {
+		UMaterialInstanceConstant* MaterialInstance = NewObject<UMaterialInstanceConstant>(InParent, *FString::Printf(TEXT("%s_MI%d"), *InName.GetPlainNameString(), color), Flags | RF_Public);
+		MaterialInstance->SetParentEditorOnly(Material);
+		FLinearColor LinearColor = FLinearColor::FromSRGBColor(Vox->Palette[color - 1]);
+		MaterialInstance->SetVectorParameterValueEditorOnly(TEXT("Color"), LinearColor);
+
+		FRawMesh RawMesh;
+		FVox::CreateMesh(RawMesh, ImportOption);
+		UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, *FString::Printf(TEXT("%s_SM%d"), *InName.GetPlainNameString(), color), Flags | RF_Public);
+		StaticMesh->Materials.Add(MaterialInstance);
+		BuildStaticMesh(StaticMesh, RawMesh);
+
+		const FVector& Scale = ImportOption->BuildSettings.BuildScale3D;
+		FKBoxElem BoxElem(Scale.X, Scale.Y, Scale.Z);
+		StaticMesh->BodySetup->AggGeom.BoxElems.Add(BoxElem);
+
+		Voxel->Mesh.Add(StaticMesh);
 	}
 	for (FCell cell : Vox->Voxel) {
 		Voxel->Voxel.Add(FIntVoxel(cell.X, cell.Y, cell.Z, Palette.IndexOfByKey(cell.I)));
