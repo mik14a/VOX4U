@@ -167,7 +167,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		StaticMesh->Materials.Add(MaterialInstance);
 		BuildStaticMesh(StaticMesh, RawMesh);
 
-		const FVector& Scale = ImportOption->BuildSettings.BuildScale3D;
+		const FVector& Scale = ImportOption->GetBuildSettings().BuildScale3D;
 		FKBoxElem BoxElem(Scale.X, Scale.Y, Scale.Z);
 		StaticMesh->BodySetup->AggGeom.BoxElems.Add(BoxElem);
 
@@ -186,7 +186,7 @@ UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh
 {
 	check(OutStaticMesh);
 	FStaticMeshSourceModel* StaticMeshSourceModel = new(OutStaticMesh->SourceModels) FStaticMeshSourceModel();
-	StaticMeshSourceModel->BuildSettings = ImportOption->BuildSettings;
+	StaticMeshSourceModel->BuildSettings = ImportOption->GetBuildSettings();
 	StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
 	TArray<FText> Errors;
 	OutStaticMesh->Build(false, &Errors);
@@ -195,21 +195,16 @@ UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh
 
 UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const
 {
-	UMaterialInterface* Material = ImportOption->Material ? ImportOption->Material : [&] {
-		UMaterialInterface* MaterialInterface = nullptr;
-		UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);
-		if (Vox->CreateTexture(Texture, ImportOption)) {
-			UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
-			Material->TwoSided = false;
-			Material->SetShadingModel(MSM_DefaultLit);
-			UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);
-			Material->Expressions.Add(Expression);
-			Material->BaseColor.Expression = Expression;
-			Expression->Texture = Texture;
-			Material->PostEditChange();
-			MaterialInterface = Material;
-		}
-		return MaterialInterface ? MaterialInterface : UMaterial::GetDefaultMaterial(MD_Surface);
-	}();
+	UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
+	UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);
+	if (Vox->CreateTexture(Texture, ImportOption)) {
+		Material->TwoSided = false;
+		Material->SetShadingModel(MSM_DefaultLit);
+		UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);
+		Material->Expressions.Add(Expression);
+		Material->BaseColor.Expression = Expression;
+		Expression->Texture = Texture;
+		Material->PostEditChange();
+	}
 	return Material;
 }

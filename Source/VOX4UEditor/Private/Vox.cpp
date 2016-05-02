@@ -234,11 +234,7 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
 			TArray<uint32> VertexPositionIndex;
 			for (int VertexIndex = 0; VertexIndex < 4; ++VertexIndex) {
 				FVector v = Origin + Vertexes[Faces[FaceIndex][VertexIndex]];
-				int32 vpi;
-				if (!ImportOption->bMergeVertexes
-					|| INDEX_NONE == (vpi = OutRawMesh.VertexPositions.IndexOfByKey(v))) {
-					vpi = OutRawMesh.VertexPositions.Add(v);
-				}
+				int32 vpi = OutRawMesh.VertexPositions.AddUnique(v);
 				VertexPositionIndex.Add(vpi);
 			}
 

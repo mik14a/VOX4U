@@ -34,22 +34,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = Generic)
 	uint32 bImportXYCenter : 1;
 
-	UPROPERTY(EditAnywhere, Category = StaticMesh)
-	FMeshBuildSettings BuildSettings;
-
-	UPROPERTY(EditAnywhere, Category = "StaticMesh|DestructibleMesh")
-	uint32 bMergeVertexes : 1;
-
-	UPROPERTY(EditAnywhere, Category = "StaticMesh|DestructibleMesh")
-	class UMaterialInterface* Material;
-
-	UPROPERTY(EditAnywhere, Category = "Voxel")
-	class UStaticMesh* Mesh;
+	UPROPERTY(EditAnywhere, Category = Generic)
+	float Scale;
 
 public:
 
 	UVoxImportOption();
 
 	bool GetImportOption(bool& bOutImportAll);
+
+	const FMeshBuildSettings& GetBuildSettings() const { 
+		return BuildSettings;
+	}
+
+private:
+
+	FMeshBuildSettings BuildSettings;
 
 };

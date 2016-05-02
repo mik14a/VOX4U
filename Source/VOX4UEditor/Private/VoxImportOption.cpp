@@ -11,12 +11,10 @@ UVoxImportOption::UVoxImportOption()
 	: VoxImportType(EVoxImportType::StaticMesh)
 	, bImportXForward(true)
 	, bImportXYCenter(true)
-	, bMergeVertexes(true)
-	, Material(nullptr)
-	, Mesh(nullptr)
+	, Scale(10.f)
 {
 	BuildSettings.bUseMikkTSpace = false;
-	BuildSettings.BuildScale3D = FVector(10.f);
+	BuildSettings.BuildScale3D = FVector(Scale);
 }
 
 bool UVoxImportOption::GetImportOption(bool& bOutImportAll)
@@ -37,6 +35,7 @@ bool UVoxImportOption::GetImportOption(bool& bOutImportAll)
 	FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
 	SaveConfig();
 
+	BuildSettings.BuildScale3D = FVector(Scale);
 	bOutImportAll = VoxOptionWidget->ShouldImportAll();
 
 	return VoxOptionWidget->ShouldImport();
