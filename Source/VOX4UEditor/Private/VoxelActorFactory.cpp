@@ -26,6 +26,7 @@ void UVoxelActorFactory::PostSpawnActor(UObject* Asset, AActor* NewActor)
 		VoxelComponent->SetVoxel(Voxel, true);
 		VoxelComponent->RegisterComponent();
 	}
+	VoxelActor->PostEditChange();
 }
 
 void UVoxelActorFactory::PostCreateBlueprint(UObject* Asset, AActor* CDO)

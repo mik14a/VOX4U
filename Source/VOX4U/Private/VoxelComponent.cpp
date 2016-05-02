@@ -49,6 +49,11 @@ void UVoxelComponent::SetVoxel(class UVoxel* InVoxel, bool bForce /*= false*/)
 	}
 }
 
+const UVoxel* UVoxelComponent::GetVoxel() const
+{
+	return Voxel;
+}
+
 void UVoxelComponent::InitVoxel()
 {
 	CellBounds = FBoxSphereBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f);
@@ -115,6 +120,15 @@ bool UVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTr
 		OutVoxelTransform = OutVoxelTransform * ComponentToWorld;
 	}
 	return true;
+}
+
+FBoxSphereBounds UVoxelComponent::CalcBounds(const FTransform& LocalToWorld) const
+{
+	FBoxSphereBounds Bounds = FBoxSphereBounds(ForceInit);
+	for (auto* InstancedStaticMeshComponent : InstancedStaticMeshComponents) {
+		Bounds = Bounds + InstancedStaticMeshComponent->CalcBounds(LocalToWorld);
+	}
+	return Bounds;
 }
 
 const TArray<UInstancedStaticMeshComponent*>& UVoxelComponent::GetInstancedStaticMeshComponent() const

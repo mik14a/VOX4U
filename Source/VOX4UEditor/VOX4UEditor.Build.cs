@@ -22,6 +22,7 @@ public class VOX4UEditor : ModuleRules
 
         PublicDependencyModuleNames.AddRange(
             new string[] {
+                "UnrealEd",
                 "CoreUObject",
                 "Engine",
                 "Core",

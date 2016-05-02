@@ -46,6 +46,8 @@ public:
 
 	void SetVoxel(class UVoxel* InVoxel, bool bForce = false);
 
+	const UVoxel* GetVoxel() const;
+
 	UFUNCTION(BlueprintCallable, Category = Voxel)
 	void AddVoxel();
 
@@ -57,6 +59,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Voxel)
 	bool GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace = false) const;
+
+	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
 
 	const TArray<UInstancedStaticMeshComponent*>& GetInstancedStaticMeshComponent() const;
 

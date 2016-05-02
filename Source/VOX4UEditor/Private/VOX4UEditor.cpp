@@ -1,12 +1,15 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UEditorPrivatePCH.h"
+#include "ThumbnailRendering/ThumbnailManager.h"
+#include "Voxel.h"
+#include "VoxelThumbnailRenderer.h"
 
 #define LOCTEXT_NAMESPACE "FVOX4UEditorModule"
 
 void FVOX4UEditorModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	UThumbnailManager::Get().RegisterCustomRenderer(UVoxel::StaticClass(), UVoxelThumbnailRenderer::StaticClass());
 }
 
 void FVOX4UEditorModule::ShutdownModule()
