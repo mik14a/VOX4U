@@ -41,12 +41,10 @@ class UVoxelThumbnailRenderer : public UDefaultSizedThumbnailRenderer
 	
 public:
 
-	UVoxelThumbnailRenderer();
-
 	virtual void Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* Viewport, FCanvas* Canvas) override;
 
 private:
 
-	FVoxelThumbnailScene* ThumbnailScene;
+	TMap<UVoxel*, FVoxelThumbnailScene*> ThumbnailScenes;
 
 };

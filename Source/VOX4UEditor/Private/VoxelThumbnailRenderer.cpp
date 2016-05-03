@@ -3,6 +3,7 @@
 #include "VOX4UEditorPrivatePCH.h"
 #include "VoxelThumbnailRenderer.h"
 #include "EngineModule.h"
+#include "Voxel.h"
 #include "VoxelActor.h"
 
 FVoxelThumbnailScene::FVoxelThumbnailScene()
@@ -48,19 +49,16 @@ void FVoxelThumbnailScene::GetViewMatrixParameters(const float InFOVDegrees, FVe
 	OutOrbitZoom = TargetDistance + ThumbnailInfo->OrbitZoom;
 }
 
-UVoxelThumbnailRenderer::UVoxelThumbnailRenderer()
-	: ThumbnailScene(nullptr)
-{
-}
-
 void UVoxelThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* Viewport, FCanvas* Canvas)
 {
 	UVoxel* Voxel = Cast<UVoxel>(Object);
 	if (Voxel && !Voxel->IsPendingKill()) {
+		FVoxelThumbnailScene* ThumbnailScene = ThumbnailScenes.FindRef(Voxel);
 		if (!ThumbnailScene) {
 			ThumbnailScene = new FVoxelThumbnailScene();
+			ThumbnailScene->SetVoxel(Voxel);
+			ThumbnailScenes.Add(Voxel, ThumbnailScene);
 		}
-		ThumbnailScene->SetVoxel(Voxel);
 		ThumbnailScene->GetScene()->UpdateSpeedTreeWind(0.0);
 		FSceneViewFamilyContext ViewFamily(FSceneViewFamily::ConstructionValues(Viewport, ThumbnailScene->GetScene(), FEngineShowFlags(ESFIM_Game))
 			.SetWorldTimes(FApp::GetCurrentTime() - GStartTime, FApp::GetDeltaTime(), FApp::GetCurrentTime() - GStartTime));
