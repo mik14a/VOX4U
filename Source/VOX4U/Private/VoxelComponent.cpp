@@ -38,6 +38,7 @@ void UVoxelComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 			SetVoxel(Voxel, true);
 		}
 	}
+	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 #endif // WITH_EDITOR
 
@@ -67,7 +68,7 @@ void UVoxelComponent::InitVoxel()
 		for (int32 i = 0; i < Mesh.Num(); ++i) {
 			UInstancedStaticMeshComponent* Proxy = NewObject<UInstancedStaticMeshComponent>(this, NAME_None, RF_Transactional);
 			Proxy->SetStaticMesh(Mesh[i]);
-			Proxy->AttachTo(GetOwner()->GetRootComponent(), NAME_None);
+			Proxy->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform, NAME_None);
 			InstancedStaticMeshComponents.Add(Proxy);
 		}
 		AddVoxel();

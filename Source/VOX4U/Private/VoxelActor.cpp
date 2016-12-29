@@ -9,7 +9,7 @@ AVoxelActor::AVoxelActor(const FObjectInitializer& ObjectInitializer /*= FObject
 	: Super(ObjectInitializer)
 {
 	VoxelComponent = CreateDefaultSubobject<UVoxelComponent>("VoxelComponent");
-	VoxelComponent->AttachTo(RootComponent);
+	VoxelComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 UVoxelComponent* AVoxelActor::GetVoxelComponent() const
