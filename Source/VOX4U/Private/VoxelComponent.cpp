@@ -1,6 +1,5 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UPrivatePCH.h"
 #include "VoxelComponent.h"
 #include "Voxel.h"
 #include "GameFramework/Actor.h"
@@ -118,7 +117,7 @@ bool UVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTr
 	FVector Translation = FVector(Cell[VoxelIndex]) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent - Offset;
 	OutVoxelTransform = FTransform(FQuat::Identity, Translation, FVector(1.f));
 	if (bWorldSpace) {
-		OutVoxelTransform = OutVoxelTransform * ComponentToWorld;
+		OutVoxelTransform = OutVoxelTransform * GetComponentToWorld();
 	}
 	return true;
 }

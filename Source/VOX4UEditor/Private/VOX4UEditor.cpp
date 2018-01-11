@@ -1,6 +1,6 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UEditorPrivatePCH.h"
+#include "VOX4UEditor.h"
 #include "ThumbnailRendering/ThumbnailManager.h"
 #include "Voxel.h"
 #include "VoxelThumbnailRenderer.h"

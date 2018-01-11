@@ -4,7 +4,9 @@ using UnrealBuildTool;
 
 public class VOX4UEditor : ModuleRules
 {
-    public VOX4UEditor(TargetInfo Target) {
+    public VOX4UEditor(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicIncludePaths.AddRange(
             new string[] {
@@ -40,6 +42,7 @@ public class VOX4UEditor : ModuleRules
         PrivateDependencyModuleNames.AddRange(
             new string[] {
                 "VOX4U",
+                "ApexDestruction",
             }
         );
 

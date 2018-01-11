@@ -5,6 +5,7 @@
 #include "Factories/Factory.h"
 #include "Engine.h"
 #include "RawMesh.h"
+#include "DestructibleMesh.h"
 #include "VoxelFactory.generated.h"
 
 class USkeletalMesh;

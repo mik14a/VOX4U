@@ -4,7 +4,9 @@ using UnrealBuildTool;
 
 public class VOX4U : ModuleRules
 {
-    public VOX4U(TargetInfo Target) {
+    public VOX4U(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicIncludePaths.AddRange(
             new string[] {

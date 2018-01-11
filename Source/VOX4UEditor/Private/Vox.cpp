@@ -1,6 +1,5 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UEditorPrivatePCH.h"
 #include "Vox.h"
 #include "RawMesh.h"
 #include "VoxImportOption.h"
@@ -113,6 +112,8 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 			}
 		} else {
 			UE_LOG(LogVox, Error, TEXT("unknown chunk. [ %s ]"), &ChunkId);
+			// TODO
+			break;
 		}
 	} while (!Ar.AtEnd());
 
