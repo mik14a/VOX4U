@@ -26,7 +26,7 @@ class UVoxImportOption : public UObject
 public:
 
 	UPROPERTY(EditAnywhere, Category = ImportType)
-	TEnumAsByte<EVoxImportType> VoxImportType;
+	EVoxImportType VoxImportType;
 
 	UPROPERTY(EditAnywhere, Category = Generic)
 	uint32 bImportXForward : 1;

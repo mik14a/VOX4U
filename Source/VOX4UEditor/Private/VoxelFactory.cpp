@@ -1,11 +1,10 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UEditorPrivatePCH.h"
 #include "VoxelFactory.h"
 #include "ApexDestructibleAssetImport.h"
 #include "Editor.h"
 #include "Engine.h"
-#include "Engine/DestructibleMesh.h"
+#include "DestructibleMesh.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialExpressionConstant4Vector.h"
@@ -96,7 +95,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	FRawMesh RawMesh;
 	Vox->CreateRawMesh(RawMesh, ImportOption);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
-	StaticMesh->Materials.Add(Material);
+	StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
 	BuildStaticMesh(StaticMesh, RawMesh);
 	return StaticMesh;
 }
@@ -115,7 +114,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	Vox->CreateRawMesh(RawMesh, ImportOption);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	UStaticMesh* RootMesh = NewObject<UStaticMesh>();
-	RootMesh->Materials.Add(Material);
+	RootMesh->StaticMaterials.Add(FStaticMaterial(Material));
 	BuildStaticMesh(RootMesh, RawMesh);
 	DestructibleMesh->SourceStaticMesh = RootMesh;
 
@@ -124,7 +123,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	TArray<UStaticMesh*> FractureMeshes;
 	for (FRawMesh& RawMesh : RawMeshes) {
 		UStaticMesh* FructureMesh = NewObject<UStaticMesh>();
-		FructureMesh->Materials.Add(Material);
+		FructureMesh->StaticMaterials.Add(FStaticMaterial(Material));
 		BuildStaticMesh(FructureMesh, RawMesh);
 		FractureMeshes.Add(FructureMesh);
 	}
@@ -164,7 +163,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		FRawMesh RawMesh;
 		FVox::CreateMesh(RawMesh, ImportOption);
 		UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, *FString::Printf(TEXT("%s_SM%d"), *InName.GetPlainNameString(), color), Flags | RF_Public);
-		StaticMesh->Materials.Add(MaterialInstance);
+		StaticMesh->StaticMaterials.Add(FStaticMaterial(MaterialInstance));
 		BuildStaticMesh(StaticMesh, RawMesh);
 
 		const FVector& Scale = ImportOption->GetBuildSettings().BuildScale3D;

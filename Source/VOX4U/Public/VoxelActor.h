@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Engine.h"
-#include "UObjectGlobals.h"
 #include "GameFramework/Actor.h"
 #include "VoxelActor.generated.h"
 

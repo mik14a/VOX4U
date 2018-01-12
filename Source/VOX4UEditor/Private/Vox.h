@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "ArchiveBase.h"
 #include "Vox.generated.h"
 
 struct FRawMesh;

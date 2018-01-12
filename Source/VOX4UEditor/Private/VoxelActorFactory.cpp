@@ -1,6 +1,5 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UEditorPrivatePCH.h"
 #include "VoxelActorFactory.h"
 #include "Voxel.h"
 #include "VoxelActor.h"

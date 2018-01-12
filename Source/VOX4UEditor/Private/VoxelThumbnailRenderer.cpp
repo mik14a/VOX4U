@@ -1,6 +1,5 @@
 // Copyright 2016 mik14a / Admix Network. All Rights Reserved.
 
-#include "VOX4UEditorPrivatePCH.h"
 #include "VoxelThumbnailRenderer.h"
 #include "EngineModule.h"
 #include "Voxel.h"

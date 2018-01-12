@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Engine.h"
-#include "UObject.h"
 #include "Object.h"
 #include "UnrealTemplate.h"
 #include "IntVoxel.h"
