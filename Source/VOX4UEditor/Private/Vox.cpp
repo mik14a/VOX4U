@@ -77,6 +77,11 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 		Ar << TotalSizeOfChildrenChunks;
 		if (0 == FCStringAnsi::Strncmp("MAIN", ChunkId, 4)) {
 			UE_LOG(LogVox, Verbose, TEXT("MAIN: "));
+		} else if (0 == FCStringAnsi::Strncmp("PACK", ChunkId, 4)) {
+			UE_LOG(LogVox, Verbose, TEXT("PACK:"));
+			int NumModels;
+			Ar << NumModels;
+			UE_LOG(LogVox, Verbose, TEXT("      NumModels %d"), NumModels);
 		} else if (0 == FCStringAnsi::Strncmp("SIZE", ChunkId, 4)) {
 			Ar << Size.X << Size.Y << Size.Z;
 			if (ImportOption->bImportXForward) {
@@ -111,8 +116,8 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 				Palette.Add(Color);
 			}
 		} else {
-			UE_LOG(LogVox, Error, TEXT("unknown chunk. [ %s ]"), &ChunkId);
-			// TODO
+			FString UnknownChunk(ChunkId);
+			UE_LOG(LogVox, Error, TEXT("Unknown chunk. [ %s ]"), *UnknownChunk);
 			break;
 		}
 	} while (!Ar.AtEnd());
