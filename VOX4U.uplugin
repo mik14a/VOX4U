@@ -1,7 +1,7 @@
 {
     "FileVersion": 3,
     "Version": 1,
-    "VersionName": "0.1",
+    "VersionName": "0.2",
     "FriendlyName": "VOX4U",
     "Description": "MagicaVoxel VOX Format import plugin",
     "Category": "Editor",
@@ -11,14 +11,25 @@
     "MarketplaceURL": "",
     "SupportURL": "https://github.com/mik14a/VOX4U",
     "EnabledByDefault": true,
-    "CanContainContent": false,
+    "CanContainContent": true,
     "IsBetaVersion": true,
     "Installed": false,
     "Modules": [
         {
             "Name": "VOX4U",
+            "Type": "Runtime",
+            "LoadingPhase": "PreDefault"
+        },
+        {
+            "Name": "VOX4UEditor",
             "Type": "Editor",
             "LoadingPhase": "Default"
         }
-    ]
+    ],
+	  "Plugins": [
+      {
+        "Name": "ApexDestruction",
+        "Enabled": true
+      }
+	  ]
 }

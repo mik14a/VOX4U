@@ -1,9 +1,8 @@
 {
-	"Changelist" : 2946394,
-	"BuildId" : "d1bb9f35-0de6-4f3a-9f0f-b00c317e4691",
-	"Modules" : 
+	"BuildId": "3709383",
+	"Modules": 
 	{
-		"VOX4U" : "UE4Editor-VOX4U.dll",
-		"VOX4UEditor" : "UE4Editor-VOX4UEditor.dll"
+		"VOX4U": "UE4Editor-VOX4U.dll",
+		"VOX4UEditor": "UE4Editor-VOX4UEditor.dll"
 	}
 }
