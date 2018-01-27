@@ -2,6 +2,7 @@
 
 #include "Vox.h"
 #include "RawMesh.h"
+#include "MonotoneMesh.h"
 #include "VoxImportOption.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
@@ -271,6 +272,17 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
 	check(OutRawMesh.IsValidOrFixable());
 
 	return true;
+}
+
+/**
+ * CreateOptimizedRawMesh
+ * @param OutRawMesh Out raw mesh
+ * @return Result
+ */
+bool FVox::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
+{
+	MonotoneMesh mesher(this);
+	return mesher.CreateRawMesh(OutRawMesh, ImportOption);
 }
 
 /**
