@@ -12,7 +12,6 @@ UVoxImportOption::UVoxImportOption()
 	, bImportXYCenter(true)
 	, Scale(10.f)
 {
-	BuildSettings.bUseMikkTSpace = false;
 	BuildSettings.BuildScale3D = FVector(Scale);
 }
 
@@ -20,7 +19,7 @@ bool UVoxImportOption::GetImportOption(bool& bOutImportAll)
 {
 	TSharedPtr<SWindow> ParentWindow;
 
- 	if (FModuleManager::Get().IsModuleLoaded("MainFrame")) {
+	if (FModuleManager::Get().IsModuleLoaded("MainFrame")) {
 		IMainFrameModule& MainFrame = FModuleManager::LoadModuleChecked<IMainFrameModule>("MainFrame");
 		ParentWindow = MainFrame.GetParentWindow();
 	}
