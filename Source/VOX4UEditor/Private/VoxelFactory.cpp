@@ -93,7 +93,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 {
 	UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
 	FRawMesh RawMesh;
-	Vox->CreateRawMesh(RawMesh, ImportOption);
+	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
 	BuildStaticMesh(StaticMesh, RawMesh);

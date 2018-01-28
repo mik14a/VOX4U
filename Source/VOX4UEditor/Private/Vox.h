@@ -95,6 +95,9 @@ public:
 	/** Create FRawMesh from Voxel */
 	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
 
+	/** Create FRawMesh from Voxel use Monotone mesh generation */
+	bool CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
+
 	/** Create raw meshes from Voxel */
 	bool CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const;
 
