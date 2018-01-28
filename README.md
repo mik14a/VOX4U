@@ -17,13 +17,19 @@ No need to use digital content creation tool.
 
 ### StaticMesh
 
-![StaticMesh](https://pbs.twimg.com/media/CgKuB12UIAA9JBs.jpg)
+![StaticMesh](https://pbs.twimg.com/media/DUm7N_UVMAA5aw1.jpg)
 
 Generate static mesh from voxel data,
 texture from vox file or default palette
 and generate simple material for the mesh.
 
 Can layout to the world.
+
+#### Mesh optimized
+
+![optimized](https://pbs.twimg.com/media/DUm7PYxVwAIZzeZ.jpg)
+
+Mesh generation use [a monotone decomposition algorithm](https://0fps.net/2012/07/07/meshing-minecraft-part-2/).
 
 ### DestructibleMesh
 
@@ -59,7 +65,7 @@ Drag & Drop vox file to content panel or open import dialog and select MagicaVox
 git clone https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U
 ```
 
-or 
+or
 
 ```
 git submodule add https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U
