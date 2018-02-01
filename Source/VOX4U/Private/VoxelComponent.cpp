@@ -1,4 +1,4 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelComponent.h"
 #include "Voxel.h"
@@ -78,10 +78,10 @@ void UVoxelComponent::AddVoxel()
 {
 	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
 	for (auto& voxel : Voxel->Voxel) {
-		if (bHideUnbeheld && IsUnbeheldVolume(voxel)) continue;
-		FVector Translation = FVector(voxel) * CellBounds.BoxExtent * 2 -CellBounds.Origin + CellBounds.BoxExtent - Offset;
+		if (bHideUnbeheld && IsUnbeheldVolume(voxel.Key)) continue;
+		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 -CellBounds.Origin + CellBounds.BoxExtent - Offset;
 		FTransform Transform(FQuat::Identity, Translation, FVector(1.f));
-		InstancedStaticMeshComponents[voxel.I]->AddInstance(Transform);
+		InstancedStaticMeshComponents[voxel.Value]->AddInstance(Transform);
 	}
 }
 
@@ -103,18 +103,18 @@ bool UVoxelComponent::IsUnbeheldVolume(const FIntVector& InVector) const
 		.Add(FIntVector(+0, -1, +0));	// Left
 	int count = 0;
 	for (int i = 0; i < Direction.Num(); ++i) {
-		if (INDEX_NONE != Voxel->Voxel.IndexOfByKey(InVector + Direction[i])) {
+		if (Voxel->Voxel.Contains(InVector + Direction[i])) {
 			++count;
 		}
 	}
 	return Direction.Num() == count;
 }
 
-bool UVoxelComponent::GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace /*= false*/) const
+bool UVoxelComponent::GetVoxelTransform(const FIntVector& InVector, FTransform& OutVoxelTransform, bool bWorldSpace /*= false*/) const
 {
-	if (!Cell.IsValidIndex(VoxelIndex)) return false;
+	if (!Cell.Contains(InVector)) return false;
 	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
-	FVector Translation = FVector(Cell[VoxelIndex]) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent - Offset;
+	FVector Translation = FVector(InVector) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent - Offset;
 	OutVoxelTransform = FTransform(FQuat::Identity, Translation, FVector(1.f));
 	if (bWorldSpace) {
 		OutVoxelTransform = OutVoxelTransform * GetComponentToWorld();

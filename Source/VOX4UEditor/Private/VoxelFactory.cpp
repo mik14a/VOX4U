@@ -173,7 +173,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		Voxel->Mesh.Add(StaticMesh);
 	}
 	for (const auto& cell : Vox->Voxel) {
-		Voxel->Voxel.Add(FIntVoxel(cell.Key.X, cell.Key.Y, cell.Key.Z, Palette.IndexOfByKey(cell.Value)));
+		Voxel->Voxel.Add(cell.Key, Palette.IndexOfByKey(cell.Value));
 		check(INDEX_NONE != Palette.IndexOfByKey(cell.Value));
 	}
 	Voxel->bXYCenter = ImportOption->bImportXYCenter;

@@ -1,9 +1,8 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
 #include "Engine.h"
-#include "IntVoxel.h"
 #include "VoxelComponent.generated.h"
 
 class UVoxel;
@@ -29,7 +28,7 @@ protected:
 	TArray<UStaticMesh*> Mesh;
 
 	UPROPERTY(EditAnywhere, EditFixedSize, BlueprintReadWrite, Category = VoxelComponent)
-	TArray<FIntVoxel> Cell;
+	TMap<FIntVector, uint8> Cell;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VoxelComponent)
 	UVoxel* Voxel;
@@ -58,7 +57,7 @@ public:
 	bool IsUnbeheldVolume(const FIntVector& InVector) const;
 
 	UFUNCTION(BlueprintCallable, Category = Voxel)
-	bool GetVoxelTransform(int32 VoxelIndex, FTransform& OutVoxelTransform, bool bWorldSpace = false) const;
+	bool GetVoxelTransform(const FIntVector& InVector, FTransform& OutVoxelTransform, bool bWorldSpace = false) const;
 
 	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
 

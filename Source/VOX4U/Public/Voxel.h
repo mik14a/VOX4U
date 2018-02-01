@@ -1,11 +1,10 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
 #include "Engine.h"
 #include "Object.h"
 #include "UnrealTemplate.h"
-#include "IntVoxel.h"
 #include "Voxel.generated.h"
 
 class UStaticMesh;
@@ -33,7 +32,7 @@ public:
 	TArray<UStaticMesh*> Mesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = Voxel)
-	TArray<FIntVoxel> Voxel;
+	TMap<FIntVector, uint8> Voxel;
 
 public:
 
