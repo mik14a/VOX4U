@@ -1,4 +1,4 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "MonotoneMesh.h"
 #include "Vox.h"
@@ -104,20 +104,13 @@ void MonotoneMesh::CreatePolygons(TArray<FPolygon>& OutPolygons, const FIntVecto
  */
 void MonotoneMesh::CreateFaces(TArray<FFace>& OutFaces, const FIntVector& Plane, const FIntVector& Axis) const
 {
-	const auto ColorIndex = [this](const FIntVector& Vector) -> int {
-		auto cell = Vox->Voxel.FindByPredicate([&Vector](const FCell& cell) {
-			return cell.X == Vector.X && cell.Y == Vector.Y && cell.Z == Vector.Z;
-		});
-		return cell ? cell->I : 0;
-	};
-
 	auto P = Plane;
 	auto D = FIntVector();
 	D[Axis.X] = 0, D[Axis.Y] = 0, D[Axis.Z] = -1;
 	auto PreviouseColor = 0;
 	for (P[Axis.X] = 0; P[Axis.X] < Vox->Size[Axis.X]; ++P[Axis.X]) {
-		auto Back = ColorIndex(P + D);
-		auto Front = ColorIndex(P);
+		auto Back = Vox->Voxel.FindRef(P + D);
+		auto Front = Vox->Voxel.FindRef(P);
 		auto Color = !Back == !Front ? 0 : Back ? -Back : Front;
 		if (PreviouseColor != Color) {
 			if (PreviouseColor != 0) {

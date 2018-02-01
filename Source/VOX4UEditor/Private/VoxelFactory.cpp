@@ -1,4 +1,4 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelFactory.h"
 #include "ApexDestructibleAssetImport.h"
@@ -139,8 +139,8 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 	UVoxel* Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
 	Voxel->Size = Vox->Size;
 	TArray<uint8> Palette;
-	for (FCell cell : Vox->Voxel) {
-		Palette.AddUnique(cell.I);
+	for (const auto& cell : Vox->Voxel) {
+		Palette.AddUnique(cell.Value);
 	}
 
 	UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
@@ -172,9 +172,9 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 
 		Voxel->Mesh.Add(StaticMesh);
 	}
-	for (FCell cell : Vox->Voxel) {
-		Voxel->Voxel.Add(FIntVoxel(cell.X, cell.Y, cell.Z, Palette.IndexOfByKey(cell.I)));
-		check(INDEX_NONE != Palette.IndexOfByKey(cell.I));
+	for (const auto& cell : Vox->Voxel) {
+		Voxel->Voxel.Add(FIntVoxel(cell.Key.X, cell.Key.Y, cell.Key.Z, Palette.IndexOfByKey(cell.Value)));
+		check(INDEX_NONE != Palette.IndexOfByKey(cell.Value));
 	}
 	Voxel->bXYCenter = ImportOption->bImportXYCenter;
 	Voxel->CalcCellBounds();

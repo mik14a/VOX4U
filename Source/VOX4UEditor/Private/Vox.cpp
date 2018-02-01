@@ -1,4 +1,4 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "Vox.h"
 #include "RawMesh.h"
@@ -95,18 +95,18 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 			uint32 NumVoxels;
 			Ar << NumVoxels;
 			UE_LOG(LogVox, Verbose, TEXT("XYZI: NumVoxels=%d"), NumVoxels);
-			FCell Cell;
+			uint8 X, Y, Z, I;
 			for (uint32 i = 0; i < NumVoxels; ++i) {
-				Ar << Cell.X << Cell.Y << Cell.Z << Cell.I;
+				Ar << X << Y << Z << I;
 				if (ImportOption->bImportXForward) {
-					uint8 temp = Cell.X;
-					Cell.X = Size.X - Cell.Y - 1;
-					Cell.Y = Size.Y - temp - 1;
+					uint8 temp = X;
+					X = Size.X - Y - 1;
+					Y = Size.Y - temp - 1;
 				} else {
-					Cell.X = Size.X - Cell.X - 1;
+					X = Size.X - X - 1;
 				}
-				UE_LOG(LogVox, Verbose, TEXT("      Voxel %s"), *Cell.ToString());
-				Voxel.Add(Cell);
+				UE_LOG(LogVox, Verbose, TEXT("      Voxel X=%d Y=%d Z=%d I=%d"), X, Y, Z, I);
+				Voxel.Add(FIntVector(X, Y, Z), I);
 			}
 		} else if (0 == FCStringAnsi::Strncmp("RGBA", ChunkId, 4)) {
 			UE_LOG(LogVox, Verbose, TEXT("RGBA:"));
@@ -229,14 +229,11 @@ static FVector2D TextureCoord[2][3] = {
  */
 bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
 {
-	for (FCell Cell : Voxel) {
-		FVector Origin(Cell.X, Cell.Y, Cell.Z);
+	for (const auto& Cell : Voxel) {
+		FVector Origin(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
 		for (int FaceIndex = 0; FaceIndex < 6; ++FaceIndex) {
-			FCell n = Cell + Vectors[FaceIndex];
-			int32 CellIndex = Voxel.IndexOfByPredicate([&](const FCell& c) {
-				return c.X == n.X && c.Y == n.Y && c.Z == n.Z;
-			});
-			if (INDEX_NONE != CellIndex) continue;
+			const auto n = Cell.Key + Vectors[FaceIndex];
+			if (Voxel.Find(n)) continue;
 
 			TArray<uint32> VertexPositionIndex;
 			for (int VertexIndex = 0; VertexIndex < 4; ++VertexIndex) {
@@ -245,7 +242,7 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
 				VertexPositionIndex.Add(vpi);
 			}
 
-			uint8 ColorIndex = Cell.I - 1;
+			uint8 ColorIndex = Cell.Value - 1;
 			for (int PolygonIndex = 0; PolygonIndex < 2; ++PolygonIndex) {
 				OutRawMesh.WedgeIndices.Add(VertexPositionIndex[Polygons[PolygonIndex][0]]);
 				OutRawMesh.WedgeIndices.Add(VertexPositionIndex[Polygons[PolygonIndex][1]]);
@@ -286,21 +283,21 @@ bool FVox::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* 
 }
 
 /**
-* CreateRawMesh
-* @param FRawMesh& RawMesh	Out RawMesh
-* @return Result
-*/
+ * CreateRawMesh
+ * @param FRawMesh& RawMesh	Out RawMesh
+ * @return Result
+ */
 bool FVox::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const
 {
-	for (FCell Cell : Voxel) {
+	for (const auto& Cell : Voxel) {
 		FRawMesh OutRawMesh;
 
-		FVector Origin(Cell.X, Cell.Y, Cell.Z);
+		FVector Origin(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
 		for (int VertexIndex = 0; VertexIndex < 8; ++VertexIndex) {
 			OutRawMesh.VertexPositions.Add(Origin + Vertexes[VertexIndex]);
 		}
 		for (int FaceIndex = 0; FaceIndex < 6; ++FaceIndex) {
-			uint8 ColorIndex = Cell.I - 1;
+			uint8 ColorIndex = Cell.Value - 1;
 			for (int PolygonIndex = 0; PolygonIndex < 2; ++PolygonIndex) {
 				OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][0]]);
 				OutRawMesh.WedgeIndices.Add(Faces[FaceIndex][Polygons[PolygonIndex][1]]);
