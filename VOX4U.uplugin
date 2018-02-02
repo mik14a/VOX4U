@@ -1,35 +1,41 @@
 {
-    "FileVersion": 3,
-    "Version": 1,
-    "VersionName": "0.3",
-    "FriendlyName": "VOX4U",
-    "Description": "MagicaVoxel VOX Format import plugin",
-    "Category": "Editor",
-    "CreatedBy": "mik14a / Admix Network",
-    "CreatedByURL": "https://github.com/mik14a",
-    "DocsURL": "https://github.com/mik14a/VOX4U/blob/master/README.md",
-    "MarketplaceURL": "",
-    "SupportURL": "https://github.com/mik14a/VOX4U",
-    "EnabledByDefault": true,
-    "CanContainContent": true,
-    "IsBetaVersion": true,
-    "Installed": false,
-    "Modules": [
-        {
-            "Name": "VOX4U",
-            "Type": "Runtime",
-            "LoadingPhase": "PreDefault"
-        },
-        {
-            "Name": "VOX4UEditor",
-            "Type": "Editor",
-            "LoadingPhase": "Default"
-        }
-    ],
-	  "Plugins": [
-      {
-        "Name": "ApexDestruction",
-        "Enabled": true
-      }
-	  ]
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.3",
+	"FriendlyName": "VOX4U",
+	"Description": "MagicaVoxel VOX Format import plugin",
+	"Category": "Editor",
+	"CreatedBy": "mik14a / Admix Network",
+	"CreatedByURL": "https://github.com/mik14a",
+	"DocsURL": "https://github.com/mik14a/VOX4U/blob/master/README.md",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/mik14a/VOX4U",
+	"EnabledByDefault": true,
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "VOX4U",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "VOX4UEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ApexDestruction",
+			"Enabled": true
+		}
+	]
 }
