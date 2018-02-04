@@ -278,8 +278,8 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
  */
 bool FVox::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
 {
-	MonotoneMesh mesher(this);
-	return mesher.CreateRawMesh(OutRawMesh, ImportOption);
+	MonotoneMesh Mesher(this);
+	return Mesher.CreateRawMesh(OutRawMesh, ImportOption);
 }
 
 /**

@@ -106,12 +106,19 @@ USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName
 	return SkeletalMesh;
 }
 
+/**
+ * CreateDestructibleMesh
+ * @param InParent Import package
+ * @param InName Package name
+ * @param Flags Import flags
+ * @param Vox Voxel file data
+ */
 UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	UDestructibleMesh* DestructibleMesh = NewObject<UDestructibleMesh>(InParent, InName, Flags | RF_Public);
 
 	FRawMesh RawMesh;
-	Vox->CreateRawMesh(RawMesh, ImportOption);
+	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	UStaticMesh* RootMesh = NewObject<UStaticMesh>();
 	RootMesh->StaticMaterials.Add(FStaticMaterial(Material));

@@ -57,35 +57,35 @@ void MonotoneMesh::CreatePolygons(TArray<FPolygon>& OutPolygons, const FIntVecto
 		auto NextFrontier = TArray<int>();
 		auto FrontierIndex = 0, FaceIndex = 0;
 		while (FrontierIndex < Frontier.Num() && FaceIndex < Faces.Num()) {
-			const auto PolygonIndex = Frontier[FrontierIndex];
-			const auto& Polygon = OutPolygons[PolygonIndex];
+			auto& Polygon = OutPolygons[Frontier[FrontierIndex]];
 			const auto& Color = Polygon.Color;
 			const auto& Left = Polygon.Left.Last().X;
 			const auto& Right = Polygon.Right.Last().X;
 			const auto& Face = Faces[FaceIndex];
 			if (Left < Face.Right && Face.Left < Right && Face.Color == Color) {
-				OutPolygons[PolygonIndex].Merge(Face.Left, Face.Right, P[Axis.Y], P[Axis.Z]);
-				NextFrontier.Add(PolygonIndex);
+				Polygon.Merge(Face.Left, Face.Right, P[Axis.Y], P[Axis.Z]);
+				NextFrontier.Add(Frontier[FrontierIndex]);
 				++FrontierIndex, ++FaceIndex;
 			} else {
+				if (Right <= Face.Right) {
+					Polygon.CloseOff(P[Axis.Y], P[Axis.Z]);
+					++FrontierIndex;
+				}
 				if (Face.Right <= Right) {
 					NextFrontier.Add(OutPolygons.Num());
 					OutPolygons.Add(FPolygon(Face.Color, Face.Left, Face.Right, P[Axis.Y], P[Axis.Z]));
 					++FaceIndex;
 				}
-				if (Right <= Face.Right) {
-					OutPolygons[PolygonIndex].CloseOff(P[Axis.Y], P[Axis.Z]);
-					++FrontierIndex;
-				}
 			}
 		}
 		while (FrontierIndex < Frontier.Num()) {
-			OutPolygons[Frontier[FrontierIndex++]].CloseOff(P[Axis.Y], P[Axis.Z]);
+			auto& Polygon = OutPolygons[Frontier[FrontierIndex++]];
+			Polygon.CloseOff(P[Axis.Y], P[Axis.Z]);
 		}
 		while (FaceIndex < Faces.Num()) {
 			NextFrontier.Add(OutPolygons.Num());
-			const auto& Line = Faces[FaceIndex++];
-			OutPolygons.Add(FPolygon(Line.Color, Line.Left, Line.Right, P[Axis.Y], P[Axis.Z]));
+			const auto& Face = Faces[FaceIndex++];
+			OutPolygons.Add(FPolygon(Face.Color, Face.Left, Face.Right, P[Axis.Y], P[Axis.Z]));
 		}
 		Frontier = NextFrontier;
 	}
