@@ -116,10 +116,19 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 				UE_LOG(LogVox, Verbose, TEXT("      %s"), *Color.ToString());
 				Palette.Add(Color);
 			}
+		} else if (0 == FCStringAnsi::Strncmp("MATT", ChunkId, 4)) {
+			UE_LOG(LogVox, Warning, TEXT("Unsupported MATT chunk."));
+			uint8 byte;
+			for (uint32 i = 0; i < SizeOfChunkContents; ++i) {
+				Ar << byte;
+			}
 		} else {
 			FString UnknownChunk(ChunkId);
-			UE_LOG(LogVox, Error, TEXT("Unknown chunk. [ %s ]"), *UnknownChunk);
-			break;
+			UE_LOG(LogVox, Warning, TEXT("Unsupported chunk [ %s ]. Skipping %d byte of chunk contents."), *UnknownChunk, SizeOfChunkContents);
+			uint8 byte;
+			for (uint32 i = 0; i < SizeOfChunkContents; ++i) {
+				Ar << byte;
+			}
 		}
 	} while (!Ar.AtEnd());
 
