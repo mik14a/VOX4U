@@ -17,6 +17,8 @@
 #include "VoxImportOption.h"
 #include "Voxel.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogVoxelFactory, Log, All)
+
 UVoxelFactory::UVoxelFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 	, ImportOption(nullptr)
@@ -86,6 +88,86 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 		}
 	}
 	FEditorDelegates::OnAssetPostImport.Broadcast(this, Result);
+	return Result;
+}
+
+bool UVoxelFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames)
+{
+	UStaticMesh* StaticMesh = Cast<UStaticMesh>(Obj);
+	USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(Obj);
+	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(Obj);
+	UVoxel* Voxel = Cast<UVoxel>(Obj);
+
+	const auto& AssetImportData = StaticMesh != nullptr ? StaticMesh->AssetImportData
+		: SkeletalMesh != nullptr ? SkeletalMesh->AssetImportData
+		: DestructibleMesh != nullptr ? DestructibleMesh->AssetImportData
+		: Voxel != nullptr ? Voxel->AssetImportData
+		: nullptr;
+	if (AssetImportData != nullptr) {
+		AssetImportData->ExtractFilenames(OutFilenames);
+		return true;
+	}
+	return false;
+}
+
+void UVoxelFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths)
+{
+	UStaticMesh* StaticMesh = Cast<UStaticMesh>(Obj);
+	USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(Obj);
+	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(Obj);
+	UVoxel* Voxel = Cast<UVoxel>(Obj);
+	const auto& AssetImportData = StaticMesh != nullptr ? StaticMesh->AssetImportData
+		: SkeletalMesh != nullptr ? SkeletalMesh->AssetImportData
+		: DestructibleMesh != nullptr ? DestructibleMesh->AssetImportData
+		: Voxel != nullptr ? Voxel->AssetImportData
+		: nullptr;
+	if (AssetImportData&& ensure(NewReimportPaths.Num() == 1))
+	{
+		AssetImportData->UpdateFilenameOnly(NewReimportPaths[0]);
+	}
+}
+
+EReimportResult::Type UVoxelFactory::Reimport(UObject* Obj)
+{
+	UStaticMesh* StaticMesh = Cast<UStaticMesh>(Obj);
+	USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(Obj);
+	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(Obj);
+	UVoxel* Voxel = Cast<UVoxel>(Obj);
+	const auto& AssetImportData = StaticMesh != nullptr ? StaticMesh->AssetImportData
+		: SkeletalMesh != nullptr ? SkeletalMesh->AssetImportData
+		: DestructibleMesh != nullptr ? DestructibleMesh->AssetImportData
+		: Voxel != nullptr ? Voxel->AssetImportData
+		: nullptr;
+	if (!AssetImportData) {
+		return EReimportResult::Failed;
+	}
+
+	const auto& Filename = AssetImportData->GetFirstFilename();
+	if (!Filename.Len() || IFileManager::Get().FileSize(*Filename) == INDEX_NONE) {
+		return EReimportResult::Failed;
+	}
+
+	auto Result = EReimportResult::Failed;
+	auto OutCanceled = false;
+
+	bShowOption = false;
+	if (ImportObject(Obj->GetClass(), Obj->GetOuter(), *Obj->GetName(), RF_Public | RF_Standalone, Filename, nullptr, OutCanceled) != nullptr) {
+		UE_LOG(LogVoxelFactory, Verbose, TEXT("Reimport successfully."));
+		AssetImportData->Update(Filename);
+		if (Obj->GetOuter()) {
+			Obj->GetOuter()->MarkPackageDirty();
+		} else {
+			Obj->MarkPackageDirty();
+		}
+		Result = EReimportResult::Succeeded;
+	} else {
+		if (OutCanceled) {
+			UE_LOG(LogVoxelFactory, Warning, TEXT("Reimport canceled."));
+		} else {
+			UE_LOG(LogVoxelFactory, Warning, TEXT("Reimport failed."));
+		}
+		Result = EReimportResult::Failed;
+	}
 	return Result;
 }
 
