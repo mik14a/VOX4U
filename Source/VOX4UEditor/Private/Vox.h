@@ -18,6 +18,9 @@ struct FVox
 {
 	GENERATED_BODY()
 
+	/** Filename */
+	FString Filename;
+
 	/** Magic number ( 'V' 'O' 'X' 'space' ) and terminate */
 	ANSICHAR MagicNumber[5];
 	/** version number ( current version is 150 ) */
@@ -36,7 +39,7 @@ public:
 	FVox();
 
 	/** Create vox data from archive */
-	FVox(FArchive& Ar, const UVoxImportOption* ImportOption);
+	FVox(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption);
 
 	/** Import vox data from archive */
 	bool Import(FArchive& Ar, const UVoxImportOption* ImportOption);

@@ -67,7 +67,7 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 	if (!bShowOption || ImportOption->GetImportOption(bImportAll)) {
 		bShowOption = !bImportAll;
 		FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
-		FVox Vox(Reader, ImportOption);
+		FVox Vox(GetCurrentFilename(), Reader, ImportOption);
 		switch (ImportOption->VoxImportType) {
 		case EVoxImportType::StaticMesh:
 			Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
@@ -97,12 +97,14 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
 	BuildStaticMesh(StaticMesh, RawMesh);
+	StaticMesh->AssetImportData->Update(Vox->Filename);
 	return StaticMesh;
 }
 
 USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(InParent, InName, Flags | RF_Public);
+	SkeletalMesh->AssetImportData->Update(Vox->Filename);
 	return SkeletalMesh;
 }
 
@@ -137,6 +139,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	DestructibleMesh->SetupChunksFromStaticMeshes(FractureMeshes);
 	BuildDestructibleMeshFromFractureSettings(*DestructibleMesh, nullptr);
 	DestructibleMesh->SourceStaticMesh = nullptr;
+	DestructibleMesh->AssetImportData->Update(Vox->Filename);
 
 	return DestructibleMesh;
 }
@@ -185,6 +188,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 	}
 	Voxel->bXYCenter = ImportOption->bImportXYCenter;
 	Voxel->CalcCellBounds();
+	Voxel->AssetImportData->Update(Vox->Filename);
 	return Voxel;
 }
 

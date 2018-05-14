@@ -11,6 +11,16 @@ UVoxel::UVoxel()
 {
 }
 
+void UVoxel::PostInitProperties()
+{
+#if WITH_EDITORONLY_DATA
+	if (!HasAnyFlags(RF_ClassDefaultObject) && !(GetOuter() && GetOuter()->HasAnyFlags(RF_ClassDefaultObject | RF_ArchetypeObject))) {
+		AssetImportData = NewObject<UAssetImportData>(this, TEXT("AssetImportData"));
+	}
+#endif
+	Super::PostInitProperties();
+}
+
 #if WITH_EDITOR
 
 void UVoxel::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)

@@ -34,9 +34,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Voxel)
 	TMap<FIntVector, uint8> Voxel;
 
+#if WITH_EDITORONLY_DATA
+	UPROPERTY(EditAnywhere, Instanced, Category = Reimport)
+	class UAssetImportData* AssetImportData;
+#endif
+
+
 public:
 
 	UVoxel();
+
+	virtual void PostInitProperties() override;
 
 #if WITH_EDITOR
 

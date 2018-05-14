@@ -40,8 +40,9 @@ FVox::FVox()
  * Create vox data from archive
  * @param FArchive& Ar	Read vox data from the archive
  */
-FVox::FVox(FArchive& Ar, const UVoxImportOption* ImportOption)
+FVox::FVox(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption)
 {
+	this->Filename = Filename;
 	Import(Ar, ImportOption);
 }
 
