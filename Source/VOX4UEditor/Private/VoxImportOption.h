@@ -51,4 +51,6 @@ private:
 
 	FMeshBuildSettings BuildSettings;
 
+	friend class UVoxAssetImportData;
+
 };

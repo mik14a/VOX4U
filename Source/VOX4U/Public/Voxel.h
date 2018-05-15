@@ -39,12 +39,9 @@ public:
 	class UAssetImportData* AssetImportData;
 #endif
 
-
 public:
 
 	UVoxel();
-
-	virtual void PostInitProperties() override;
 
 #if WITH_EDITOR
 

@@ -8,7 +8,7 @@ FVoxelAssetTypeActions::FVoxelAssetTypeActions()
 
 FText FVoxelAssetTypeActions::GetName() const
 {
-	return NSLOCTEXT("AssetTypeActions", "FVoxelAssetTypeActionsName", "Voxel Asset Type Actions.");
+	return NSLOCTEXT("VOX4U", "VoxelAssetTypeActionsName", "Voxel Asset Type Actions.");
 }
 
 UClass* FVoxelAssetTypeActions::GetSupportedClass() const
