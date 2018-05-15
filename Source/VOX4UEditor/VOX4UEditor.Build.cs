@@ -1,4 +1,4 @@
-// Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -35,6 +35,7 @@ public class VOX4UEditor : ModuleRules
                 "RawMesh",
                 "MainFrame",
                 "PropertyEditor",
+                "AssetTools",
             }
         );
 

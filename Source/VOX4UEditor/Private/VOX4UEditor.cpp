@@ -1,21 +1,28 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UEditor.h"
 #include "ThumbnailRendering/ThumbnailManager.h"
+#include "AssetToolsModule.h"
 #include "Voxel.h"
 #include "VoxelThumbnailRenderer.h"
+#include "VoxelAssetTypeActions.h"
 
 #define LOCTEXT_NAMESPACE "FVOX4UEditorModule"
 
 void FVOX4UEditorModule::StartupModule()
 {
+	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+	VoxelAssetTypeActions = MakeShareable(new FVoxelAssetTypeActions());
+	AssetTools.RegisterAssetTypeActions(VoxelAssetTypeActions.ToSharedRef());
 	UThumbnailManager::Get().RegisterCustomRenderer(UVoxel::StaticClass(), UVoxelThumbnailRenderer::StaticClass());
 }
 
 void FVOX4UEditorModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	if (FModuleManager::Get().IsModuleLoaded("AssetTools")) {
+		IAssetTools& AssetTools = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools").Get();
+		AssetTools.UnregisterAssetTypeActions(VoxelAssetTypeActions.ToSharedRef());
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
