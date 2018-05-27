@@ -1,7 +1,8 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelThumbnailRenderer.h"
 #include "EngineModule.h"
+#include "LegacyScreenPercentageDriver.h"
 #include "Voxel.h"
 #include "VoxelActor.h"
 
@@ -64,6 +65,8 @@ void UVoxelThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Wid
 		ViewFamily.EngineShowFlags.DisableAdvancedFeatures();
 		ViewFamily.EngineShowFlags.MotionBlur = 0;
 		ViewFamily.EngineShowFlags.LOD = 0;
+		ViewFamily.EngineShowFlags.ScreenPercentage = false;
+		ViewFamily.SetScreenPercentageInterface(new FLegacyScreenPercentageDriver(ViewFamily, 1.0f, false));
 		ThumbnailScene->GetView(&ViewFamily, X, Y, Width, Height);
 		GetRendererModule().BeginRenderingViewFamily(Canvas, &ViewFamily);
 	}
