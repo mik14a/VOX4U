@@ -1,8 +1,10 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelComponent.h"
+#include <Components/InstancedStaticMeshComponent.h>
+#include <Containers/ArrayBuilder.h>
+#include <Engine/StaticMesh.h>
 #include "Voxel.h"
-#include "GameFramework/Actor.h"
 
 UVoxelComponent::UVoxelComponent()
 	: CellBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f)

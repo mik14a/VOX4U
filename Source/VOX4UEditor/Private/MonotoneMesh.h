@@ -4,10 +4,10 @@
 
 #include <RawMesh.h>
 
-struct FVox;
-class UVoxImportOption;
 struct FFace;
 struct FPolygon;
+struct FVox;
+class UVoxImportOption;
 
 /**
  * Monotone mesh generation

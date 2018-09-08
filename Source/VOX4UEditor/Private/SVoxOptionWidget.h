@@ -1,15 +1,15 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
-#include "SlateBasics.h"
-#include "DeclarativeSyntaxSupport.h"
-#include "Reply.h"
+#include "CoreMinimal.h"
+#include <Widgets/SCompoundWidget.h>
+#include <Widgets/SWindow.h>
 
 class UVoxImportOption;
 
 /**
- *
+ * Option widget
  */
 class SVoxOptionWidget : public SCompoundWidget
 {

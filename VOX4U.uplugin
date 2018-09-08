@@ -10,7 +10,6 @@
 	"DocsURL": "https://github.com/mik14a/VOX4U/blob/master/README.md",
 	"MarketplaceURL": "",
 	"SupportURL": "https://github.com/mik14a/VOX4U",
-	"EnabledByDefault": true,
 	"CanContainContent": false,
 	"IsBetaVersion": true,
 	"Installed": false,
@@ -18,7 +17,7 @@
 		{
 			"Name": "VOX4U",
 			"Type": "Runtime",
-			"LoadingPhase": "PreDefault",
+			"LoadingPhase": "Default",
 			"WhitelistPlatforms": [
 				"Win64",
 				"Mac"

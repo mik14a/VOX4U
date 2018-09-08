@@ -1,7 +1,7 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "Vox.h"
-#include "RawMesh.h"
+#include <Engine/Texture2D.h>
 #include "MonotoneMesh.h"
 #include "VoxImportOption.h"
 

@@ -1,9 +1,9 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
-#include "Engine.h"
-#include "GameFramework/Actor.h"
+#include "CoreMinimal.h"
+#include <GameFramework/Actor.h>
 #include "VoxelActor.generated.h"
 
 class UVoxelComponent;

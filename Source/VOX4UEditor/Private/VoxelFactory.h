@@ -2,23 +2,22 @@
 
 #pragma once
 
-#include "Factories/Factory.h"
-#include "EditorReimportHandler.h"
-#include "Engine.h"
-#include "RawMesh.h"
-#include "DestructibleMesh.h"
+#include "CoreMinimal.h"
+#include <EditorReimportHandler.h>
+#include <Factories/Factory.h>
+#include <RawMesh.h>
 #include "VoxelFactory.generated.h"
 
+struct FVox;
+class UDestructibleMesh;
+class UMaterialInterface;
 class USkeletalMesh;
 class UStaticMesh;
 class UVoxImportOption;
 class UVoxel;
-class UVoxel;
-class UMaterialInterface;
-struct FVox;
 
 /**
- *
+ * Factory
  */
 UCLASS()
 class UVoxelFactory : public UFactory, public FReimportHandler

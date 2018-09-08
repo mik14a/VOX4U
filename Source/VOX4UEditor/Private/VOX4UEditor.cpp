@@ -1,11 +1,11 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VOX4UEditor.h"
-#include "ThumbnailRendering/ThumbnailManager.h"
-#include "AssetToolsModule.h"
+#include <AssetToolsModule.h>
+#include <IAssetTools.h>
 #include "Voxel.h"
-#include "VoxelThumbnailRenderer.h"
 #include "VoxelAssetTypeActions.h"
+#include "VoxelThumbnailRenderer.h"
 
 #define LOCTEXT_NAMESPACE "FVOX4UEditorModule"
 

@@ -1,10 +1,13 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
-#include "VoxOptionWidget.h"
-#include "PropertyEditorModule.h"
-#include "IDetailsView.h"
+#include "SVoxOptionWidget.h"
+#include <Modules/ModuleManager.h>
+#include <PropertyEditorModule.h>
+#include <SlateOptMacros.h>
+#include <Widgets/Input/SButton.h>
+#include <Widgets/Layout/SBox.h>
+#include <Widgets/Layout/SUniformGridPanel.h>
 #include "VoxImportOption.h"
-#include "SharedPointer.h"
 
 SVoxOptionWidget::SVoxOptionWidget()
 	: Window(nullptr)
@@ -12,6 +15,7 @@ SVoxOptionWidget::SVoxOptionWidget()
 {
 }
 
+BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SVoxOptionWidget::Construct(const FArguments& InArgs)
 {
 	ImportOption = InArgs._ImportOption;
@@ -51,6 +55,7 @@ void SVoxOptionWidget::Construct(const FArguments& InArgs)
 	InspectorBox->SetContent(DetailsView->AsShared());
 	DetailsView->SetObject(ImportOption);
 }
+END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 FReply SVoxOptionWidget::OnImportAll()
 {

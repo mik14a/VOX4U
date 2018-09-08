@@ -1,8 +1,7 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelActor.h"
 #include "VoxelComponent.h"
-#include "Voxel.h"
 
 AVoxelActor::AVoxelActor(const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get()*/)
 	: Super(ObjectInitializer)

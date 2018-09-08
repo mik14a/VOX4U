@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "Engine.h"
-#include "Object.h"
-#include "UnrealTemplate.h"
+#include "CoreMinimal.h"
+#include <UObject/NoExportTypes.h>
 #include "Voxel.generated.h"
 
 class UStaticMesh;

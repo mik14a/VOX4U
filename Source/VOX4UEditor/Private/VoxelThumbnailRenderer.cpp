@@ -1,10 +1,12 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelThumbnailRenderer.h"
-#include "EngineModule.h"
-#include "LegacyScreenPercentageDriver.h"
+#include <EngineModule.h>
+#include <LegacyScreenPercentageDriver.h>
+#include <ThumbnailRendering/SceneThumbnailInfo.h>
 #include "Voxel.h"
 #include "VoxelActor.h"
+#include "VoxelComponent.h"
 
 FVoxelThumbnailScene::FVoxelThumbnailScene()
 {

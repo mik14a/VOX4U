@@ -2,14 +2,16 @@
 
 #pragma once
 
-#include "Engine.h"
+#include "CoreMinimal.h"
+#include <Components/PrimitiveComponent.h>
 #include "VoxelComponent.generated.h"
 
-class UVoxel;
 class UInstancedStaticMeshComponent;
+class UStaticMesh;
+class UVoxel;
 
 /**
- *
+ * Voxel component
  */
 UCLASS()
 class VOX4U_API UVoxelComponent : public UPrimitiveComponent

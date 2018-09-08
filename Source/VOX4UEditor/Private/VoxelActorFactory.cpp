@@ -1,11 +1,12 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelActorFactory.h"
+#include <AssetData.h>
 #include "Voxel.h"
 #include "VoxelActor.h"
 #include "VoxelComponent.h"
 
-UVoxelActorFactory::UVoxelActorFactory(const FObjectInitializer& ObjectInitializer)
+UVoxelActorFactory::UVoxelActorFactory(const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get()*/)
 	: Super(ObjectInitializer)
 {
 	DisplayName = NSLOCTEXT("VOX4U", "UVoxelActorFactory", "Voxel Actor");

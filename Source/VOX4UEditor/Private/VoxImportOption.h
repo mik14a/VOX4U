@@ -1,8 +1,10 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
-#include "Engine.h"
+#include "CoreMinimal.h"
+#include <Engine/EngineTypes.h>
+#include <UObject/NoExportTypes.h>
 #include "VoxImportOption.generated.h"
 
 /** Import mesh type */
@@ -16,7 +18,7 @@ enum class EVoxImportType
 };
 
 /**
- *
+ * Import option
  */
 UCLASS(config = EditorPerProjectUserSettings, HideCategories = Object)
 class UVoxImportOption : public UObject

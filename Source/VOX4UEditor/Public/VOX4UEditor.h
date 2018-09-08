@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "ModuleManager.h"
-#include "IAssetTypeActions.h"
+#include "CoreMinimal.h"
+#include <Modules/ModuleManager.h>
+#include <IAssetTypeActions.h>
 
 class FVOX4UEditorModule : public IModuleInterface
 {

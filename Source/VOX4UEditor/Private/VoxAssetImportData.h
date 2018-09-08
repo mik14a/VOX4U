@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EditorFramework/AssetImportData.h"
+#include <EditorFramework/AssetImportData.h>
 #include "VoxImportOption.h"
 #include "VoxAssetImportData.generated.h"
 
 /**
- *
+ * Asset import data
  */
 UCLASS()
 class UVoxAssetImportData : public UAssetImportData

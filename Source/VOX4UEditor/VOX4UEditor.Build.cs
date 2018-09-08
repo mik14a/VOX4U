@@ -4,53 +4,45 @@ using UnrealBuildTool;
 
 public class VOX4UEditor : ModuleRules
 {
-    public VOX4UEditor(ReadOnlyTargetRules Target) : base(Target)
-    {
-        PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+	public VOX4UEditor(ReadOnlyTargetRules Target) : base(Target) {
+		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicIncludePaths.AddRange(
-            new string[] {
-                "VOX4UEditor/Public"
-            }
-        );
+		PublicIncludePaths.AddRange(
+			new string[] {
+			}
+		);
 
+		PrivateIncludePaths.AddRange(
+			new string[] {
+			}
+		);
 
-        PrivateIncludePaths.AddRange(
-            new string[] {
-                "VOX4UEditor/Private",
-            }
-        );
+		PublicDependencyModuleNames.AddRange(
+			new string[]
+			{
+				"Core",
+			}
+		);
 
+		PrivateDependencyModuleNames.AddRange(
+			new string[]
+			{
+				"VOX4U",
+				"CoreUObject",
+				"Engine",
+				"RawMesh",
+				"Slate",
+				"SlateCore",
+				"UnrealEd",
+				"MainFrame",
+				"ApexDestruction",
+			}
+		);
 
-        PublicDependencyModuleNames.AddRange(
-            new string[] {
-                "UnrealEd",
-                "CoreUObject",
-                "Engine",
-                "Core",
-                "InputCore",
-                "Slate",
-                "SlateCore",
-                "UnrealEd",
-                "RawMesh",
-                "MainFrame",
-                "PropertyEditor",
-                "AssetTools",
-            }
-        );
-
-
-        PrivateDependencyModuleNames.AddRange(
-            new string[] {
-                "VOX4U",
-                "ApexDestruction",
-            }
-        );
-
-
-        DynamicallyLoadedModuleNames.AddRange(
-            new string[] {
-            }
-        );
-    }
+		DynamicallyLoadedModuleNames.AddRange(
+			new string[]
+			{
+			}
+		);
+	}
 }

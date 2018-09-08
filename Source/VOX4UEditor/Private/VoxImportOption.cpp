@@ -1,10 +1,10 @@
-// Copyright 2016 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxImportOption.h"
-#include "Interfaces/IMainFrameModule.h"
-#include "MainFrame.h"
-#include "SlateCore.h"
-#include "VoxOptionWidget.h"
+#include <Framework/Application/SlateApplication.h>
+#include <Interfaces/IMainFrameModule.h>
+#include <Modules/ModuleManager.h>
+#include "SVoxOptionWidget.h"
 
 UVoxImportOption::UVoxImportOption()
 	: VoxImportType(EVoxImportType::StaticMesh)

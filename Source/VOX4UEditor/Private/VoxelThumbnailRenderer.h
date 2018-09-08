@@ -2,16 +2,13 @@
 
 #pragma once
 
-#include "ThumbnailRendering/ThumbnailRenderer.h"
-#include "ThumbnailRendering/DefaultSizedThumbnailRenderer.h"
-#include "ThumbnailRendering/SceneThumbnailInfo.h"
-#include "ThumbnailHelpers.h"
+#include "CoreMinimal.h"
+#include <ThumbnailHelpers.h>
+#include <ThumbnailRendering/DefaultSizedThumbnailRenderer.h>
 #include "VoxelThumbnailRenderer.generated.h"
 
-class UVoxel;
 class AVoxelActor;
-class FRenderTarget;
-class FCanvas;
+class UVoxel;
 
 class FVoxelThumbnailScene : public FThumbnailPreviewScene
 {

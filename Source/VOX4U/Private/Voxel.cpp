@@ -1,6 +1,7 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "Voxel.h"
+#include <Engine/StaticMesh.h>
 
 UVoxel::UVoxel()
 	: Size(ForceInit)

@@ -2,22 +2,19 @@
 
 #pragma once
 
-#include "Vox.generated.h"
+#include "CoreMinimal.h"
+#include <RawMesh.h>
 
-struct FRawMesh;
-class UVoxImportOption;
 class UTexture2D;
+class UVoxImportOption;
 
 /**
  * @struct FVox
  * VOX format implementation.
  * @see https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-file-format-vox.txt
  */
-USTRUCT()
 struct FVox
 {
-	GENERATED_BODY()
-
 	/** Filename */
 	FString Filename;
 
