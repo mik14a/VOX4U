@@ -1,6 +1,6 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
-#include "Vox.h"
+#include "FVoxel.h"
 #include <Engine/Texture2D.h>
 #include "MonotoneMesh.h"
 #include "VoxImportOption.h"
@@ -32,7 +32,7 @@ static const uint32 MagicaVoxelDefaultPalette[256] = {
 /**
  * Create empty vox data.
  */
-FVox::FVox()
+FVoxel::FVoxel()
 {
 }
 
@@ -40,7 +40,7 @@ FVox::FVox()
  * Create vox data from archive
  * @param FArchive& Ar	Read vox data from the archive
  */
-FVox::FVox(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption)
+FVoxel::FVoxel(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption)
 {
 	this->Filename = Filename;
 	Import(Ar, ImportOption);
@@ -51,7 +51,7 @@ FVox::FVox(const FString& Filename, FArchive& Ar, const UVoxImportOption* Import
  * @param FArchive& Ar	Read vox data from the archive
  * @return bool	is valid or supported vox data
  */
-bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
+bool FVoxel::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 {
 	Ar.Serialize(MagicNumber, 4);
 
@@ -237,7 +237,7 @@ static FVector2D TextureCoord[2][3] = {
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
  */
-bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
+bool FVoxel::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
 {
 	for (const auto& Cell : Voxel) {
 		FVector Origin(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
@@ -286,7 +286,7 @@ bool FVox::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOpt
  * @param OutRawMesh Out raw mesh
  * @return Result
  */
-bool FVox::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
+bool FVoxel::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
 {
 	MonotoneMesh Mesher(this);
 	return Mesher.CreateRawMesh(OutRawMesh, ImportOption);
@@ -297,7 +297,7 @@ bool FVox::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* 
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
  */
-bool FVox::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const
+bool FVoxel::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const
 {
 	for (const auto& Cell : Voxel) {
 		FRawMesh OutRawMesh;
@@ -339,7 +339,7 @@ bool FVox::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOptio
 }
 
 
-bool FVox::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const
+bool FVoxel::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const
 {
 	check(OutTexture);
 	OutTexture->LODGroup = TextureGroup::TEXTUREGROUP_World;
@@ -352,7 +352,7 @@ bool FVox::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* Import
 	return true;
 }
 
-bool FVox::CreateMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption)
+bool FVoxel::CreateMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption)
 {
 	for (int VertexIndex = 0; VertexIndex < 8; ++VertexIndex) {
 		OutRawMesh.VertexPositions.Add(Vertexes[VertexIndex] - FVector(0.5f, 0.5f, 0.5f));

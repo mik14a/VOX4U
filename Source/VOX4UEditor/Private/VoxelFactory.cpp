@@ -13,7 +13,7 @@
 #include <PhysicsEngine/BodySetup.h>
 #include <PhysicsEngine/BoxElem.h>
 #include <RawMesh.h>
-#include "VOX.h"
+#include "FVoxel.h"
 #include "VoxAssetImportData.h"
 #include "VoxImportOption.h"
 #include "Voxel.h"
@@ -70,7 +70,7 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 	if (!bShowOption || ImportOption->GetImportOption(bImportAll)) {
 		bShowOption = !bImportAll;
 		FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
-		FVox Vox(GetCurrentFilename(), Reader, ImportOption);
+		FVoxel Vox(GetCurrentFilename(), Reader, ImportOption);
 		switch (ImportOption->VoxImportType) {
 		case EVoxImportType::StaticMesh:
 			Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
@@ -178,7 +178,7 @@ EReimportResult::Type UVoxelFactory::Reimport(UObject* Obj)
 	return Result;
 }
 
-UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const
 {
 	UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, InName, Flags | RF_Public);
 	if (!StaticMesh->AssetImportData || !StaticMesh->AssetImportData->IsA<UVoxAssetImportData>()) {
@@ -196,7 +196,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	return StaticMesh;
 }
 
-USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const
 {
 	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(InParent, InName, Flags | RF_Public);
 	if (!SkeletalMesh->AssetImportData || !SkeletalMesh->AssetImportData->IsA<UVoxAssetImportData>()) {
@@ -216,7 +216,7 @@ USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName
  * @param Flags Import flags
  * @param Vox Voxel file data
  */
-UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const
 {
 	UDestructibleMesh* DestructibleMesh = NewObject<UDestructibleMesh>(InParent, InName, Flags | RF_Public);
 	if (!DestructibleMesh->AssetImportData || !DestructibleMesh->AssetImportData->IsA<UVoxAssetImportData>()) {
@@ -250,7 +250,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	return DestructibleMesh;
 }
 
-UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
+UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const
 {
 	UVoxel* Voxel = NewObject<UVoxel>(InParent, InName, Flags | RF_Public);
 	if (!Voxel->AssetImportData || !Voxel->AssetImportData->IsA<UVoxAssetImportData>()) {
@@ -282,7 +282,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		MaterialInstance->SetVectorParameterValueEditorOnly(TEXT("Color"), LinearColor);
 
 		FRawMesh RawMesh;
-		FVox::CreateMesh(RawMesh, ImportOption);
+		FVoxel::CreateMesh(RawMesh, ImportOption);
 		UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, *FString::Printf(TEXT("%s_SM%d"), *InName.GetPlainNameString(), color), Flags | RF_Public);
 		StaticMesh->StaticMaterials.Add(FStaticMaterial(MaterialInstance));
 		BuildStaticMesh(StaticMesh, RawMesh);
@@ -314,7 +314,7 @@ UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh
 	return OutStaticMesh;
 }
 
-UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const
+UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVoxel* Vox) const
 {
 	UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
 	UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);

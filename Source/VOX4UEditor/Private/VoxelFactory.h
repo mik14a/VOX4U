@@ -8,7 +8,7 @@
 #include <RawMesh.h>
 #include "VoxelFactory.generated.h"
 
-struct FVox;
+struct FVoxel;
 class UDestructibleMesh;
 class UMaterialInterface;
 class USkeletalMesh;
@@ -44,17 +44,17 @@ public:
 
 private:
 
-	UStaticMesh* CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+	UStaticMesh* CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
-	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
-	UDestructibleMesh* CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+	UDestructibleMesh* CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
-	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
+	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
 	UStaticMesh* BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const;
 
-	UMaterialInterface* CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const;
+	UMaterialInterface* CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
 protected:
 

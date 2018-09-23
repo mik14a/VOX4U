@@ -6,7 +6,7 @@
 
 struct FFace;
 struct FPolygon;
-struct FVox;
+struct FVoxel;
 class UVoxImportOption;
 
 /**
@@ -18,7 +18,7 @@ class MonotoneMesh
 public:
 
 	/** Construct mesh generator */
-	MonotoneMesh(const FVox* InVox);
+	MonotoneMesh(const FVoxel* InVox);
 
 	/** Create FRawMesh from Voxel */
 	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
@@ -34,7 +34,7 @@ private:
 
 private:
 
-	const FVox* Vox;
+	const FVoxel* Vox;
 };
 
 /**

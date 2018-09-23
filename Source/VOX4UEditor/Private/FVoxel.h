@@ -9,11 +9,11 @@ class UTexture2D;
 class UVoxImportOption;
 
 /**
- * @struct FVox
+ * @struct FVoxel
  * VOX format implementation.
  * @see https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-file-format-vox.txt
  */
-struct FVox
+struct FVoxel
 {
 	/** Filename */
 	FString Filename;
@@ -33,10 +33,10 @@ struct FVox
 public:
 
 	/** Create empty vox data */
-	FVox();
+	FVoxel();
 
 	/** Create vox data from archive */
-	FVox(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption);
+	FVoxel(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption);
 
 	/** Import vox data from archive */
 	bool Import(FArchive& Ar, const UVoxImportOption* ImportOption);

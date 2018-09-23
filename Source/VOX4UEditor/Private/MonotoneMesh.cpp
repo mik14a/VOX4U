@@ -1,13 +1,13 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "MonotoneMesh.h"
-#include "Vox.h"
+#include "FVoxel.h"
 #include "VoxImportOption.h"
 
 /**
  * Construct mesh generator using referenced voxel
  */
-MonotoneMesh::MonotoneMesh(const FVox* InVox)
+MonotoneMesh::MonotoneMesh(const FVoxel* InVox)
 {
 	Vox = InVox;
 }
