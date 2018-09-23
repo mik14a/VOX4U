@@ -1,0 +1,3 @@
+[submodule "Source/VOX4UEditor/libVOX"]
+	path = Source/VOX4UEditor/libVOX
+	url = https://github.com/mik14a/libVOX.git
