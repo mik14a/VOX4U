@@ -188,7 +188,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	}
 
 	FRawMesh RawMesh;
-	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
+	Vox->CreateOptimizedRawMesh(RawMesh);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
 	BuildStaticMesh(StaticMesh, RawMesh);
@@ -226,7 +226,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	}
 
 	FRawMesh RawMesh;
-	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
+	Vox->CreateOptimizedRawMesh(RawMesh);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	UStaticMesh* RootMesh = NewObject<UStaticMesh>();
 	RootMesh->StaticMaterials.Add(FStaticMaterial(Material));
@@ -234,7 +234,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	DestructibleMesh->SourceStaticMesh = RootMesh;
 
 	TArray<FRawMesh> RawMeshes;
-	Vox->CreateRawMeshes(RawMeshes, ImportOption);
+	Vox->CreateRawMeshes(RawMeshes);
 	TArray<UStaticMesh*> FractureMeshes;
 	for (FRawMesh& RawMesh : RawMeshes) {
 		UStaticMesh* FructureMesh = NewObject<UStaticMesh>();
@@ -318,7 +318,7 @@ UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName &InNa
 {
 	UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
 	UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);
-	if (Vox->CreateTexture(Texture, ImportOption)) {
+	if (Vox->CreateTexture(Texture)) {
 		Material->TwoSided = false;
 		Material->SetShadingModel(MSM_DefaultLit);
 		UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);

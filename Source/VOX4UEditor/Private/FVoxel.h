@@ -39,20 +39,24 @@ public:
 	FVoxel(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption);
 
 	/** Import vox data from archive */
-	bool Import(FArchive& Ar, const UVoxImportOption* ImportOption);
+	bool Import(FArchive& Ar);
 
 	/** Create FRawMesh from Voxel */
-	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
+	bool CreateRawMesh(FRawMesh& OutRawMesh) const;
 
 	/** Create FRawMesh from Voxel use Monotone mesh generation */
-	bool CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
+	bool CreateOptimizedRawMesh(FRawMesh& OutRawMesh) const;
 
 	/** Create raw meshes from Voxel */
-	bool CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const;
+	bool CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes) const;
 
 	/** Create UTexture2D from Palette */
-	bool CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const;
+	bool CreateTexture(UTexture2D* const& OutTexture) const;
 
 	/** Create one raw mesh */
 	static bool CreateMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption);
+
+private:
+
+	const UVoxImportOption* ImportOption;
 };

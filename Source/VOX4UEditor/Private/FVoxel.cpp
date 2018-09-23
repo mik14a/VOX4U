@@ -43,7 +43,8 @@ FVoxel::FVoxel()
 FVoxel::FVoxel(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption)
 {
 	this->Filename = Filename;
-	Import(Ar, ImportOption);
+	this->ImportOption = ImportOption;
+	Import(Ar);
 }
 
 /**
@@ -51,7 +52,7 @@ FVoxel::FVoxel(const FString& Filename, FArchive& Ar, const UVoxImportOption* Im
  * @param FArchive& Ar	Read vox data from the archive
  * @return bool	is valid or supported vox data
  */
-bool FVoxel::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
+bool FVoxel::Import(FArchive& Ar)
 {
 	Ar.Serialize(MagicNumber, 4);
 
@@ -237,7 +238,7 @@ static FVector2D TextureCoord[2][3] = {
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
  */
-bool FVoxel::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
+bool FVoxel::CreateRawMesh(FRawMesh& OutRawMesh) const
 {
 	for (const auto& Cell : Voxel) {
 		FVector Origin(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
@@ -286,7 +287,7 @@ bool FVoxel::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportO
  * @param OutRawMesh Out raw mesh
  * @return Result
  */
-bool FVoxel::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const
+bool FVoxel::CreateOptimizedRawMesh(FRawMesh& OutRawMesh) const
 {
 	MonotoneMesh Mesher(this);
 	return Mesher.CreateRawMesh(OutRawMesh, ImportOption);
@@ -297,7 +298,7 @@ bool FVoxel::CreateOptimizedRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption
  * @param FRawMesh& RawMesh	Out RawMesh
  * @return Result
  */
-bool FVoxel::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const
+bool FVoxel::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes) const
 {
 	for (const auto& Cell : Voxel) {
 		FRawMesh OutRawMesh;
@@ -339,7 +340,7 @@ bool FVoxel::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOpt
 }
 
 
-bool FVoxel::CreateTexture(UTexture2D* const& OutTexture, UVoxImportOption* ImportOption) const
+bool FVoxel::CreateTexture(UTexture2D* const& OutTexture) const
 {
 	check(OutTexture);
 	OutTexture->LODGroup = TextureGroup::TEXTUREGROUP_World;
