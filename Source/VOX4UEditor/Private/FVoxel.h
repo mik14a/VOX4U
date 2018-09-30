@@ -35,11 +35,8 @@ public:
 	/** Create empty vox data */
 	FVoxel();
 
-	/** Create vox data from archive */
-	FVoxel(const FString& Filename, FArchive& Ar, const UVoxImportOption* ImportOption);
-
-	/** Import vox data from archive */
-	bool Import(FArchive& Ar);
+	/** Create vox data from memory */
+	FVoxel(const FString& Filename, const void* Data, int64 Size, const UVoxImportOption* ImportOption);
 
 	/** Create FRawMesh from Voxel */
 	bool CreateRawMesh(FRawMesh& OutRawMesh) const;

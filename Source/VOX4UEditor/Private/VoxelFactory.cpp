@@ -69,8 +69,7 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 	bool bImportAll = true;
 	if (!bShowOption || ImportOption->GetImportOption(bImportAll)) {
 		bShowOption = !bImportAll;
-		FBufferReader Reader((void*)Buffer, BufferEnd - Buffer, false);
-		FVoxel Vox(GetCurrentFilename(), Reader, ImportOption);
+		FVoxel Vox(GetCurrentFilename(), Buffer, BufferEnd - Buffer, ImportOption);
 		switch (ImportOption->VoxImportType) {
 		case EVoxImportType::StaticMesh:
 			Result = CreateStaticMesh(InParent, InName, Flags, &Vox);
