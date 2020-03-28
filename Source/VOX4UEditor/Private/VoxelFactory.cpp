@@ -64,8 +64,9 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
 {
 	UObject* Result = nullptr;
-	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
+	UImportSubsystem* ImportSubsystem = GEditor->GetEditorSubsystem<UImportSubsystem>();
 
+	ImportSubsystem->OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 	bool bImportAll = true;
 	if (!bShowOption || ImportOption->GetImportOption(bImportAll)) {
 		bShowOption = !bImportAll;
@@ -88,7 +89,8 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 			break;
 		}
 	}
-	FEditorDelegates::OnAssetPostImport.Broadcast(this, Result);
+	ImportSubsystem->OnAssetPostImport.Broadcast(this, Result);
+
 	return Result;
 }
 
