@@ -64,8 +64,9 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
 {
 	UObject* Result = nullptr;
-	FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
+	UImportSubsystem* ImportSubsystem = GEditor->GetEditorSubsystem<UImportSubsystem>();
 
+	ImportSubsystem->OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 	bool bImportAll = true;
 	if (!bShowOption || ImportOption->GetImportOption(bImportAll)) {
 		bShowOption = !bImportAll;
@@ -87,7 +88,8 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 			break;
 		}
 	}
-	FEditorDelegates::OnAssetPostImport.Broadcast(this, Result);
+	ImportSubsystem->OnAssetPostImport.Broadcast(this, Result);
+
 	return Result;
 }
 
@@ -232,13 +234,13 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	BuildStaticMesh(RootMesh, RawMesh);
 	DestructibleMesh->SourceStaticMesh = RootMesh;
 
-	TArray<FRawMesh> RawMeshes;
-	Vox->CreateRawMeshes(RawMeshes);
+	TArray<FRawMesh> CellMeshes;
+	Vox->CreateRawMeshes(CellMeshes);
 	TArray<UStaticMesh*> FractureMeshes;
-	for (FRawMesh& RawMesh : RawMeshes) {
+	for (FRawMesh& CellMesh : CellMeshes) {
 		UStaticMesh* FructureMesh = NewObject<UStaticMesh>();
 		FructureMesh->StaticMaterials.Add(FStaticMaterial(Material));
-		BuildStaticMesh(FructureMesh, RawMesh);
+		BuildStaticMesh(FructureMesh, CellMesh);
 		FractureMeshes.Add(FructureMesh);
 	}
 	DestructibleMesh->SetupChunksFromStaticMeshes(FractureMeshes);
@@ -305,7 +307,8 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const
 {
 	check(OutStaticMesh);
-	FStaticMeshSourceModel* StaticMeshSourceModel = new(OutStaticMesh->SourceModels) FStaticMeshSourceModel();
+	TArray<FStaticMeshSourceModel>& SourceModels = OutStaticMesh->GetSourceModels();
+	FStaticMeshSourceModel* StaticMeshSourceModel = new(SourceModels) FStaticMeshSourceModel();
 	StaticMeshSourceModel->BuildSettings = ImportOption->GetBuildSettings();
 	StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
 	TArray<FText> Errors;

@@ -6,6 +6,7 @@ public class VOX4U : ModuleRules
 {
 	public VOX4U(ReadOnlyTargetRules Target) : base(Target)
 	{
+		DefaultBuildSettings = BuildSettingsVersion.V2;
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicIncludePaths.AddRange(

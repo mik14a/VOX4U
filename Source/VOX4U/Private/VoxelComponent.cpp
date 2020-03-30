@@ -27,14 +27,14 @@ void UVoxelComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 			ClearVoxel();
 			AddVoxel();
 		} else if (PropertyChangedEvent.Property->GetFName() == NAME_Mesh) {
-			FBoxSphereBounds Bounds(ForceInit);
+			FBoxSphereBounds MeshBounds(ForceInit);
 			for (int32 i = 0; i < Mesh.Num(); ++i) {
 				InstancedStaticMeshComponents[i]->SetStaticMesh(Mesh[i]);
 				if (Mesh[i]) {
-					Bounds = Bounds + Mesh[i]->GetBounds();
+					MeshBounds = MeshBounds + Mesh[i]->GetBounds();
 				}
 			}
-			CellBounds = Bounds;
+			CellBounds = MeshBounds;
 		} else if (PropertyChangedEvent.Property->GetFName() == NAME_Voxel) {
 			SetVoxel(Voxel, true);
 		}
@@ -126,11 +126,11 @@ bool UVoxelComponent::GetVoxelTransform(const FIntVector& InVector, FTransform& 
 
 FBoxSphereBounds UVoxelComponent::CalcBounds(const FTransform& LocalToWorld) const
 {
-	FBoxSphereBounds Bounds = FBoxSphereBounds(ForceInit);
+	FBoxSphereBounds ComponentBounds = FBoxSphereBounds(ForceInit);
 	for (auto* InstancedStaticMeshComponent : InstancedStaticMeshComponents) {
-		Bounds = Bounds + InstancedStaticMeshComponent->CalcBounds(LocalToWorld);
+		ComponentBounds = ComponentBounds + InstancedStaticMeshComponent->CalcBounds(LocalToWorld);
 	}
-	return Bounds;
+	return ComponentBounds;
 }
 
 const TArray<UInstancedStaticMeshComponent*>& UVoxelComponent::GetInstancedStaticMeshComponent() const
