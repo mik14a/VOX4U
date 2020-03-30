@@ -4,7 +4,9 @@ using UnrealBuildTool;
 
 public class VOX4UEditor : ModuleRules
 {
-	public VOX4UEditor(ReadOnlyTargetRules Target) : base(Target) {
+	public VOX4UEditor(ReadOnlyTargetRules Target) : base(Target)
+	{
+		DefaultBuildSettings = BuildSettingsVersion.V2;
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicIncludePaths.AddRange(
