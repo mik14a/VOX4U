@@ -235,13 +235,13 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	BuildStaticMesh(RootMesh, RawMesh);
 	DestructibleMesh->SourceStaticMesh = RootMesh;
 
-	TArray<FRawMesh> RawMeshes;
-	Vox->CreateRawMeshes(RawMeshes, ImportOption);
+	TArray<FRawMesh> CellMeshes;
+	Vox->CreateRawMeshes(CellMeshes, ImportOption);
 	TArray<UStaticMesh*> FractureMeshes;
-	for (FRawMesh& RawMesh : RawMeshes) {
+	for (FRawMesh& CellMesh : CellMeshes) {
 		UStaticMesh* FructureMesh = NewObject<UStaticMesh>();
 		FructureMesh->StaticMaterials.Add(FStaticMaterial(Material));
-		BuildStaticMesh(FructureMesh, RawMesh);
+		BuildStaticMesh(FructureMesh, CellMesh);
 		FractureMeshes.Add(FructureMesh);
 	}
 	DestructibleMesh->SetupChunksFromStaticMeshes(FractureMeshes);
