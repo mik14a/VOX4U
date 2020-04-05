@@ -1,4 +1,4 @@
-// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelFactory.h"
 #include <ApexDestructibleAssetImport.h>
@@ -259,7 +259,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		AssetImportData->FromVoxImportOption(*ImportOption);
 		Voxel->AssetImportData = AssetImportData;
 	}
-	Voxel->Size = Vox->Size;
+	Voxel->Size = Vox->Max - Vox->Min + FIntVector(1, 1, 1);
 	TArray<uint8> Palette;
 	for (const auto& cell : Vox->Voxel) {
 		Palette.AddUnique(cell.Value);

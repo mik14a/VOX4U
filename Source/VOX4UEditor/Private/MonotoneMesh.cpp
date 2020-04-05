@@ -1,4 +1,4 @@
-// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
 #include "MonotoneMesh.h"
 #include "FVoxel.h"
@@ -21,7 +21,7 @@ bool MonotoneMesh::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* I
 	for (auto Dimension = 0; Dimension < 3; ++Dimension) {
 		auto Plane = FIntVector::ZeroValue;
 		const auto Axis = FIntVector(Dimension, (Dimension + 1) % 3, (Dimension + 2) % 3);
-		for (Plane[Axis.Z] = 0; Plane[Axis.Z] <= Vox->Size[Axis.Z]; ++Plane[Axis.Z]) {
+		for (Plane[Axis.Z] = Vox->Min[Axis.Z]; Plane[Axis.Z] <= Vox->Max[Axis.Z] + 1; ++Plane[Axis.Z]) {
 			auto Polygons = TArray<FPolygon>();
 			CreatePolygons(Polygons, Plane, Axis);
 			for (auto i = 0; i < Polygons.Num(); ++i) {
@@ -31,7 +31,8 @@ bool MonotoneMesh::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* I
 	}
 
 	if (ImportOption->bImportXYCenter) {
-		FVector Offset = FVector((float)Vox->Size.X * 0.5f, (float)Vox->Size.Y * 0.5f, 0.f);
+		const auto Size = Vox->Max - Vox->Min + FIntVector(1, 1, 1);
+		FVector Offset = FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f);
 		for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
 			OutRawMesh.VertexPositions[i] -= Offset;
 		}
@@ -51,7 +52,7 @@ void MonotoneMesh::CreatePolygons(TArray<FPolygon>& OutPolygons, const FIntVecto
 {
 	auto P = Plane;
 	auto Frontier = TArray<int>();
-	for (P[Axis.Y] = 0; P[Axis.Y] < Vox->Size[Axis.Y]; ++P[Axis.Y]) {
+	for (P[Axis.Y] = Vox->Min[Axis.Y]; P[Axis.Y] < Vox->Max[Axis.Y] + 1; ++P[Axis.Y]) {
 		auto Faces = TArray<FFace>();
 		CreateFaces(Faces, P, Axis);
 		auto NextFrontier = TArray<int>();
@@ -108,7 +109,7 @@ void MonotoneMesh::CreateFaces(TArray<FFace>& OutFaces, const FIntVector& Plane,
 	auto D = FIntVector();
 	D[Axis.X] = 0, D[Axis.Y] = 0, D[Axis.Z] = -1;
 	auto PreviouseColor = 0;
-	for (P[Axis.X] = 0; P[Axis.X] < Vox->Size[Axis.X]; ++P[Axis.X]) {
+	for (P[Axis.X] = Vox->Min[Axis.X]; P[Axis.X] < Vox->Max[Axis.X] + 1; ++P[Axis.X]) {
 		auto Back = Vox->Voxel.FindRef(P + D);
 		auto Front = Vox->Voxel.FindRef(P);
 		auto Color = !Back == !Front ? 0 : Back ? -Back : Front;

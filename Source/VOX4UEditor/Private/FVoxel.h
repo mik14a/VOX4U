@@ -1,4 +1,4 @@
-// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
@@ -7,6 +7,8 @@
 
 class UTexture2D;
 class UVoxImportOption;
+
+struct VoxImporter;
 
 /**
  * @struct FVoxel
@@ -18,13 +20,8 @@ struct FVoxel
 	/** Filename */
 	FString Filename;
 
-	/** Magic number ( 'V' 'O' 'X' 'space' ) and terminate */
-	ANSICHAR MagicNumber[5];
-	/** version number ( current version is 150 ) */
-	uint32 VersionNumber;
-
 	/** Size */
-	FIntVector Size;
+	FIntVector Min, Max;
 	/** Voxel */
 	TMap<FIntVector, uint8> Voxel;
 	/** Palette */
@@ -37,6 +34,9 @@ public:
 
 	/** Create vox data from memory */
 	FVoxel(const FString& Filename, const void* Data, int64 Size, const UVoxImportOption* ImportOption);
+
+	/** Destruct Voxel data */
+	~FVoxel();
 
 	/** Create FRawMesh from Voxel */
 	bool CreateRawMesh(FRawMesh& OutRawMesh) const;
@@ -56,4 +56,11 @@ public:
 private:
 
 	const UVoxImportOption* ImportOption;
+
+protected:
+
+	friend struct VoxImporter;
+
+	VoxImporter* Importer;
+
 };

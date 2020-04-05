@@ -1,9 +1,10 @@
-// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
 #include "FVoxel.h"
 #include <Engine/Texture2D.h>
 #include "MonotoneMesh.h"
 #include "VoxImportOption.h"
+#include "VoxImporter.h"
 #include "vox.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
@@ -11,7 +12,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 /**
  * Create empty vox data.
  */
-FVoxel::FVoxel()
+FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit), Importer(nullptr)
 {
 }
 
@@ -23,34 +24,48 @@ FVoxel::FVoxel()
  * @param ImportOption
  */
 FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVoxImportOption* ImportOption)
+	: Min(ForceInit), Max(ForceInit), Importer(new VoxImporter(this))
 {
 	this->Filename = Filename;
 	this->ImportOption = ImportOption;
 	auto vox = vox::read(Data, Size);
 
-	const auto& size = vox.size[0];
-	this->Size.X = ImportOption->bImportXForward ? size.y : size.x;
-	this->Size.Y = ImportOption->bImportXForward ? size.x : size.y;
-	this->Size.Z = size.z;
-
-	const auto& voxel = vox.voxel[0];
-	for (auto n = 0; n < voxel.voxels.size(); ++n) {
-		const auto& cell = voxel.voxels[n];
-		auto vector = ImportOption->bImportXForward
-			? FIntVector(this->Size.X - cell.y - 1, this->Size.Y - cell.x - 1, cell.z)
-			: FIntVector(this->Size.X - cell.x - 1, cell.y, cell.z);
-		Voxel.Add(MoveTemp(vector), cell.i);
-	}
-	const auto& palette = vox.palette.palettes;
-	if (palette.size() != 0) {
-		for (auto i = 0; i < 256; ++i) {
-			const auto& color = palette[i];
-			Palette.Add(FColor(color.r, color.g, color.b, color.a));
-		}
+	auto extensionFormat = !vox.node.empty() || !vox.layer.empty();
+	if (extensionFormat) {
+		Importer->Import(vox);
 	} else {
-		for (auto i = 0; i < 256; ++i) {
-			Palette.Add(FColor(vox::vox::default_palette[i]));
+		const auto& size = vox.size[0];
+		Max.X = (ImportOption->bImportXForward ? size.y : size.x) - 1;
+		Max.Y = (ImportOption->bImportXForward ? size.x : size.y) - 1;
+		Max.Z = size.z - 1;
+
+		const auto CellSize = Max + FIntVector(1, 1, 1);
+		const auto& voxel = vox.voxel[0];
+		for (auto n = 0; n < voxel.voxels.size(); ++n) {
+			const auto& cell = voxel.voxels[n];
+			auto vector = ImportOption->bImportXForward
+				? FIntVector(CellSize.X - cell.y - 1, CellSize.Y - cell.x - 1, cell.z)
+				: FIntVector(CellSize.X - cell.x - 1, cell.y, cell.z);
+			Voxel.Add(MoveTemp(vector), cell.i);
 		}
+		const auto& palette = vox.palette.palettes;
+		if (palette.size() != 0) {
+			for (auto i = 0; i < 256; ++i) {
+				const auto& color = palette[i];
+				Palette.Add(FColor(color.r, color.g, color.b, color.a));
+			}
+		} else {
+			for (auto i = 0; i < 256; ++i) {
+				Palette.Add(FColor(vox::vox::default_palette[i]));
+			}
+		}
+	}
+}
+
+FVoxel::~FVoxel()
+{
+	if (Importer) {
+		delete Importer;
 	}
 }
 
@@ -182,6 +197,7 @@ bool FVoxel::CreateRawMesh(FRawMesh& OutRawMesh) const
 		}
 	}
 
+	const auto Size = Max + FIntVector(1, 1, 1);
 	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f) : FVector::ZeroVector;
 	for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
 		FVector VertexPosition = OutRawMesh.VertexPositions[i];
@@ -238,6 +254,7 @@ bool FVoxel::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes) const
 		OutRawMeshes.Add(OutRawMesh);
 	}
 
+	const auto Size = Max + FIntVector(1, 1, 1);
 	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f) : FVector::ZeroVector;
 	for (FRawMesh& OutRawMesh : OutRawMeshes) {
 		for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
