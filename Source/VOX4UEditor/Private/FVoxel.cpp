@@ -2,9 +2,9 @@
 
 #include "FVoxel.h"
 #include <Engine/Texture2D.h>
+#include "Importer/VoxExtensionImporter.h"
 #include "MonotoneMesh.h"
 #include "VoxImportOption.h"
-#include "VoxImporter.h"
 #include "vox.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
@@ -24,7 +24,7 @@ FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit), Importer(nullptr)
  * @param ImportOption
  */
 FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVoxImportOption* ImportOption)
-	: Min(ForceInit), Max(ForceInit), Importer(new VoxImporter(this))
+	: Min(ForceInit), Max(ForceInit), Importer(new VoxExtensionImporter(this))
 {
 	this->Filename = Filename;
 	this->ImportOption = ImportOption;

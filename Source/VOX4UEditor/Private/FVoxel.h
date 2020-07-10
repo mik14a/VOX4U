@@ -8,7 +8,7 @@
 class UTexture2D;
 class UVoxImportOption;
 
-struct VoxImporter;
+struct VoxExtensionImporter;
 
 /**
  * @struct FVoxel
@@ -59,8 +59,8 @@ private:
 
 protected:
 
-	friend struct VoxImporter;
+	friend struct VoxExtensionImporter;
 
-	VoxImporter* Importer;
+	VoxExtensionImporter* Importer;
 
 };

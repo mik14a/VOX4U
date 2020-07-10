@@ -1,23 +1,24 @@
 // Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
-#include "VoxImporter.h"
+#include "VoxExtensionImporter.h"
 #include "FVoxel.h"
+#include "libvox.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVoxImporter, Log, All)
 
-const VoxImporter::TypeIndexMapT<VoxImporter::SceneGraphOperatorT> VoxImporter::SceneGraphOperator =
+const VoxExtensionImporter::TypeIndexMapT<VoxExtensionImporter::SceneGraphOperatorT> VoxExtensionImporter::SceneGraphOperator =
 {
-	{ vox::transform::tag, &VoxImporter::Transform },
-	{ vox::group::tag, &VoxImporter::Group},
-	{ vox::shape::tag, &VoxImporter::Shape},
+	{ vox::transform::tag, &VoxExtensionImporter::Transform },
+	{ vox::group::tag, &VoxExtensionImporter::Group},
+	{ vox::shape::tag, &VoxExtensionImporter::Shape},
 };
 
-VoxImporter::VoxImporter(FVoxel* voxel)
-	: Voxel(voxel)
+VoxExtensionImporter::VoxExtensionImporter(FVoxel* voxel)
+	: IVoxImporter(voxel)
 	, Depth(0)
 {}
 
-void VoxImporter::Import(const vox::vox& vox)
+void VoxExtensionImporter::Import(const vox::vox& vox)
 {
 	auto root = vox.node.find(0);
 	auto translation = vox::translation();
@@ -35,15 +36,14 @@ void VoxImporter::Import(const vox::vox& vox)
 		Voxel->Max.Z = FMath::Max(Voxel->Max.Z, Cell.Key.Z);
 	}
 	const auto& palette = vox.palette.palettes;
-	for (auto i = 0; i < 256; ++i) {
-		const auto& color = palette[i];
+	for (const auto& color : palette) {
 		Voxel->Palette.Add(FColor(color.r, color.g, color.b, color.a));
 	}
 }
 
 #define TAG(tag)	(tag) & 0xff, ((tag) >> 8) & 0xff, ((tag) >> 16) & 0xff, ((tag) >> 24) & 0xff
 
-void VoxImporter::Visit(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
+void VoxExtensionImporter::Visit(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
 {
 	auto function = SceneGraphOperator.Find(node->tag);
 	if (function) {
@@ -63,7 +63,7 @@ UE_LOG(CategoryName, Verbosity, TEXT("%s* Transfrom: Name[%s], Translation[%d,%d
 	Transform->frame[0].rotation.m[2][0], Transform->frame[0].rotation.m[2][1], Transform->frame[0].rotation.m[2][2]	\
 )
 
-void VoxImporter::Transform(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
+void VoxExtensionImporter::Transform(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
 {
 	const auto transform = std::static_pointer_cast<vox::transform>(node);
 	UE_LOG_TRANSFORM(LogVoxImporter, Log, Depth, transform);
@@ -77,7 +77,7 @@ void VoxImporter::Transform(const vox::vox& vox, std::shared_ptr<vox::node> node
 #define UE_LOG_GROUP(CategoryName, Verbosity, Depth, Group)	\
 UE_LOG(CategoryName, Verbosity, TEXT("%s* Group"), *FString::ChrN(Depth, ' '))
 
-void VoxImporter::Group(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
+void VoxExtensionImporter::Group(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
 {
 	const auto group = std::static_pointer_cast<vox::group>(node);
 	UE_LOG_GROUP(LogVoxImporter, Log, Depth, group);
@@ -94,7 +94,7 @@ UE_LOG(CategoryName, Verbosity, TEXT("%s* Shape: Id[%d], Size[%d,%d,%d]"),	\
 	Voxel.size[Shape->model[0].id].x, Voxel.size[Shape->model[0].id].y, Voxel.size[Shape->model[0].id].z	\
 )
 
-void VoxImporter::Shape(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
+void VoxExtensionImporter::Shape(const vox::vox& vox, std::shared_ptr<vox::node> node, const vox::translation& translation, const vox::rotation& rotation)
 {
 	const auto shape = std::static_pointer_cast<vox::shape>(node);
 	UE_LOG_SHAPE(LogVoxImporter, Log, Depth, vox, shape);
@@ -113,7 +113,7 @@ void VoxImporter::Shape(const vox::vox& vox, std::shared_ptr<vox::node> node, co
 	}
 }
 
-vox::translation VoxImporter::Transform(const vox::rotation& M, const vox::translation& T)
+vox::translation VoxExtensionImporter::Transform(const vox::rotation& M, const vox::translation& T)
 {
 	return {
 		T.x * M.m[0][0] + T.y * M.m[1][0] + T.z * M.m[2][0],
@@ -122,7 +122,7 @@ vox::translation VoxImporter::Transform(const vox::rotation& M, const vox::trans
 	};
 }
 
-FIntVector VoxImporter::Transform(const vox::rotation& M, const FIntVector& V)
+FIntVector VoxExtensionImporter::Transform(const vox::rotation& M, const FIntVector& V)
 {
 	return {
 		V.X * M.m[0][0] + V.Y * M.m[1][0] + V.Z * M.m[2][0],

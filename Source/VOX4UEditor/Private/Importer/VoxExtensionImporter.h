@@ -1,27 +1,25 @@
 // Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
-#include "CoreMinimal.h"
-#include "libvox.h"
-#include "vox.h"
-#include "../libVOX/include/node/transform.h"	// TODO
+#pragma once
 
-struct FVoxel;
+#include "CoreMinimal.h"
+#include "IVoxImporter.h"
 
 /**
  * VoxImporter
  */
-struct VoxImporter
+struct VoxExtensionImporter : public IVoxImporter
 {
-	using SceneGraphOperatorT = void(VoxImporter::*)(const vox::vox&, std::shared_ptr<vox::node>, const vox::translation&, const vox::rotation&);
+	using SceneGraphOperatorT = void(VoxExtensionImporter::*)(const vox::vox&, std::shared_ptr<vox::node>, const vox::translation&, const vox::rotation&);
 	template <typename T> using TypeIndexMapT = TMap<uint32_t, T>;
 	static const TypeIndexMapT<SceneGraphOperatorT> SceneGraphOperator;
 
 public:
 	/** Construct importer use parent voxel reference */
-	VoxImporter(FVoxel* voxel);
+	VoxExtensionImporter(FVoxel* voxel);
 
 	/** Import voxel model from vox object */
-	void Import(const vox::vox& vox);
+	void Import(const vox::vox& vox) override;
 
 protected:
 	/** Visit scene graph */
@@ -40,8 +38,6 @@ private:
 	static FIntVector Transform(const vox::rotation& M, const FIntVector& V);
 
 private: // Immutable members
-	/** Parent voxel structure */
-	FVoxel* const Voxel;
 	/** Scene graph depth */
 	int Depth;
 };
