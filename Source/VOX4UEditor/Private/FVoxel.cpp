@@ -33,6 +33,23 @@ FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVox
 	auto extensionFormat = !vox.node.empty() || !vox.layer.empty();
 	if (extensionFormat) {
 		Importer->Import(vox);
+		auto Temp = Voxel;
+		Voxel.Reset();
+		for (const auto& Cell : Temp) {
+			auto vector = ImportOption->bImportXForward
+				? FIntVector(-1 - Cell.Key.Y, -1 - Cell.Key.X, Cell.Key.Z)
+				: FIntVector(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
+			Voxel.Add(MoveTemp(vector), Cell.Value);
+		}
+		Min = Max = FIntVector::ZeroValue;
+		for (const auto& Cell : Voxel) {
+			Min.X = FMath::Min(Min.X, Cell.Key.X);
+			Max.X = FMath::Max(Max.X, Cell.Key.X);
+			Min.Y = FMath::Min(Min.Y, Cell.Key.Y);
+			Max.Y = FMath::Max(Max.Y, Cell.Key.Y);
+			Min.Z = FMath::Min(Min.Z, Cell.Key.Z);
+			Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
+		}
 	} else {
 		const auto& size = vox.size[0];
 		Max.X = (ImportOption->bImportXForward ? size.y : size.x) - 1;
