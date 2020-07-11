@@ -3,6 +3,7 @@
 #include "FVoxel.h"
 #include <Engine/Texture2D.h>
 #include "Importer/VoxExtensionImporter.h"
+#include "Importer/VoxImporter.h"
 #include "MonotoneMesh.h"
 #include "VoxImportOption.h"
 #include "vox.h"
@@ -12,7 +13,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 /**
  * Create empty vox data.
  */
-FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit), Importer(nullptr)
+FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit)
 {
 }
 
@@ -24,66 +25,39 @@ FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit), Importer(nullptr)
  * @param ImportOption
  */
 FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVoxImportOption* ImportOption)
-	: Min(ForceInit), Max(ForceInit), Importer(new VoxExtensionImporter(this))
+	: Min(ForceInit), Max(ForceInit)
 {
 	this->Filename = Filename;
 	this->ImportOption = ImportOption;
 	auto vox = vox::read(Data, Size);
 
-	auto extensionFormat = !vox.node.empty() || !vox.layer.empty();
-	if (extensionFormat) {
-		Importer->Import(vox);
-		auto Temp = Voxel;
-		Voxel.Reset();
-		for (const auto& Cell : Temp) {
-			auto vector = ImportOption->bImportXForward
-				? FIntVector(-1 - Cell.Key.Y, -1 - Cell.Key.X, Cell.Key.Z)
-				: FIntVector(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
-			Voxel.Add(MoveTemp(vector), Cell.Value);
-		}
-		Min = Max = FIntVector::ZeroValue;
-		for (const auto& Cell : Voxel) {
-			Min.X = FMath::Min(Min.X, Cell.Key.X);
-			Max.X = FMath::Max(Max.X, Cell.Key.X);
-			Min.Y = FMath::Min(Min.Y, Cell.Key.Y);
-			Max.Y = FMath::Max(Max.Y, Cell.Key.Y);
-			Min.Z = FMath::Min(Min.Z, Cell.Key.Z);
-			Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
-		}
-	} else {
-		const auto& size = vox.size[0];
-		Max.X = (ImportOption->bImportXForward ? size.y : size.x) - 1;
-		Max.Y = (ImportOption->bImportXForward ? size.x : size.y) - 1;
-		Max.Z = size.z - 1;
+	auto ExtensionFormat = !vox.node.empty() || !vox.layer.empty();
+	auto Importer = TUniquePtr<IVoxImporter>(
+		ExtensionFormat ? static_cast<IVoxImporter*>(new VoxExtensionImporter(this)) : static_cast<IVoxImporter*>(new VoxImporter(this))
+	);
+	Importer->Import(vox);
 
-		const auto CellSize = Max + FIntVector(1, 1, 1);
-		const auto& voxel = vox.voxel[0];
-		for (auto n = 0; n < voxel.voxels.size(); ++n) {
-			const auto& cell = voxel.voxels[n];
-			auto vector = ImportOption->bImportXForward
-				? FIntVector(CellSize.X - cell.y - 1, CellSize.Y - cell.x - 1, cell.z)
-				: FIntVector(CellSize.X - cell.x - 1, cell.y, cell.z);
-			Voxel.Add(MoveTemp(vector), cell.i);
-		}
-		const auto& palette = vox.palette.palettes;
-		if (palette.size() != 0) {
-			for (auto i = 0; i < 256; ++i) {
-				const auto& color = palette[i];
-				Palette.Add(FColor(color.r, color.g, color.b, color.a));
-			}
-		} else {
-			for (auto i = 0; i < 256; ++i) {
-				Palette.Add(FColor(vox::vox::default_palette[i]));
-			}
-		}
+	auto Temp = Voxel;
+	Voxel.Reset();
+	for (const auto& Cell : Temp) {
+		auto vector = ImportOption->bImportXForward
+			? FIntVector(-1 - Cell.Key.Y, -1 - Cell.Key.X, Cell.Key.Z)
+			: FIntVector(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
+		Voxel.Add(MoveTemp(vector), Cell.Value);
+	}
+	Min = Max = FIntVector::ZeroValue;
+	for (const auto& Cell : Voxel) {
+		Min.X = FMath::Min(Min.X, Cell.Key.X);
+		Max.X = FMath::Max(Max.X, Cell.Key.X);
+		Min.Y = FMath::Min(Min.Y, Cell.Key.Y);
+		Max.Y = FMath::Max(Max.Y, Cell.Key.Y);
+		Min.Z = FMath::Min(Min.Z, Cell.Key.Z);
+		Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
 	}
 }
 
 FVoxel::~FVoxel()
 {
-	if (Importer) {
-		delete Importer;
-	}
 }
 
 /**

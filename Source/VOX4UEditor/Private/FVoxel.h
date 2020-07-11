@@ -61,6 +61,4 @@ protected:
 
 	friend struct VoxExtensionImporter;
 
-	VoxExtensionImporter* Importer;
-
 };
