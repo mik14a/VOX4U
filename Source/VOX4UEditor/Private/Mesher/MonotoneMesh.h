@@ -1,8 +1,9 @@
-// Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
 #include <RawMesh.h>
+#include "IMesher.h"
 
 struct FFace;
 struct FPolygon;
@@ -13,7 +14,7 @@ class UVoxImportOption;
  * Monotone mesh generation
  * @see https://0fps.net/2012/07/07/meshing-minecraft-part-2/
  */
-class MonotoneMesh
+class MonotoneMesh : public IMesher
 {
 public:
 
@@ -21,7 +22,7 @@ public:
 	MonotoneMesh(const FVoxel* InVox);
 
 	/** Create FRawMesh from Voxel */
-	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const;
+	bool CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption) const override;
 
 private:
 
@@ -31,10 +32,6 @@ private:
 
 	static void WriteVertex(FRawMesh& OutRawMesh, TArray<int>& OutLeftIndex, TArray<int>& OutRightIndex, const FIntVector& Axis, const FPolygon& Polygon);
 	static void WriteWedge(FRawMesh& OutRawMesh, bool Face, int Index1, int Index2, int Index3, int ColorIndex);
-
-private:
-
-	const FVoxel* Vox;
 };
 
 /**

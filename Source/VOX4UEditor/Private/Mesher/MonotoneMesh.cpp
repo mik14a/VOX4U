@@ -8,8 +8,8 @@
  * Construct mesh generator using referenced voxel
  */
 MonotoneMesh::MonotoneMesh(const FVoxel* InVox)
+	: IMesher(InVox)
 {
-	Vox = InVox;
 }
 
 /**
