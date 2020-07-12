@@ -14,6 +14,7 @@
 #include <PhysicsEngine/BoxElem.h>
 #include <RawMesh.h>
 #include "FVoxel.h"
+#include "Mesher/CellMesh.h"
 #include "VoxAssetImportData.h"
 #include "VoxImportOption.h"
 #include "Voxel.h"
@@ -283,7 +284,7 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		MaterialInstance->SetVectorParameterValueEditorOnly(TEXT("Color"), LinearColor);
 
 		FRawMesh RawMesh;
-		FVoxel::CreateMesh(RawMesh, ImportOption);
+		CellMesh::CreateBoxCell(RawMesh, ImportOption);
 		UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, *FString::Printf(TEXT("%s_SM%d"), *InName.GetPlainNameString(), color), Flags | RF_Public);
 		StaticMesh->StaticMaterials.Add(FStaticMaterial(MaterialInstance));
 		BuildStaticMesh(StaticMesh, RawMesh);

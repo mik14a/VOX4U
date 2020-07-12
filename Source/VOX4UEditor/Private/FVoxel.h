@@ -50,9 +50,6 @@ public:
 	/** Create UTexture2D from Palette */
 	bool CreateTexture(UTexture2D* const& OutTexture) const;
 
-	/** Create one raw mesh */
-	static bool CreateMesh(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption);
-
 private:
 
 	const UVoxImportOption* ImportOption;
