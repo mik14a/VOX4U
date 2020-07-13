@@ -5,6 +5,7 @@
 #include "Importer/VoxExtensionImporter.h"
 #include "Importer/VoxImporter.h"
 #include "Mesher/CellMesh.h"
+#include "Mesher/IMesher.h"
 #include "Mesher/MonotoneMesh.h"
 #include "VoxImportOption.h"
 #include "vox.h"
@@ -14,7 +15,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 /**
  * Create empty vox data.
  */
-FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit)
+	FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit)
 {
 }
 
@@ -69,19 +70,10 @@ FVoxel::~FVoxel()
  */
 bool FVoxel::CreateRawMesh(FRawMesh& OutRawMesh) const
 {
-	CellMesh Mesher(this);
-	return Mesher.CreateRawMesh(OutRawMesh, ImportOption);
-}
-
-/**
- * CreateOptimizedRawMesh
- * @param OutRawMesh Out raw mesh
- * @return Result
- */
-bool FVoxel::CreateOptimizedRawMesh(FRawMesh& OutRawMesh) const
-{
-	MonotoneMesh Mesher(this);
-	return Mesher.CreateRawMesh(OutRawMesh, ImportOption);
+	auto Mesher = TUniquePtr<IMesher>(
+		ImportOption->bImportMeshOptimize ? static_cast<IMesher*>(new MonotoneMesh(this)) : static_cast<IMesher*>(new CellMesh(this))
+	);
+	return Mesher->CreateRawMesh(OutRawMesh, ImportOption);
 }
 
 /**

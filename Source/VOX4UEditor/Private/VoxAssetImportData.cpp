@@ -5,7 +5,8 @@
 UVoxAssetImportData::UVoxAssetImportData()
 	: VoxImportType(EVoxImportType::StaticMesh)
 	, bImportXForward(true)
-	, bImportXYCenter(true)
+	, bImportXYCenter(false)
+	, bImportMeshOptimize(true)
 	, Scale(10.f)
 {
 }
@@ -15,6 +16,7 @@ void UVoxAssetImportData::ToVoxImportOption(UVoxImportOption& OutVoxImportOption
 	OutVoxImportOption.VoxImportType = VoxImportType;
 	OutVoxImportOption.bImportXForward = bImportXForward;
 	OutVoxImportOption.bImportXYCenter = bImportXYCenter;
+	OutVoxImportOption.bImportMeshOptimize = bImportMeshOptimize;
 	OutVoxImportOption.Scale = Scale;
 	OutVoxImportOption.BuildSettings.BuildScale3D = FVector(Scale);
 }
@@ -24,5 +26,6 @@ void UVoxAssetImportData::FromVoxImportOption(const UVoxImportOption& VoxImportO
 	VoxImportType = VoxImportOption.VoxImportType;
 	bImportXForward = VoxImportOption.bImportXForward;
 	bImportXYCenter = VoxImportOption.bImportXYCenter;
+	bImportMeshOptimize = VoxImportOption.bImportMeshOptimize;
 	Scale = VoxImportOption.Scale;
 }

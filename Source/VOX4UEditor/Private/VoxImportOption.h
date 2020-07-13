@@ -37,6 +37,9 @@ public:
 	uint32 bImportXYCenter : 1;
 
 	UPROPERTY(EditAnywhere, Category = Generic)
+	uint32 bImportMeshOptimize : 1;
+
+	UPROPERTY(EditAnywhere, Category = Generic)
 	float Scale;
 
 public:

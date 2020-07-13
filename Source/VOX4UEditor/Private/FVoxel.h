@@ -41,9 +41,6 @@ public:
 	/** Create FRawMesh from Voxel */
 	bool CreateRawMesh(FRawMesh& OutRawMesh) const;
 
-	/** Create FRawMesh from Voxel use Monotone mesh generation */
-	bool CreateOptimizedRawMesh(FRawMesh& OutRawMesh) const;
-
 	/** Create raw meshes from Voxel */
 	bool CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes) const;
 

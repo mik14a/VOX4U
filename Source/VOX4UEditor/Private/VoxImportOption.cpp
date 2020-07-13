@@ -9,7 +9,8 @@
 UVoxImportOption::UVoxImportOption()
 	: VoxImportType(EVoxImportType::StaticMesh)
 	, bImportXForward(true)
-	, bImportXYCenter(true)
+	, bImportXYCenter(false)
+	, bImportMeshOptimize(true)
 	, Scale(10.f)
 {
 	BuildSettings.BuildScale3D = FVector(Scale);

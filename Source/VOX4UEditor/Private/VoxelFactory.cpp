@@ -190,7 +190,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	}
 
 	FRawMesh RawMesh;
-	Vox->CreateOptimizedRawMesh(RawMesh);
+	Vox->CreateRawMesh(RawMesh);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
 	BuildStaticMesh(StaticMesh, RawMesh);
@@ -228,7 +228,7 @@ UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FNam
 	}
 
 	FRawMesh RawMesh;
-	Vox->CreateOptimizedRawMesh(RawMesh);
+	Vox->CreateRawMesh(RawMesh);
 	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 	UStaticMesh* RootMesh = NewObject<UStaticMesh>();
 	RootMesh->StaticMaterials.Add(FStaticMaterial(Material));
