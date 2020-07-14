@@ -308,10 +308,9 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const
 {
 	check(OutStaticMesh);
-	TArray<FStaticMeshSourceModel>& SourceModels = OutStaticMesh->GetSourceModels();
-	FStaticMeshSourceModel* StaticMeshSourceModel = new(SourceModels) FStaticMeshSourceModel();
-	StaticMeshSourceModel->BuildSettings = ImportOption->GetBuildSettings();
-	StaticMeshSourceModel->RawMeshBulkData->SaveRawMesh(RawMesh);
+	FStaticMeshSourceModel& StaticMeshSourceModel = OutStaticMesh->AddSourceModel();
+	StaticMeshSourceModel.BuildSettings = ImportOption->GetBuildSettings();
+	StaticMeshSourceModel.RawMeshBulkData->SaveRawMesh(RawMesh);
 	TArray<FText> Errors;
 	OutStaticMesh->Build(false, &Errors);
 	return OutStaticMesh;
