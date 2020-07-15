@@ -299,7 +299,6 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		Voxel->Voxel.Add(cell.Key, Palette.IndexOfByKey(cell.Value));
 		check(INDEX_NONE != Palette.IndexOfByKey(cell.Value));
 	}
-	Voxel->bXYCenter = ImportOption->bImportXYCenter;
 	Voxel->CalcCellBounds();
 	Voxel->AssetImportData->Update(Vox->Filename);
 	return Voxel;

@@ -78,10 +78,9 @@ void UVoxelComponent::InitVoxel()
 
 void UVoxelComponent::AddVoxel()
 {
-	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
 	for (auto& voxel : Voxel->Voxel) {
 		if (bHideUnbeheld && IsUnbeheldVolume(voxel.Key)) continue;
-		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 -CellBounds.Origin + CellBounds.BoxExtent - Offset;
+		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 -CellBounds.Origin + CellBounds.BoxExtent;
 		FTransform Transform(FQuat::Identity, Translation, FVector(1.f));
 		InstancedStaticMeshComponents[voxel.Value]->AddInstance(Transform);
 	}
@@ -115,8 +114,7 @@ bool UVoxelComponent::IsUnbeheldVolume(const FIntVector& InVector) const
 bool UVoxelComponent::GetVoxelTransform(const FIntVector& InVector, FTransform& OutVoxelTransform, bool bWorldSpace /*= false*/) const
 {
 	if (!Cell.Contains(InVector)) return false;
-	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
-	FVector Translation = FVector(InVector) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent - Offset;
+	FVector Translation = FVector(InVector) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent;
 	OutVoxelTransform = FTransform(FQuat::Identity, Translation, FVector(1.f));
 	if (bWorldSpace) {
 		OutVoxelTransform = OutVoxelTransform * GetComponentToWorld();

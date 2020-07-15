@@ -6,7 +6,6 @@
 UVoxel::UVoxel()
 	: Size(ForceInit)
 	, CellBounds(FVector::ZeroVector, FVector(100.f, 100.f, 100.f), 100.f)
-	, bXYCenter(true)
 	, Mesh()
 	, Voxel()
 {

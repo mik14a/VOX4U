@@ -15,7 +15,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 /**
  * Create empty vox data.
  */
-	FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit)
+FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit)
 {
 }
 
@@ -39,22 +39,46 @@ FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVox
 	);
 	Importer->Import(vox);
 
-	auto Temp = Voxel;
-	Voxel.Reset();
-	for (const auto& Cell : Temp) {
-		auto vector = ImportOption->bImportXForward
-			? FIntVector(-1 - Cell.Key.Y, -1 - Cell.Key.X, Cell.Key.Z)
-			: FIntVector(Cell.Key.X, Cell.Key.Y, Cell.Key.Z);
-		Voxel.Add(MoveTemp(vector), Cell.Value);
+	// Centering
+	if (ImportOption->bImportXYCenter) {
+		const auto Volume = Max - Min + FIntVector(1, 1, 1);
+		const auto Offset = FIntVector(Min.X + Volume.X / 2, Min.Y + Volume.Y / 2, 0);
+		auto Temp = TMap<FIntVector, uint8>();
+		Temp.Reserve(Voxel.Num());
+		for (const auto& Cell : Voxel) {
+			auto Vector = Cell.Key - Offset;
+			Temp.Emplace(MoveTemp(Vector), Cell.Value);
+		}
+		Voxel = MoveTemp(Temp);
+		Min = Max = FIntVector::ZeroValue;
+		for (const auto& Cell : Voxel) {
+			Min.X = FMath::Min(Min.X, Cell.Key.X);
+			Max.X = FMath::Max(Max.X, Cell.Key.X);
+			Min.Y = FMath::Min(Min.Y, Cell.Key.Y);
+			Max.Y = FMath::Max(Max.Y, Cell.Key.Y);
+			Min.Z = FMath::Min(Min.Z, Cell.Key.Z);
+			Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
+		}
 	}
-	Min = Max = FIntVector::ZeroValue;
-	for (const auto& Cell : Voxel) {
-		Min.X = FMath::Min(Min.X, Cell.Key.X);
-		Max.X = FMath::Max(Max.X, Cell.Key.X);
-		Min.Y = FMath::Min(Min.Y, Cell.Key.Y);
-		Max.Y = FMath::Max(Max.Y, Cell.Key.Y);
-		Min.Z = FMath::Min(Min.Z, Cell.Key.Z);
-		Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
+
+	// X forwarding
+	if (ImportOption->bImportXForward) {
+		auto Temp = TMap<FIntVector, uint8>();
+		Temp.Reserve(Voxel.Num());
+		for (const auto& Cell : Voxel) {
+			auto Vector = FIntVector(-1 - Cell.Key.Y, -1 - Cell.Key.X, Cell.Key.Z);
+			Temp.Emplace(MoveTemp(Vector), Cell.Value);
+		}
+		Voxel = MoveTemp(Temp);
+		Min = Max = FIntVector::ZeroValue;
+		for (const auto& Cell : Voxel) {
+			Min.X = FMath::Min(Min.X, Cell.Key.X);
+			Max.X = FMath::Max(Max.X, Cell.Key.X);
+			Min.Y = FMath::Min(Min.Y, Cell.Key.Y);
+			Max.Y = FMath::Max(Max.Y, Cell.Key.Y);
+			Min.Z = FMath::Min(Min.Z, Cell.Key.Z);
+			Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
+		}
 	}
 }
 
@@ -86,7 +110,6 @@ bool FVoxel::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes) const
 	CellMesh Mesher(this);
 	return Mesher.CreateRawMeshes(OutRawMeshes, ImportOption);
 }
-
 
 bool FVoxel::CreateTexture(UTexture2D* const& OutTexture) const
 {

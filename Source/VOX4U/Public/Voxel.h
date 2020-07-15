@@ -24,9 +24,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Voxel)
 	FBoxSphereBounds CellBounds;
 
-	UPROPERTY(EditDefaultsOnly, Category = Voxel)
-	uint32 bXYCenter : 1;
-
 	UPROPERTY(EditDefaultsOnly, EditFixedSize, Category = Voxel)
 	TArray<UStaticMesh*> Mesh;
 

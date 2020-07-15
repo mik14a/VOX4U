@@ -30,15 +30,10 @@ bool MonotoneMesh::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* I
 		}
 	}
 
-	if (ImportOption->bImportXYCenter) {
-		const auto Size = Vox->Max - Vox->Min + FIntVector(1, 1, 1);
-		FVector Offset = FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f);
-		for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
-			OutRawMesh.VertexPositions[i] -= Offset;
-		}
-	}
 	OutRawMesh.CompactMaterialIndices();
-	return true;
+	const auto ValidOrFixable = OutRawMesh.IsValidOrFixable();
+	check(ValidOrFixable);
+	return ValidOrFixable;
 }
 
 /**

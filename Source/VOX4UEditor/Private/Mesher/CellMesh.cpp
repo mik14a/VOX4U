@@ -133,18 +133,11 @@ bool CellMesh::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* Impor
 		}
 	}
 
-	const auto Size = Vox->Max + FIntVector(1, 1, 1);
-	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f) : FVector::ZeroVector;
-	for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
-		FVector VertexPosition = OutRawMesh.VertexPositions[i];
-		OutRawMesh.VertexPositions[i] = VertexPosition - Offset;
-	}
-
 	OutRawMesh.CompactMaterialIndices();
-	check(OutRawMesh.IsValidOrFixable());
+	const auto IsValidOrFixable = OutRawMesh.IsValidOrFixable();
+	check(IsValidOrFixable);
 
-	return true;
-
+	return IsValidOrFixable;
 }
 
 bool CellMesh::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportOption* ImportOption) const
@@ -172,21 +165,19 @@ bool CellMesh::CreateRawMeshes(TArray<FRawMesh>& OutRawMeshes, const UVoxImportO
 				OutRawMesh.FaceSmoothingMasks.Add(0);
 			}
 		}
+		OutRawMesh.CompactMaterialIndices();
 		OutRawMeshes.Add(OutRawMesh);
 	}
 
-	const auto Size = Vox->Max + FIntVector(1, 1, 1);
-	FVector Offset = ImportOption->bImportXYCenter ? FVector((float)Size.X * 0.5f, (float)Size.Y * 0.5f, 0.f) : FVector::ZeroVector;
-	for (FRawMesh& OutRawMesh : OutRawMeshes) {
-		for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
-			FVector VertexPosition = OutRawMesh.VertexPositions[i];
-			OutRawMesh.VertexPositions[i] = VertexPosition - Offset;
-		}
-		OutRawMesh.CompactMaterialIndices();
-		check(OutRawMesh.IsValidOrFixable());
+	auto ValidOrFixable = true;
+	for (const auto& OutRawMesh : OutRawMeshes) {
+		const auto _ValidOrFixable = OutRawMesh.IsValidOrFixable();
+		ValidOrFixable = ValidOrFixable && _ValidOrFixable;
+		check(_ValidOrFixable);
 	}
+	check(ValidOrFixable);
 
-	return true;
+	return ValidOrFixable;
 }
 
 bool CellMesh::CreateBoxCell(FRawMesh& OutRawMesh, const UVoxImportOption* ImportOption)
@@ -206,5 +197,8 @@ bool CellMesh::CreateBoxCell(FRawMesh& OutRawMesh, const UVoxImportOption* Impor
 			OutRawMesh.FaceSmoothingMasks.Add(0);
 		}
 	}
-	return OutRawMesh.IsValidOrFixable();
+	OutRawMesh.CompactMaterialIndices();
+	auto const ValidOrFixable = OutRawMesh.IsValidOrFixable();
+	check(ValidOrFixable);
+	return ValidOrFixable;
 }
