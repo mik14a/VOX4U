@@ -5,9 +5,13 @@
 Import [MagicaVoxel](https://ephtracy.github.io/) vox format file to [Unreal
 Engine 4](https://www.unrealengine.com/).
 
+If need to support the vox format in your UE4 project, module available [here](https://github.com/mik14a/VoxFormat).
+
 ## Requirement
 
-Unreal Engine 4 4.18 or later.
+Unreal Engine 4 4.25 or later.
+
+MagicaVoxel 0.99 or later.
 
 ## Description
 
@@ -29,6 +33,13 @@ Can layout to the world.
 
 Mesh generation use [a monotone decomposition
 algorithm](https://0fps.net/2012/07/07/meshing-minecraft-part-2/).
+
+### Support multiple objects
+
+![Multiple objects](https://pbs.twimg.com/media/Dt40gmjUcAEeEnL.jpg)
+
+[MagicaVoxel](https://ephtracy.github.io/) 0.99 are support multiple objects in *World Editor*.
+This plugin loaded multiple objecs to single StaticMesh actor.
 
 ### DestructibleMesh
 
@@ -67,7 +78,7 @@ MagicaVoxel(*.vox) files.
 
 ```sh
 cd {YourUnrealProject}
-git clone https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U
+git clone https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U --recursive
 ```
 
 Or add submodule to your project.
@@ -75,6 +86,7 @@ Or add submodule to your project.
 ```sh
 cd {YourUnrealProject}
 git submodule add https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U
+git submodule update --init --recursive
 ```
 
 Binary relase is [Here](https://github.com/mik14a/VOX4U/releases). Download and
