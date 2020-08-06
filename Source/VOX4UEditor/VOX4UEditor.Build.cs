@@ -16,7 +16,6 @@ public class VOX4UEditor : ModuleRules
 
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				"VOX4UEditor/libVOX/include",
 			}
 		);
 
@@ -31,6 +30,7 @@ public class VOX4UEditor : ModuleRules
 			new string[]
 			{
 				"VOX4U",
+				"VoxFormat",
 				"CoreUObject",
 				"Engine",
 				"RawMesh",

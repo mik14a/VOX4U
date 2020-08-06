@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FVoxel.h"
-#include "vox.h"
+#include "VoxFormat/Public/Vox.h"
 
 struct FVoxel;
 
@@ -18,7 +18,7 @@ public:
 	virtual ~IVoxImporter() = default;
 
 	/** Import voxel model from vox object */
-	virtual void Import(const vox::vox& vox) = 0;
+	virtual void Import(const FVox& vox) = 0;
 
 protected: // Immutable members
 	/** Parent voxel structure */

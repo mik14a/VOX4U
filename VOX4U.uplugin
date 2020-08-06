@@ -31,6 +31,15 @@
 				"Win64",
 				"Mac"
 			]
+		},
+		{
+			"Name": "VoxFormat",
+			"Type": "Runtime",
+			"LoadingPhase": "PreLoadingScreen",
+			"WhitelistPlatforms": [
+				"Win64",
+				"Mac"
+			]
 		}
 	],
 	"Plugins": [

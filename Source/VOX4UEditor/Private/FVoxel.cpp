@@ -2,13 +2,14 @@
 
 #include "FVoxel.h"
 #include <Engine/Texture2D.h>
+#include "VoxFormat.h"
 #include "Importer/VoxExtensionImporter.h"
 #include "Importer/VoxImporter.h"
 #include "Mesher/CellMesh.h"
 #include "Mesher/IMesher.h"
 #include "Mesher/MonotoneMesh.h"
 #include "VoxImportOption.h"
-#include "vox.h"
+#include "Voxel.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)
 
@@ -31,9 +32,9 @@ FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVox
 {
 	this->Filename = Filename;
 	this->ImportOption = ImportOption;
-	auto vox = vox::read(Data, Size);
+	FVox vox = ReadVox(Data, Size);
 
-	auto ExtensionFormat = !vox.node.empty() || !vox.layer.empty();
+	auto ExtensionFormat = !vox.Node.empty() || !vox.Layer.empty();
 	auto Importer = TUniquePtr<IVoxImporter>(
 		ExtensionFormat ? static_cast<IVoxImporter*>(new VoxExtensionImporter(this)) : static_cast<IVoxImporter*>(new VoxImporter(this))
 	);

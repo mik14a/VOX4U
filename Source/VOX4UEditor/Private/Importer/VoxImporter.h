@@ -15,5 +15,5 @@ public:
 	VoxImporter(FVoxel* voxel);
 
 	/** Import voxel model from vox object */
-	void Import(const vox::vox& vox) override;
+	void Import(const FVox& vox) override;
 };
