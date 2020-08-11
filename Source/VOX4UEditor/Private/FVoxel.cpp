@@ -30,11 +30,14 @@ FVoxel::FVoxel() : Min(ForceInit), Max(ForceInit)
 FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVoxImportOption* ImportOption)
 	: Min(ForceInit), Max(ForceInit)
 {
+	UE_LOG(LogVox, Log, TEXT("Start import vox [%s]."), *Filename);
+
 	this->Filename = Filename;
 	this->ImportOption = ImportOption;
 	FVox vox = ReadVox(Data, Size);
 
-	auto ExtensionFormat = !vox.Node.empty() || !vox.Layer.empty();
+	auto ExtensionFormat = !!vox.Node.Num();
+	UE_LOG(LogVox, Log, TEXT("Vox %s extension format."), ExtensionFormat ? TEXT("is") : TEXT("is not"));
 	auto Importer = TUniquePtr<IVoxImporter>(
 		ExtensionFormat ? static_cast<IVoxImporter*>(new VoxExtensionImporter(this)) : static_cast<IVoxImporter*>(new VoxImporter(this))
 	);
@@ -42,6 +45,7 @@ FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVox
 
 	// Centering
 	if (ImportOption->bImportXYCenter) {
+		UE_LOG(LogVox, Log, TEXT("Centering objects."));
 		const auto Volume = Max - Min + FIntVector(1, 1, 1);
 		const auto Offset = FIntVector(Min.X + Volume.X / 2, Min.Y + Volume.Y / 2, 0);
 		auto Temp = TMap<FIntVector, uint8>();
@@ -64,6 +68,7 @@ FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVox
 
 	// X forwarding
 	if (ImportOption->bImportXForward) {
+		UE_LOG(LogVox, Log, TEXT("X forwarding objects."));
 		auto Temp = TMap<FIntVector, uint8>();
 		Temp.Reserve(Voxel.Num());
 		for (const auto& Cell : Voxel) {
@@ -81,6 +86,8 @@ FVoxel::FVoxel(const FString& Filename, const void* Data, int64 Size, const UVox
 			Max.Z = FMath::Max(Max.Z, Cell.Key.Z);
 		}
 	}
+
+	UE_LOG(LogVox, Log, TEXT("Import done."));
 }
 
 FVoxel::~FVoxel()

@@ -10,8 +10,8 @@
  */
 struct VoxExtensionImporter : public IVoxImporter
 {
-	using SceneGraphOperatorT = void(VoxExtensionImporter::*)(const FVox&, std::shared_ptr<FVoxNode>, const ::translation&, const ::rotation&);
-	template <typename T> using TypeIndexMapT = TMap<uint32_t, T>;
+	using SceneGraphOperatorT = void(VoxExtensionImporter::*)(const FVox&, TSharedPtr<FVoxNode>, const FVoxTranslation&, const FVoxRotation&);
+	template <typename T> using TypeIndexMapT = TMap<uint32, T>;
 	static const TypeIndexMapT<SceneGraphOperatorT> SceneGraphOperator;
 
 public:
@@ -23,19 +23,19 @@ public:
 
 protected:
 	/** Visit scene graph */
-	void Visit(const FVox& vox, std::shared_ptr<FVoxNode> node, const ::translation& translation, const ::rotation& rotation);
+	void Visit(const FVox& vox, TSharedPtr<FVoxNode> node, const FVoxTranslation& translation, const FVoxRotation& rotation);
 	/** Visit transform node (nTRN) */
-	void Transform(const FVox& vox, std::shared_ptr<FVoxNode> node, const ::translation& translation, const ::rotation& rotation);
+	void Transform(const FVox& vox, TSharedPtr<FVoxNode> node, const FVoxTranslation& translation, const FVoxRotation& rotation);
 	/** Visit group node (nGRP) */
-	void Group(const FVox& vox, std::shared_ptr<FVoxNode> node, const ::translation& translation, const ::rotation& rotation);
+	void Group(const FVox& vox, TSharedPtr<FVoxNode> node, const FVoxTranslation& translation, const FVoxRotation& rotation);
 	/** Visit shape node (nSHP) */
-	void Shape(const FVox& vox, std::shared_ptr<FVoxNode> node, const ::translation& translation, const ::rotation& rotation);
+	void Shape(const FVox& vox, TSharedPtr<FVoxNode> node, const FVoxTranslation& translation, const FVoxRotation& rotation);
 
 private:
 	/** Transform translation */
-	static ::translation Transform(const ::rotation& M, const ::translation& T);
+	static FVoxTranslation Transform(const FVoxRotation& M, const FVoxTranslation& T);
 	/** Transform vector */
-	static FIntVector Transform(const ::rotation& M, const FIntVector& V);
+	static FIntVector Transform(const FVoxRotation& M, const FIntVector& V);
 
 private: // Immutable members
 	/** Scene graph depth */

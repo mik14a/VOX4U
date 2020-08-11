@@ -22,9 +22,9 @@ void VoxImporter::Import(const FVox& vox)
 		Voxel->Voxel.Add(MoveTemp(vector), cell.i);
 	}
 	const auto& palette = vox.Palette.Palettes;
-	if (!palette.empty()) {
+	if (palette.Num()) {
 		for (const auto& color : palette) {
-			Voxel->Palette.Add(FColor(color.r, color.g, color.b, color.a));
+			Voxel->Palette.Add(FColor(color.R, color.G, color.B, color.A));
 		}
 	} else {
 		for (const auto& color : FVox::DefaultPalette) {
