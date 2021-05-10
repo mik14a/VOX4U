@@ -191,8 +191,13 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 
 	FRawMesh RawMesh;
 	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
-	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
-	StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
+
+	if ( ImportOption->bImportMaterial )
+	{
+		UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
+		StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
+	}
+	
 	BuildStaticMesh(StaticMesh, RawMesh);
 	StaticMesh->AssetImportData->Update(Vox->Filename);
 	return StaticMesh;
