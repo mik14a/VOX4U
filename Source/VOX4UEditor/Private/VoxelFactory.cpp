@@ -1,8 +1,6 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelFactory.h"
-#include <ApexDestructibleAssetImport.h>
-#include <DestructibleMesh.h>
 #include <Editor.h>
 #include <EditorFramework/AssetImportData.h>
 #include <Engine/SkeletalMesh.h>
@@ -42,7 +40,6 @@ bool UVoxelFactory::DoesSupportClass(UClass * Class)
 {
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
-		|| Class == UDestructibleMesh::StaticClass()
 		|| Class == UVoxel::StaticClass();
 }
 
@@ -53,8 +50,6 @@ UClass* UVoxelFactory::ResolveSupportedClass()
 		Class = UStaticMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::SkeletalMesh) {
 		Class = USkeletalMesh::StaticClass();
-	} else if (ImportOption->VoxImportType == EVoxImportType::DestructibleMesh) {
-		Class = UDestructibleMesh::StaticClass();
 	} else if (ImportOption->VoxImportType == EVoxImportType::Voxel) {
 		Class = UVoxel::StaticClass();
 	}
@@ -79,9 +74,6 @@ UObject* UVoxelFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent, 
 		case EVoxImportType::SkeletalMesh:
 			Result = CreateSkeletalMesh(InParent, InName, Flags, &Vox);
 			break;
-		case EVoxImportType::DestructibleMesh:
-			Result = CreateDestructibleMesh(InParent, InName, Flags, &Vox);
-			break;
 		case EVoxImportType::Voxel:
 			Result = CreateVoxel(InParent, InName, Flags, &Vox);
 			break;
@@ -98,12 +90,10 @@ bool UVoxelFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames)
 {
 	UStaticMesh* StaticMesh = Cast<UStaticMesh>(Obj);
 	USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(Obj);
-	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(Obj);
 	UVoxel* Voxel = Cast<UVoxel>(Obj);
 
 	const auto& AssetImportData = StaticMesh != nullptr ? StaticMesh->AssetImportData
 		: SkeletalMesh != nullptr ? SkeletalMesh->AssetImportData
-		: DestructibleMesh != nullptr ? DestructibleMesh->AssetImportData
 		: Voxel != nullptr ? Voxel->AssetImportData
 		: nullptr;
 	if (AssetImportData != nullptr) {
@@ -122,12 +112,10 @@ void UVoxelFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewRei
 {
 	UStaticMesh* StaticMesh = Cast<UStaticMesh>(Obj);
 	USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(Obj);
-	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(Obj);
 	UVoxel* Voxel = Cast<UVoxel>(Obj);
 
 	const auto& AssetImportData = StaticMesh ? StaticMesh->AssetImportData
 		: SkeletalMesh ? SkeletalMesh->AssetImportData
-		: DestructibleMesh ? DestructibleMesh->AssetImportData
 		: Voxel ? Voxel->AssetImportData
 		: nullptr;
 	if (AssetImportData && ensure(NewReimportPaths.Num() == 1)) {
@@ -139,12 +127,10 @@ EReimportResult::Type UVoxelFactory::Reimport(UObject* Obj)
 {
 	UStaticMesh* StaticMesh = Cast<UStaticMesh>(Obj);
 	USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(Obj);
-	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(Obj);
 	UVoxel* Voxel = Cast<UVoxel>(Obj);
 
 	const auto& AssetImportData = StaticMesh ? Cast<UVoxAssetImportData>(StaticMesh->AssetImportData)
 		: SkeletalMesh ? Cast<UVoxAssetImportData>(SkeletalMesh->AssetImportData)
-		: DestructibleMesh ? Cast<UVoxAssetImportData>(DestructibleMesh->AssetImportData)
 		: Voxel ? Cast<UVoxAssetImportData>(Voxel->AssetImportData)
 		: nullptr;
 	if (!AssetImportData) {
@@ -214,47 +200,6 @@ USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName
 
 	SkeletalMesh->AssetImportData->Update(Vox->Filename);
 	return SkeletalMesh;
-}
-
-/**
- * CreateDestructibleMesh
- * @param InParent Import package
- * @param InName Package name
- * @param Flags Import flags
- * @param Vox Voxel file data
- */
-UDestructibleMesh* UVoxelFactory::CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
-{
-	UDestructibleMesh* DestructibleMesh = NewObject<UDestructibleMesh>(InParent, InName, Flags | RF_Public);
-	if (!DestructibleMesh->AssetImportData || !DestructibleMesh->AssetImportData->IsA<UVoxAssetImportData>()) {
-		auto AssetImportData = NewObject<UVoxAssetImportData>(DestructibleMesh);
-		AssetImportData->FromVoxImportOption(*ImportOption);
-		DestructibleMesh->AssetImportData = AssetImportData;
-	}
-
-	FRawMesh RawMesh;
-	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
-	UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
-	UStaticMesh* RootMesh = NewObject<UStaticMesh>();
-	RootMesh->StaticMaterials.Add(FStaticMaterial(Material));
-	BuildStaticMesh(RootMesh, RawMesh);
-	DestructibleMesh->SourceStaticMesh = RootMesh;
-
-	TArray<FRawMesh> CellMeshes;
-	Vox->CreateRawMeshes(CellMeshes, ImportOption);
-	TArray<UStaticMesh*> FractureMeshes;
-	for (FRawMesh& CellMesh : CellMeshes) {
-		UStaticMesh* FructureMesh = NewObject<UStaticMesh>();
-		FructureMesh->StaticMaterials.Add(FStaticMaterial(Material));
-		BuildStaticMesh(FructureMesh, CellMesh);
-		FractureMeshes.Add(FructureMesh);
-	}
-	DestructibleMesh->SetupChunksFromStaticMeshes(FractureMeshes);
-	BuildDestructibleMeshFromFractureSettings(*DestructibleMesh, nullptr);
-	DestructibleMesh->SourceStaticMesh = nullptr;
-	DestructibleMesh->AssetImportData->Update(Vox->Filename);
-
-	return DestructibleMesh;
 }
 
 UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const

@@ -9,7 +9,6 @@
 #include "VoxelFactory.generated.h"
 
 struct FVox;
-class UDestructibleMesh;
 class UMaterialInterface;
 class USkeletalMesh;
 class UStaticMesh;
@@ -47,8 +46,6 @@ private:
 	UStaticMesh* CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
-
-	UDestructibleMesh* CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 
 	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const;
 

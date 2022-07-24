@@ -32,11 +32,5 @@
 				"Mac"
 			]
 		}
-	],
-	"Plugins": [
-		{
-			"Name": "ApexDestruction",
-			"Enabled": true
-		}
 	]
 }
