@@ -93,7 +93,7 @@ bool UVoxelFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames)
 	UVoxel* Voxel = Cast<UVoxel>(Obj);
 
 	const auto& AssetImportData = StaticMesh != nullptr ? StaticMesh->AssetImportData
-		: SkeletalMesh != nullptr ? SkeletalMesh->AssetImportData
+		: SkeletalMesh != nullptr ? SkeletalMesh->GetAssetImportData()
 		: Voxel != nullptr ? Voxel->AssetImportData
 		: nullptr;
 	if (AssetImportData != nullptr) {
@@ -115,7 +115,7 @@ void UVoxelFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewRei
 	UVoxel* Voxel = Cast<UVoxel>(Obj);
 
 	const auto& AssetImportData = StaticMesh ? StaticMesh->AssetImportData
-		: SkeletalMesh ? SkeletalMesh->AssetImportData
+		: SkeletalMesh ? SkeletalMesh->GetAssetImportData()
 		: Voxel ? Voxel->AssetImportData
 		: nullptr;
 	if (AssetImportData && ensure(NewReimportPaths.Num() == 1)) {
@@ -130,7 +130,7 @@ EReimportResult::Type UVoxelFactory::Reimport(UObject* Obj)
 	UVoxel* Voxel = Cast<UVoxel>(Obj);
 
 	const auto& AssetImportData = StaticMesh ? Cast<UVoxAssetImportData>(StaticMesh->AssetImportData)
-		: SkeletalMesh ? Cast<UVoxAssetImportData>(SkeletalMesh->AssetImportData)
+		: SkeletalMesh ? Cast<UVoxAssetImportData>(SkeletalMesh->GetAssetImportData())
 		: Voxel ? Cast<UVoxAssetImportData>(Voxel->AssetImportData)
 		: nullptr;
 	if (!AssetImportData) {
@@ -181,7 +181,7 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	if ( ImportOption->bImportMaterial )
 	{
 		UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
-		StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
+		StaticMesh->GetStaticMaterials().Add(FStaticMaterial(Material));
 	}
 	
 	BuildStaticMesh(StaticMesh, RawMesh);
@@ -192,13 +192,13 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 USkeletalMesh* UVoxelFactory::CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(InParent, InName, Flags | RF_Public);
-	if (!SkeletalMesh->AssetImportData || !SkeletalMesh->AssetImportData->IsA<UVoxAssetImportData>()) {
+	if (!SkeletalMesh->GetAssetImportData() || !SkeletalMesh->GetAssetImportData()->IsA<UVoxAssetImportData>()) {
 		auto AssetImportData = NewObject<UVoxAssetImportData>(SkeletalMesh);
 		AssetImportData->FromVoxImportOption(*ImportOption);
-		SkeletalMesh->AssetImportData = AssetImportData;
+		SkeletalMesh->SetAssetImportData(AssetImportData);
 	}
 
-	SkeletalMesh->AssetImportData->Update(Vox->Filename);
+	SkeletalMesh->GetAssetImportData()->Update(Vox->Filename);
 	return SkeletalMesh;
 }
 
@@ -236,12 +236,12 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 		FRawMesh RawMesh;
 		FVox::CreateMesh(RawMesh, ImportOption);
 		UStaticMesh* StaticMesh = NewObject<UStaticMesh>(InParent, *FString::Printf(TEXT("%s_SM%d"), *InName.GetPlainNameString(), color), Flags | RF_Public);
-		StaticMesh->StaticMaterials.Add(FStaticMaterial(MaterialInstance));
+		StaticMesh->GetStaticMaterials().Add(FStaticMaterial(MaterialInstance));
 		BuildStaticMesh(StaticMesh, RawMesh);
 
 		const FVector& Scale = ImportOption->GetBuildSettings().BuildScale3D;
 		FKBoxElem BoxElem(Scale.X, Scale.Y, Scale.Z);
-		StaticMesh->BodySetup->AggGeom.BoxElems.Add(BoxElem);
+		StaticMesh->GetBodySetup()->AggGeom.BoxElems.Add(BoxElem);
 
 		Voxel->Mesh.Add(StaticMesh);
 	}
