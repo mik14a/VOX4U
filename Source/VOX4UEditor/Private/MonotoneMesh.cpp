@@ -31,7 +31,7 @@ bool MonotoneMesh::CreateRawMesh(FRawMesh& OutRawMesh, const UVoxImportOption* I
 	}
 
 	if (ImportOption->bImportXYCenter) {
-		FVector Offset = FVector((float)Vox->Size.X * 0.5f, (float)Vox->Size.Y * 0.5f, 0.f);
+		auto Offset = FVector3f((float)Vox->Size.X * 0.5f, (float)Vox->Size.Y * 0.5f, 0.f);
 		for (int32 i = 0; i < OutRawMesh.VertexPositions.Num(); ++i) {
 			OutRawMesh.VertexPositions[i] -= Offset;
 		}
@@ -200,7 +200,7 @@ void MonotoneMesh::WriteVertex(FRawMesh& OutRawMesh, TArray<int>& OutLeftIndex, 
 {
 	for (auto i = 0; i < Polygon.Left.Num(); ++i) {
 		auto Vector = Polygon.Left[i];
-		auto Vertex = FVector();
+		auto Vertex = FVector3f();
 		Vertex[Axis.X] = Vector.X;
 		Vertex[Axis.Y] = Vector.Y;
 		Vertex[Axis.Z] = Vector.Z;
@@ -209,7 +209,7 @@ void MonotoneMesh::WriteVertex(FRawMesh& OutRawMesh, TArray<int>& OutLeftIndex, 
 	}
 	for (auto i = 0; i < Polygon.Right.Num(); ++i) {
 		auto Vector = Polygon.Right[i];
-		auto Vertex = FVector();
+		auto Vertex = FVector3f();
 		Vertex[Axis.X] = Vector.X;
 		Vertex[Axis.Y] = Vector.Y;
 		Vertex[Axis.Z] = Vector.Z;
@@ -227,9 +227,9 @@ void MonotoneMesh::WriteWedge(FRawMesh& OutRawMesh, bool Face, int Index1, int I
 	OutRawMesh.WedgeIndices.Add(Face ? Index1 : Index2);
 	OutRawMesh.WedgeIndices.Add(Face ? Index2 : Index1);
 	OutRawMesh.WedgeIndices.Add(Index3);
-	OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-	OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
-	OutRawMesh.WedgeTexCoords[0].Add(FVector2D(((double)ColorIndex + 0.5) / 256.0, 0.5));
+	OutRawMesh.WedgeTexCoords[0].Add(FVector2f(((double)ColorIndex + 0.5) / 256.0, 0.5));
+	OutRawMesh.WedgeTexCoords[0].Add(FVector2f(((double)ColorIndex + 0.5) / 256.0, 0.5));
+	OutRawMesh.WedgeTexCoords[0].Add(FVector2f(((double)ColorIndex + 0.5) / 256.0, 0.5));
 	OutRawMesh.FaceMaterialIndices.Add(0);
 	OutRawMesh.FaceSmoothingMasks.Add(0);
 }
