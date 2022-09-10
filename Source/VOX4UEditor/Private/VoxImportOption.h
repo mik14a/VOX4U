@@ -38,7 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Generic)
 	uint32 bImportMaterial : 1;
 
-	UPROPERTY(EditAnywhere, Category = Generic)
+	UPROPERTY(VisibleDefaultsOnly, Category = Generic)
 	float Scale;
 
 public:
