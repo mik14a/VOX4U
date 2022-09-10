@@ -36,7 +36,7 @@ void UVoxelFactory::PostInitProperties()
 	ImportOption = NewObject<UVoxImportOption>(this, NAME_None, RF_NoFlags);
 }
 
-bool UVoxelFactory::DoesSupportClass(UClass * Class)
+bool UVoxelFactory::DoesSupportClass(UClass* Class)
 {
 	return Class == UStaticMesh::StaticClass()
 		|| Class == USkeletalMesh::StaticClass()
@@ -178,12 +178,11 @@ UStaticMesh* UVoxelFactory::CreateStaticMesh(UObject* InParent, FName InName, EO
 	FRawMesh RawMesh;
 	Vox->CreateOptimizedRawMesh(RawMesh, ImportOption);
 
-	if ( ImportOption->bImportMaterial )
-	{
+	if (ImportOption->bImportMaterial) {
 		UMaterialInterface* Material = CreateMaterial(InParent, InName, Flags, Vox);
 		StaticMesh->GetStaticMaterials().Add(FStaticMaterial(Material));
 	}
-	
+
 	BuildStaticMesh(StaticMesh, RawMesh);
 	StaticMesh->AssetImportData->Update(Vox->Filename);
 	return StaticMesh;
@@ -266,7 +265,7 @@ UStaticMesh* UVoxelFactory::BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh
 	return OutStaticMesh;
 }
 
-UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const
+UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName& InName, EObjectFlags Flags, const FVox* Vox) const
 {
 	UMaterial* Material = NewObject<UMaterial>(InParent, *FString::Printf(TEXT("%s_MT"), *InName.GetPlainNameString()), Flags | RF_Public);
 	UTexture2D* Texture = NewObject<UTexture2D>(InParent, *FString::Printf(TEXT("%s_TX"), *InName.GetPlainNameString()), Flags | RF_Public);

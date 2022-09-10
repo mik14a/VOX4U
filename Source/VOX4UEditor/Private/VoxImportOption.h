@@ -37,7 +37,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Generic)
 	uint32 bImportMaterial : 1;
-	
+
 	UPROPERTY(EditAnywhere, Category = Generic)
 	float Scale;
 
@@ -47,7 +47,7 @@ public:
 
 	bool GetImportOption(bool& bOutImportAll);
 
-	const FMeshBuildSettings& GetBuildSettings() const { 
+	const FMeshBuildSettings& GetBuildSettings() const {
 		return BuildSettings;
 	}
 

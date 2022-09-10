@@ -29,7 +29,7 @@ public:
 
 	void PostInitProperties() override;
 
-	virtual bool DoesSupportClass(UClass * Class) override;
+	virtual bool DoesSupportClass(UClass* Class) override;
 
 	virtual UClass* ResolveSupportedClass() override;
 
@@ -51,7 +51,7 @@ private:
 
 	UStaticMesh* BuildStaticMesh(UStaticMesh* OutStaticMesh, FRawMesh& RawMesh) const;
 
-	UMaterialInterface* CreateMaterial(UObject* InParent, FName &InName, EObjectFlags Flags, const FVox* Vox) const;
+	UMaterialInterface* CreateMaterial(UObject* InParent, FName& InName, EObjectFlags Flags, const FVox* Vox) const;
 
 protected:
 

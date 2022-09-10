@@ -81,7 +81,7 @@ void UVoxelComponent::AddVoxel()
 	FVector Offset = Voxel->bXYCenter ? FVector((float)Voxel->Size.X, (float)Voxel->Size.Y, 0.f) * CellBounds.BoxExtent : FVector::ZeroVector;
 	for (auto& voxel : Voxel->Voxel) {
 		if (bHideUnbeheld && IsUnbeheldVolume(voxel.Key)) continue;
-		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 -CellBounds.Origin + CellBounds.BoxExtent - Offset;
+		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent - Offset;
 		FTransform Transform(FQuat::Identity, Translation, FVector(1.f));
 		InstancedStaticMeshComponents[voxel.Value]->AddInstance(Transform);
 	}
