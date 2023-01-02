@@ -222,8 +222,9 @@ UVoxel* UVoxelFactory::CreateVoxel(UObject* InParent, FName InName, EObjectFlags
 	Expression->ParameterName = TEXT("Color");
 	Expression->DefaultValue = FLinearColor::Gray;
 	Expression->MaterialExpressionEditorX = -250;
-	Material->Expressions.Add(Expression);
-	Material->BaseColor.Expression = Expression;
+	auto EditorOnly = Material->GetEditorOnlyData();
+	EditorOnly->ExpressionCollection.AddExpression(Expression);
+	EditorOnly->BaseColor.Expression = Expression;
 	Material->PostEditChange();
 
 	for (uint8 color : Palette) {
@@ -273,8 +274,9 @@ UMaterialInterface* UVoxelFactory::CreateMaterial(UObject* InParent, FName& InNa
 		Material->TwoSided = false;
 		Material->SetShadingModel(MSM_DefaultLit);
 		UMaterialExpressionTextureSample* Expression = NewObject<UMaterialExpressionTextureSample>(Material);
-		Material->Expressions.Add(Expression);
-		Material->BaseColor.Expression = Expression;
+		auto EditorOnly = Material->GetEditorOnlyData();
+		EditorOnly->ExpressionCollection.AddExpression(Expression);
+		EditorOnly->BaseColor.Expression = Expression;
 		Expression->Texture = Texture;
 		Material->PostEditChange();
 	}

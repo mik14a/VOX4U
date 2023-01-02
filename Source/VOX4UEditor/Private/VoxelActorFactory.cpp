@@ -1,7 +1,7 @@
 // Copyright 2016-2018 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxelActorFactory.h"
-#include <AssetData.h>
+#include <AssetRegistry/AssetData.h>
 #include "Voxel.h"
 #include "VoxelActor.h"
 #include "VoxelComponent.h"
