@@ -11,7 +11,8 @@ UVoxImportOption::UVoxImportOption()
 	, bImportXForward(true)
 	, bImportXYCenter(false)
 	, bImportMeshOptimize(true)
-	, Scale(10.f)
+	, bImportMaterial(true)
+	, Scale(1.f)
 {
 	BuildSettings.BuildScale3D = FVector(Scale);
 }

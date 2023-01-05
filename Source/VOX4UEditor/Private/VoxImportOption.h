@@ -13,7 +13,6 @@ enum class EVoxImportType
 {
 	StaticMesh UMETA(DisplayName = "Static Mesh"),
 	SkeletalMesh UMETA(DisplayName = "Skeletal Mesh"),
-	DestructibleMesh UMETA(DisplayName = "Destructible Mesh"),
 	Voxel UMETA(DisplayName = "Voxel"),
 };
 
@@ -40,6 +39,9 @@ public:
 	uint32 bImportMeshOptimize : 1;
 
 	UPROPERTY(EditAnywhere, Category = Generic)
+	uint32 bImportMaterial : 1;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Generic)
 	float Scale;
 
 public:
@@ -48,7 +50,7 @@ public:
 
 	bool GetImportOption(bool& bOutImportAll);
 
-	const FMeshBuildSettings& GetBuildSettings() const { 
+	const FMeshBuildSettings& GetBuildSettings() const {
 		return BuildSettings;
 	}
 

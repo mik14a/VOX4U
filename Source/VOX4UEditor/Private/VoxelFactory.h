@@ -9,7 +9,6 @@
 #include "VoxelFactory.generated.h"
 
 struct FVoxel;
-class UDestructibleMesh;
 class UMaterialInterface;
 class USkeletalMesh;
 class UStaticMesh;
@@ -30,7 +29,7 @@ public:
 
 	void PostInitProperties() override;
 
-	virtual bool DoesSupportClass(UClass * Class) override;
+	virtual bool DoesSupportClass(UClass* Class) override;
 
 	virtual UClass* ResolveSupportedClass() override;
 
@@ -47,8 +46,6 @@ private:
 	UStaticMesh* CreateStaticMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
 	USkeletalMesh* CreateSkeletalMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
-
-	UDestructibleMesh* CreateDestructibleMesh(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 
 	UVoxel* CreateVoxel(UObject* InParent, FName InName, EObjectFlags Flags, const FVoxel* Vox) const;
 

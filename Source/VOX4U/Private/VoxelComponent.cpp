@@ -80,7 +80,7 @@ void UVoxelComponent::AddVoxel()
 {
 	for (auto& voxel : Voxel->Voxel) {
 		if (bHideUnbeheld && IsUnbeheldVolume(voxel.Key)) continue;
-		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 -CellBounds.Origin + CellBounds.BoxExtent;
+		FVector Translation = FVector(voxel.Key) * CellBounds.BoxExtent * 2 - CellBounds.Origin + CellBounds.BoxExtent;
 		FTransform Transform(FQuat::Identity, Translation, FVector(1.f));
 		InstancedStaticMeshComponents[voxel.Value]->AddInstance(Transform);
 	}

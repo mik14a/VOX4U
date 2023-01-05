@@ -38,7 +38,6 @@ public class VOX4UEditor : ModuleRules
 				"SlateCore",
 				"UnrealEd",
 				"MainFrame",
-				"ApexDestruction",
 			}
 		);
 

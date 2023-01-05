@@ -3,15 +3,14 @@
 [![GitHub release](https://img.shields.io/github/release/mik14a/VOX4U/all.svg)](https://github.com/mik14a/VOX4U/releases)
 
 Import [MagicaVoxel](https://ephtracy.github.io/) vox format file to [Unreal
-Engine 4](https://www.unrealengine.com/).
-
-If need to support the vox format in your UE4 project, module available [here](https://github.com/mik14a/VoxFormat).
+Engine 5](https://www.unrealengine.com/).
 
 ## Requirement
 
-Unreal Engine 4 4.25 or later.
+Unreal Engine 5 5.1 or later.
 
-MagicaVoxel 0.99 or later.
+MagicaVoxel 0.99.6.4 or lower
+_(Not support 0.99.7 features now)_.
 
 ## Description
 
@@ -34,14 +33,10 @@ Can layout to the world.
 Mesh generation use [a monotone decomposition
 algorithm](https://0fps.net/2012/07/07/meshing-minecraft-part-2/).
 
-### Support multiple objects
-
-![Multiple objects](https://pbs.twimg.com/media/Dt40gmjUcAEeEnL.jpg)
-
-[MagicaVoxel](https://ephtracy.github.io/) 0.99 are support multiple objects in *World Editor*.
-This plugin loaded multiple objecs to single StaticMesh actor.
-
 ### DestructibleMesh
+
+_DestructibleMesh is not support in UE5._
+_Trying to support Chaos destruction._
 
 ![DestructibleMesh](https://pbs.twimg.com/media/CgKuBudUIAAbyAg.jpg)
 
@@ -61,7 +56,7 @@ cube mesh and material to use to call per palette.
 
 Can use middle size building blocks or rideable terrain on the world.
 
-If no need to access to Voxal Actor. Can remove runtime module from uplugin and
+If no need to access to Voxel Actor. Can remove runtime module from uplugin and
 packaging with out runtime module.
 
 ## Demo
@@ -78,7 +73,7 @@ MagicaVoxel(*.vox) files.
 
 ```sh
 cd {YourUnrealProject}
-git clone https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U --recursive
+git clone https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U
 ```
 
 Or add submodule to your project.
@@ -86,13 +81,12 @@ Or add submodule to your project.
 ```sh
 cd {YourUnrealProject}
 git submodule add https://github.com/mik14a/VOX4U.git ./Plugins/VOX4U
-git submodule update --init --recursive
 ```
 
-Binary relase is [Here](https://github.com/mik14a/VOX4U/releases). Download and
+Binary release is [Here](https://github.com/mik14a/VOX4U/releases). Download and
 copy binaries to {YourUnrealProject}/Plugins/VOX4U. If create package without
 c++ access. Copy to _Engine/Plugins/Runtime_ directory.
 
-## Licence
+## License
 
 [MIT License](https://github.com/mik14a/VOX4U/blob/master/LICENSE)

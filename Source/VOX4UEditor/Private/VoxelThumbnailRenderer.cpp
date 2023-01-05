@@ -51,10 +51,10 @@ void FVoxelThumbnailScene::GetViewMatrixParameters(const float InFOVDegrees, FVe
 	OutOrbitZoom = TargetDistance + ThumbnailInfo->OrbitZoom;
 }
 
-void UVoxelThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* Viewport, FCanvas* Canvas)
+void UVoxelThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* RenderTarget, FCanvas* Canvas, bool bAdditionalViewFamily)
 {
 	UVoxel* Voxel = Cast<UVoxel>(Object);
-	if (Voxel && !Voxel->IsPendingKill()) {
+	if (Voxel && IsValid(Voxel)) {
 		FVoxelThumbnailScene* ThumbnailScene = ThumbnailScenes.FindRef(Voxel);
 		if (!ThumbnailScene) {
 			ThumbnailScene = new FVoxelThumbnailScene();
@@ -62,14 +62,12 @@ void UVoxelThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Wid
 			ThumbnailScenes.Add(Voxel, ThumbnailScene);
 		}
 		ThumbnailScene->GetScene()->UpdateSpeedTreeWind(0.0);
-		FSceneViewFamilyContext ViewFamily(FSceneViewFamily::ConstructionValues(Viewport, ThumbnailScene->GetScene(), FEngineShowFlags(ESFIM_Game))
-			.SetWorldTimes(FApp::GetCurrentTime() - GStartTime, FApp::GetDeltaTime(), FApp::GetCurrentTime() - GStartTime));
+		FSceneViewFamilyContext ViewFamily(FSceneViewFamily::ConstructionValues(RenderTarget, ThumbnailScene->GetScene(), FEngineShowFlags(ESFIM_Game))
+			.SetTime(UThumbnailRenderer::GetTime())
+			.SetAdditionalViewFamily(bAdditionalViewFamily));
 		ViewFamily.EngineShowFlags.DisableAdvancedFeatures();
 		ViewFamily.EngineShowFlags.MotionBlur = 0;
 		ViewFamily.EngineShowFlags.LOD = 0;
-		ViewFamily.EngineShowFlags.ScreenPercentage = false;
-		ViewFamily.SetScreenPercentageInterface(new FLegacyScreenPercentageDriver(ViewFamily, 1.0f, false));
-		ThumbnailScene->GetView(&ViewFamily, X, Y, Width, Height);
-		GetRendererModule().BeginRenderingViewFamily(Canvas, &ViewFamily);
+		RenderViewFamily(Canvas, &ViewFamily, ThumbnailScene->CreateView(&ViewFamily, X, Y, Width, Height));
 	}
 }
