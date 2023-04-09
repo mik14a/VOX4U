@@ -73,6 +73,7 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 	uint32 SizeOfChunkContents;
 	uint32 TotalSizeOfChildrenChunks;
 
+	Materials.Init(FVoxMaterial(), 256);
 	do {
 		Ar.Serialize(ChunkId, 4);
 		Ar << SizeOfChunkContents;
@@ -117,11 +118,76 @@ bool FVox::Import(FArchive& Ar, const UVoxImportOption* ImportOption)
 				UE_LOG(LogVox, Verbose, TEXT("      %s"), *Color.ToString());
 				Palette.Add(Color);
 			}
-		} else if (0 == FCStringAnsi::Strncmp("MATT", ChunkId, 4)) {
-			UE_LOG(LogVox, Warning, TEXT("Unsupported MATT chunk."));
-			uint8 byte;
-			for (uint32 i = 0; i < SizeOfChunkContents; ++i) {
-				Ar << byte;
+		} else if (0 == FCStringAnsi::Strncmp("MATL", ChunkId, 4)) {
+			UE_LOG(LogVox, Verbose, TEXT("MATL:"));
+			
+			int32 MaterialId;
+			Ar << MaterialId;
+			
+			FVoxMaterial& Material = Materials[MaterialId - 1];
+			
+			int32 DictNumPairs;
+			Ar << DictNumPairs;
+			
+			UE_LOG(LogVox, Display, TEXT("Material[%i]:"), MaterialId);
+			for (int i = 0; i < DictNumPairs; i++)
+			{
+				uint32 KeyStringSize;
+				Ar << KeyStringSize;
+				ANSICHAR Key[256] = {0,};
+				Ar.Serialize(Key, KeyStringSize);
+
+				uint32 ValueStringSize;
+				Ar << ValueStringSize;
+				ANSICHAR Value[256] = {0,};
+				Ar.Serialize(Value, ValueStringSize);
+
+				if (0 == FCStringAnsi::Strcmp("_type", Key))
+				{
+					if (0 == FCStringAnsi::Strcmp("_diffuse", Value))
+					{
+						Material.Type = EVoxMaterialType::DIFFUSE;
+					} else if (0 == FCStringAnsi::Strcmp("_metal", Value))
+					{
+						Material.Type = EVoxMaterialType::METAL;
+					} else if (0 == FCStringAnsi::Strcmp("_glass", Value))
+					{
+						Material.Type = EVoxMaterialType::GLASS;
+					} else if (0 == FCStringAnsi::Strcmp("_emit", Value))
+					{
+						Material.Type = EVoxMaterialType::EMIT;
+					}
+				} else if (0 == FCStringAnsi::Strcmp("_metal", Key))
+				{
+					Material.Metallic = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_rough", Key))
+				{
+					Material.Roughness = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_flux", Key))
+				{
+					Material.Emissive = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_spec", Key))
+				{
+					Material.Specular = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_weight", Key))
+				{
+					Material.Weight = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_alpha", Key))
+				{
+					Material.Alpha = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_ri", Key))
+				{
+					Material.IOR = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_att", Key))
+				{
+					Material.Att = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_trans", Key))
+				{
+					Material.Transparency = static_cast<float>(atof(Value));
+				} else if (0 == FCStringAnsi::Strcmp("_g", Key))
+				{
+					Material.Phase = static_cast<float>(atof(Value));
+				}
 			}
 		} else {
 			FString UnknownChunk(ChunkId);

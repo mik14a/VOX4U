@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include <RawMesh.h>
+#include "VoxMaterial.h"
 
 class UTexture2D;
 class UVoxImportOption;
@@ -29,6 +30,8 @@ struct FVox
 	TMap<FIntVector, uint8> Voxel;
 	/** Palette */
 	TArray<FColor> Palette;
+	/** Materials */
+	TArray<FVoxMaterial> Materials;
 
 public:
 
