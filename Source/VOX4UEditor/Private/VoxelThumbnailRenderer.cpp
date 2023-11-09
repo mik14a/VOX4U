@@ -3,6 +3,7 @@
 #include "VoxelThumbnailRenderer.h"
 #include <EngineModule.h>
 #include <LegacyScreenPercentageDriver.h>
+#include <SceneInterface.h>
 #include <ThumbnailRendering/SceneThumbnailInfo.h>
 #include "Voxel.h"
 #include "VoxelActor.h"
