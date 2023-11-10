@@ -1,4 +1,4 @@
-// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2023 mik14a / Admix Network. All Rights Reserved.
 
 #include "VoxImporter.h"
 #include "VoxFormat.h"
@@ -21,14 +21,7 @@ void VoxImporter::Import(const FVox& vox)
 		auto vector = FIntVector(cell.x, cell.y, cell.z);
 		Voxel->Voxel.Add(MoveTemp(vector), cell.i);
 	}
-	const auto& palette = vox.Palette.Palettes;
-	if (palette.Num()) {
-		for (const auto& color : palette) {
-			Voxel->Palette.Add(FColor(color.R, color.G, color.B, color.A));
-		}
-	} else {
-		for (const auto& color : FVox::DefaultPalette) {
-			Voxel->Palette.Add(FColor(color));
-		}
-	}
+
+	LoadPalette(vox.Palette, Voxel->Palette);
+	LoadMaterial(vox.Material, Voxel->Materials);
 }

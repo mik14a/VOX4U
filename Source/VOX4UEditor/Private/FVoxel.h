@@ -1,4 +1,4 @@
-// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2023 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
@@ -9,6 +9,7 @@ class UTexture2D;
 class UVoxImportOption;
 
 struct VoxExtensionImporter;
+struct FVoxMaterial;
 
 /**
  * @struct FVoxel
@@ -26,6 +27,8 @@ struct FVoxel
 	TMap<FIntVector, uint8> Voxel;
 	/** Palette */
 	TArray<FColor> Palette;
+	/** Materials */
+	TArray<FVoxMaterial> Materials;
 
 public:
 

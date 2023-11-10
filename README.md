@@ -7,7 +7,7 @@ Engine 5](https://www.unrealengine.com/).
 
 ## Requirement
 
-Unreal Engine 5 5.1 or later.
+Unreal Engine 5 5.2 or later.
 
 MagicaVoxel 0.99.6.4 or lower
 _(Not support 0.99.7 features now)_.

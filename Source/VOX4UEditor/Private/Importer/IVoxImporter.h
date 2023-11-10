@@ -1,4 +1,4 @@
-// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2023 mik14a / Admix Network. All Rights Reserved.
 
 #pragma once
 
@@ -23,4 +23,12 @@ public:
 protected: // Immutable members
 	/** Parent voxel structure */
 	FVoxel* const Voxel;
+
+protected:
+
+	/** Load palette from vox chunk */
+	static void LoadPalette(const FVoxChunkRgba& Rgba, TArray<FColor>& OutPalette);
+
+	/** Load material from vox chunk */
+	static void LoadMaterial(const FVox::MaterialT& Materials, TArray<FVoxMaterial>& OutMaterials);
 };

@@ -16,11 +16,26 @@ struct FVoxMaterial
 	float Metallic;			// _metal
 	float Roughness;		// _rough
 	float Emissive;			// _flux
-	float Specular;			// _spec	
+	float Specular;			// _spec
 	float Weight;			// _weight
 	float Alpha;			// _alpha
 	float IOR;				// _ri (_ior = _ri - 1.0)
 	float Att;				// _att
 	float Transparency;		// _trans
 	float Phase;			// _g
+
+	explicit FVoxMaterial(EForceInit)
+		: Type(EVoxMaterialType::DIFFUSE)
+		, Metallic(NAN)
+		, Roughness(NAN)
+		, Emissive(NAN)
+		, Specular(NAN)
+		, Weight(NAN)
+		, Alpha(NAN)
+		, IOR(NAN)
+		, Att(NAN)
+		, Transparency(NAN)
+		, Phase(NAN)
+	{
+	}
 };

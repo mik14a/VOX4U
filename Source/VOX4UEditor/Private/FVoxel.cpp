@@ -1,14 +1,15 @@
-// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2023 mik14a / Admix Network. All Rights Reserved.
 
 #include "FVoxel.h"
 #include <Engine/Texture2D.h>
-#include "VoxFormat.h"
 #include "Importer/VoxExtensionImporter.h"
 #include "Importer/VoxImporter.h"
 #include "Mesher/CellMesh.h"
 #include "Mesher/IMesher.h"
 #include "Mesher/MonotoneMesh.h"
+#include "VoxFormat.h"
 #include "VoxImportOption.h"
+#include "VoxMaterial.h"
 #include "Voxel.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVox, Log, All)

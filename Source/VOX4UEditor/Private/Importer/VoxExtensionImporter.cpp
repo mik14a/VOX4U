@@ -1,16 +1,17 @@
-// Copyright 2016-2020 mik14a / Admix Network. All Rights Reserved.
+// Copyright 2016-2023 mik14a / Admix Network. All Rights Reserved.
 
+#include "FVoxel.h"
 #include "VoxExtensionImporter.h"
 #include "VoxFormat.h"
-#include "FVoxel.h"
+#include "VoxMaterial.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVoxImporter, Log, All)
 
 const VoxExtensionImporter::TypeIndexMapT<VoxExtensionImporter::SceneGraphOperatorT> VoxExtensionImporter::SceneGraphOperator =
 {
 	{ FVoxNodeTransform::Tag, &VoxExtensionImporter::Transform },
-	{ FVoxNodeGroup::Tag, &VoxExtensionImporter::Group},
-	{ FVoxNodeShape::Tag, &VoxExtensionImporter::Shape},
+	{ FVoxNodeGroup::Tag, &VoxExtensionImporter::Group },
+	{ FVoxNodeShape::Tag, &VoxExtensionImporter::Shape },
 };
 
 VoxExtensionImporter::VoxExtensionImporter(FVoxel* voxel)
@@ -35,10 +36,9 @@ void VoxExtensionImporter::Import(const FVox& vox)
 		Voxel->Min.Z = FMath::Min(Voxel->Min.Z, Cell.Key.Z);
 		Voxel->Max.Z = FMath::Max(Voxel->Max.Z, Cell.Key.Z);
 	}
-	const auto& palette = vox.Palette.Palettes;
-	for (const auto& color : palette) {
-		Voxel->Palette.Add(FColor(color.R, color.G, color.B, color.A));
-	}
+
+	LoadPalette(vox.Palette, Voxel->Palette);
+	LoadMaterial(vox.Material, Voxel->Materials);
 }
 
 #define TAG(tag)	(tag) & 0xff, ((tag) >> 8) & 0xff, ((tag) >> 16) & 0xff, ((tag) >> 24) & 0xff
